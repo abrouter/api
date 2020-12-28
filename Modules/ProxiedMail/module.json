@@ -1,0 +1,13 @@
+{
+    "name": "ProxiedMail",
+    "alias": "proxiedmail",
+    "description": "",
+    "keywords": [],
+    "order": 0,
+    "providers": [
+        "Modules\\ProxiedMail\\Providers\\ModuleServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

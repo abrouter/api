@@ -1,0 +1,697 @@
+{
+	"info": {
+		"_postman_id": "2c68dad1-9833-41fe-8384-61e6bb2565ef",
+		"name": "ProxiedMail",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Users/Sign up",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Organization-Domain",
+								"value": "tt"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer ynkc7yXCRoTZQCSTt4usfS5MQxxV0Yp7CpjmZFvdiwG1hMGNG6acR6dGjk4nMMVs"
+							},
+							{
+								"key": "X-UI-Instance-Id",
+								"value": "1aa25ff758bf624f71a732b602e7f12879907acfe966f33a2ad0a4badf21d6cc"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json, application/vnd.api+json"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-origin"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "same-origin"
+							},
+							{
+								"key": "Referer",
+								"value": "https://tt.airslate-dev05.xyz/sc/packets/no-referrer"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en-GB,en-US;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Cookie",
+								"value": "_ga=GA1.2.227091541.1570575225; _fbp=fb.1.1570575861320.994281468; _gcl_au=1.1.1295290962.1578388019; airSlate.session.token=ynkc7yXCRoTZQCSTt4usfS5MQxxV0Yp7CpjmZFvdiwG1hMGNG6acR6dGjk4nMMVs; _gid=GA1.2.1365737432.1583398395; airSlate.header.domain=tt; AMP_TOKEN=%24NOT_FOUND; _gat_UA-127265217-2=1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"data\": {\n\t\t\"type\": \"users\",\n\t\t\"attributes\": {\n\t\t\t\"username\": \"ca23@cawjdafdaw.com\",\n\t\t\t\"password\": \"xuecwwdw22\"\n\t\t}\n\t}\n}"
+						},
+						"url": {
+							"raw": "localhost:902/api/v1/users/",
+							"host": [
+								"localhost"
+							],
+							"port": "902",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Users/Login",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Organization-Domain",
+								"value": "tt"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer ynkc7yXCRoTZQCSTt4usfS5MQxxV0Yp7CpjmZFvdiwG1hMGNG6acR6dGjk4nMMVs"
+							},
+							{
+								"key": "X-UI-Instance-Id",
+								"value": "1aa25ff758bf624f71a732b602e7f12879907acfe966f33a2ad0a4badf21d6cc"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json, application/vnd.api+json"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-origin"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "same-origin"
+							},
+							{
+								"key": "Referer",
+								"value": "https://tt.airslate-dev05.xyz/sc/packets/no-referrer"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en-GB,en-US;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Cookie",
+								"value": "_ga=GA1.2.227091541.1570575225; _fbp=fb.1.1570575861320.994281468; _gcl_au=1.1.1295290962.1578388019; airSlate.session.token=ynkc7yXCRoTZQCSTt4usfS5MQxxV0Yp7CpjmZFvdiwG1hMGNG6acR6dGjk4nMMVs; _gid=GA1.2.1365737432.1583398395; airSlate.header.domain=tt; AMP_TOKEN=%24NOT_FOUND; _gat_UA-127265217-2=1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"data\": {\n\t\t\"type\":\"auth-request\",\n\t\t\"attributes\": {\n\t\t\t\"username\": \"ca23@cawjdafdaw.com\",\n\t\t\t\"password\": \"xuecwwdw22\"\n\t\t}\n\t}\n}"
+						},
+						"url": {
+							"raw": "localhost:902/api/v1/auth",
+							"host": [
+								"localhost"
+							],
+							"port": "902",
+							"path": [
+								"api",
+								"v1",
+								"auth"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Users/Me",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYTIxYTU3YmFlMjJlZWM0ZDRjOTBkNDliYzA3YjAzOTQ3YmY5MmE3Y2YwYmQwZTBlZmUwYzkxNmIyNmI0MmQ0ZWFhMjJhOGE2ZDkzMmMwOTUiLCJpYXQiOjE1ODM3Mzc2MzQsIm5iZiI6MTU4MzczNzYzNCwiZXhwIjoxNjE1MjczNjMxLCJzdWIiOiIzMSIsInNjb3BlcyI6W119.jbkrR1MQQa11Iqag-lMkNZ5GuQrfYSQs4F3z1ztk34mw_TcMoHY7iKfqF-EX9jdjXQAaWrS8oVA5Nd1lyQfz6hibefr4Ac_RSvKSz5eWjiYqSjPKXYYJSW0CRJ0NmZ9b-m5S5vwez20LhDYSGIZY7hJ7CbAGqzEAqaOAjKdcoLpXnyL2pCPtIZbNXkCtOFcORzS3UDntWruMFSjsx8nL1X8caNYCCxsWqdc0tpc8XthmMPvy8goA6OfjJhiNPg8Wcq6yUVhVC_ycHpXeKGEuRJiiQ0Qe9aNfkLblMPOscvrOMk-vkVp19rZBmoAqzquzuFPx4HUvu4FhVD7c-1z5rdFrTGS7iigDW23d7TB8TiCvOF7KEs60jeHImL3lo5Of8gtxgQp7HP9e5EySBM266rkdegJScpAlEe3jAbTmHgb5GlllKibpBKfy_7jSrfll65Q9avPW-mZ3xQX4u9g-1qEHup4nzon7ayJF7roJLSvF4UAxvi3T4NXzjORZA81K4erBVs-nwjfRFOWJbaFk3N063FpEN1z6iuUZHjVFRiPjrhBBUqqpiBMsB5gEIhI0h7F4-mQPesczB7HKmYKR21N62XyHw__3OlFkR_iO74DHQ-dQVZMlSxET05QR0-k41nD_p3OBQuE_qn_t5DPdJEz_dZz0uM9t_3KTlTowaxA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Organization-Domain",
+								"value": "tt"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer ynkc7yXCRoTZQCSTt4usfS5MQxxV0Yp7CpjmZFvdiwG1hMGNG6acR6dGjk4nMMVs"
+							},
+							{
+								"key": "X-UI-Instance-Id",
+								"value": "1aa25ff758bf624f71a732b602e7f12879907acfe966f33a2ad0a4badf21d6cc"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json, application/vnd.api+json"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-origin"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "same-origin"
+							},
+							{
+								"key": "Referer",
+								"value": "https://tt.airslate-dev05.xyz/sc/packets/no-referrer"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en-GB,en-US;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Cookie",
+								"value": "_ga=GA1.2.227091541.1570575225; _fbp=fb.1.1570575861320.994281468; _gcl_au=1.1.1295290962.1578388019; airSlate.session.token=ynkc7yXCRoTZQCSTt4usfS5MQxxV0Yp7CpjmZFvdiwG1hMGNG6acR6dGjk4nMMVs; _gid=GA1.2.1365737432.1583398395; airSlate.header.domain=tt; AMP_TOKEN=%24NOT_FOUND; _gat_UA-127265217-2=1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"data\": {\n\t\t\"type\":\"auth-request\",\n\t\t\"attributes\": {\n\t\t\t\"username\": \"cab@cc22s2ds2dsfddwawjdww2adaf.com\",\n\t\t\t\"password\": \"xuecwwdw22\"\n\t\t}\n\t}\n}"
+						},
+						"url": {
+							"raw": "localhost:902/api/v1/users/me",
+							"host": [
+								"localhost"
+							],
+							"port": "902",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"me"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "ProxiedMail",
+			"item": [
+				{
+					"name": "PM/All",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYTIxYTU3YmFlMjJlZWM0ZDRjOTBkNDliYzA3YjAzOTQ3YmY5MmE3Y2YwYmQwZTBlZmUwYzkxNmIyNmI0MmQ0ZWFhMjJhOGE2ZDkzMmMwOTUiLCJpYXQiOjE1ODM3Mzc2MzQsIm5iZiI6MTU4MzczNzYzNCwiZXhwIjoxNjE1MjczNjMxLCJzdWIiOiIzMSIsInNjb3BlcyI6W119.jbkrR1MQQa11Iqag-lMkNZ5GuQrfYSQs4F3z1ztk34mw_TcMoHY7iKfqF-EX9jdjXQAaWrS8oVA5Nd1lyQfz6hibefr4Ac_RSvKSz5eWjiYqSjPKXYYJSW0CRJ0NmZ9b-m5S5vwez20LhDYSGIZY7hJ7CbAGqzEAqaOAjKdcoLpXnyL2pCPtIZbNXkCtOFcORzS3UDntWruMFSjsx8nL1X8caNYCCxsWqdc0tpc8XthmMPvy8goA6OfjJhiNPg8Wcq6yUVhVC_ycHpXeKGEuRJiiQ0Qe9aNfkLblMPOscvrOMk-vkVp19rZBmoAqzquzuFPx4HUvu4FhVD7c-1z5rdFrTGS7iigDW23d7TB8TiCvOF7KEs60jeHImL3lo5Of8gtxgQp7HP9e5EySBM266rkdegJScpAlEe3jAbTmHgb5GlllKibpBKfy_7jSrfll65Q9avPW-mZ3xQX4u9g-1qEHup4nzon7ayJF7roJLSvF4UAxvi3T4NXzjORZA81K4erBVs-nwjfRFOWJbaFk3N063FpEN1z6iuUZHjVFRiPjrhBBUqqpiBMsB5gEIhI0h7F4-mQPesczB7HKmYKR21N62XyHw__3OlFkR_iO74DHQ-dQVZMlSxET05QR0-k41nD_p3OBQuE_qn_t5DPdJEz_dZz0uM9t_3KTlTowaxA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Organization-Domain",
+								"value": "tt"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer ynkc7yXCRoTZQCSTt4usfS5MQxxV0Yp7CpjmZFvdiwG1hMGNG6acR6dGjk4nMMVs"
+							},
+							{
+								"key": "X-UI-Instance-Id",
+								"value": "1aa25ff758bf624f71a732b602e7f12879907acfe966f33a2ad0a4badf21d6cc"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json, application/vnd.api+json"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-origin"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "same-origin"
+							},
+							{
+								"key": "Referer",
+								"value": "https://tt.airslate-dev05.xyz/sc/packets/no-referrer"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en-GB,en-US;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Cookie",
+								"value": "_ga=GA1.2.227091541.1570575225; _fbp=fb.1.1570575861320.994281468; _gcl_au=1.1.1295290962.1578388019; airSlate.session.token=ynkc7yXCRoTZQCSTt4usfS5MQxxV0Yp7CpjmZFvdiwG1hMGNG6acR6dGjk4nMMVs; _gid=GA1.2.1365737432.1583398395; airSlate.header.domain=tt; AMP_TOKEN=%24NOT_FOUND; _gat_UA-127265217-2=1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"data\": {\n\t\t\"type\":\"proxy-bindings\",\n\t\t\"attributes\": {\n\t\t\t\"proxy_address\": \"ac\",\n\t\t\t\"real_address\": \"yatsenkolesh@gmail.com\"\n\t\t}\n\t}\n}"
+						},
+						"url": {
+							"raw": "localhost:902/api/v1/proxy-bindings",
+							"host": [
+								"localhost"
+							],
+							"port": "902",
+							"path": [
+								"api",
+								"v1",
+								"proxy-bindings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PM/Create proxy binding",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYTIxYTU3YmFlMjJlZWM0ZDRjOTBkNDliYzA3YjAzOTQ3YmY5MmE3Y2YwYmQwZTBlZmUwYzkxNmIyNmI0MmQ0ZWFhMjJhOGE2ZDkzMmMwOTUiLCJpYXQiOjE1ODM3Mzc2MzQsIm5iZiI6MTU4MzczNzYzNCwiZXhwIjoxNjE1MjczNjMxLCJzdWIiOiIzMSIsInNjb3BlcyI6W119.jbkrR1MQQa11Iqag-lMkNZ5GuQrfYSQs4F3z1ztk34mw_TcMoHY7iKfqF-EX9jdjXQAaWrS8oVA5Nd1lyQfz6hibefr4Ac_RSvKSz5eWjiYqSjPKXYYJSW0CRJ0NmZ9b-m5S5vwez20LhDYSGIZY7hJ7CbAGqzEAqaOAjKdcoLpXnyL2pCPtIZbNXkCtOFcORzS3UDntWruMFSjsx8nL1X8caNYCCxsWqdc0tpc8XthmMPvy8goA6OfjJhiNPg8Wcq6yUVhVC_ycHpXeKGEuRJiiQ0Qe9aNfkLblMPOscvrOMk-vkVp19rZBmoAqzquzuFPx4HUvu4FhVD7c-1z5rdFrTGS7iigDW23d7TB8TiCvOF7KEs60jeHImL3lo5Of8gtxgQp7HP9e5EySBM266rkdegJScpAlEe3jAbTmHgb5GlllKibpBKfy_7jSrfll65Q9avPW-mZ3xQX4u9g-1qEHup4nzon7ayJF7roJLSvF4UAxvi3T4NXzjORZA81K4erBVs-nwjfRFOWJbaFk3N063FpEN1z6iuUZHjVFRiPjrhBBUqqpiBMsB5gEIhI0h7F4-mQPesczB7HKmYKR21N62XyHw__3OlFkR_iO74DHQ-dQVZMlSxET05QR0-k41nD_p3OBQuE_qn_t5DPdJEz_dZz0uM9t_3KTlTowaxA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Organization-Domain",
+								"value": "tt"
+							},
+							{
+								"warning": "This is a duplicate header and will be overridden by the Authorization header generated by Postman.",
+								"key": "Authorization",
+								"value": "Bearer ynkc7yXCRoTZQCSTt4usfS5MQxxV0Yp7CpjmZFvdiwG1hMGNG6acR6dGjk4nMMVs"
+							},
+							{
+								"key": "X-UI-Instance-Id",
+								"value": "1aa25ff758bf624f71a732b602e7f12879907acfe966f33a2ad0a4badf21d6cc"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json, application/vnd.api+json"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-origin"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "same-origin"
+							},
+							{
+								"key": "Referer",
+								"value": "https://tt.airslate-dev05.xyz/sc/packets/no-referrer"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en-GB,en-US;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Cookie",
+								"value": "_ga=GA1.2.227091541.1570575225; _fbp=fb.1.1570575861320.994281468; _gcl_au=1.1.1295290962.1578388019; airSlate.session.token=ynkc7yXCRoTZQCSTt4usfS5MQxxV0Yp7CpjmZFvdiwG1hMGNG6acR6dGjk4nMMVs; _gid=GA1.2.1365737432.1583398395; airSlate.header.domain=tt; AMP_TOKEN=%24NOT_FOUND; _gat_UA-127265217-2=1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"data\": {\n\t\t\"type\":\"proxy-bindings\",\n\t\t\"attributes\": {\n\t\t\t\"proxy_address\": \"ac2\",\n\t\t\t\"real_address\": \"yatsenkolesh@gmail.com\"\n\t\t}\n\t}\n}"
+						},
+						"url": {
+							"raw": "localhost:902/api/v1/proxy-bindings",
+							"host": [
+								"localhost"
+							],
+							"port": "902",
+							"path": [
+								"api",
+								"v1",
+								"proxy-bindings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PM/Received emails",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Organization-Domain",
+								"value": "tt"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer ynkc7yXCRoTZQCSTt4usfS5MQxxV0Yp7CpjmZFvdiwG1hMGNG6acR6dGjk4nMMVs"
+							},
+							{
+								"key": "X-UI-Instance-Id",
+								"value": "1aa25ff758bf624f71a732b602e7f12879907acfe966f33a2ad0a4badf21d6cc"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json, application/vnd.api+json"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-origin"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "same-origin"
+							},
+							{
+								"key": "Referer",
+								"value": "https://tt.airslate-dev05.xyz/sc/packets/no-referrer"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en-GB,en-US;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Cookie",
+								"value": "_ga=GA1.2.227091541.1570575225; _fbp=fb.1.1570575861320.994281468; _gcl_au=1.1.1295290962.1578388019; airSlate.session.token=ynkc7yXCRoTZQCSTt4usfS5MQxxV0Yp7CpjmZFvdiwG1hMGNG6acR6dGjk4nMMVs; _gid=GA1.2.1365737432.1583398395; airSlate.header.domain=tt; AMP_TOKEN=%24NOT_FOUND; _gat_UA-127265217-2=1"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "timestamp",
+									"value": " 1583749905",
+									"type": "text"
+								},
+								{
+									"key": "token",
+									"value": " 4806830298612704d09f335ad8bf011b460402dddf769eaa35",
+									"type": "text"
+								},
+								{
+									"key": "signature",
+									"value": " 1a67c0d902c1c8468f794407d66b510216d4080f4b64a6c46577b8cf7c92de89",
+									"type": "text"
+								},
+								{
+									"key": "domain",
+									"value": " proxiedmail.com",
+									"type": "text"
+								},
+								{
+									"key": "From",
+									"value": " Alex Yatsenko <alex@graphica.io>",
+									"type": "text"
+								},
+								{
+									"key": "X-Envelope-From",
+									"value": " <alex@graphica.io>",
+									"type": "text"
+								},
+								{
+									"key": "X-Google-Dkim-Signature",
+									"value": " v=1; a=rsa-sha256; c=relaxed/relaxed; d=1e100.net; s=20161025; h=x-gm-message-state:mime-version:from:date:message-id:subject:to; bh=3MyIFgSfTTiOt7BeAg1FzJQlLG9hfjSMonNRFK561ck=; b=U5rYzXAkH2LsB4YWXmG0pvB/ityY4loNLEfBQ82XnlsCVbq5Ab+S4+8+403OK+6M9i WgNxBHVKhMGU/tJBVzaPfv//XEyEiyMwEqeg3/RNAIggfHUFfHCx9xitvWgmlF4jujHL ZsS8FfgVNdAYO2k3fO/69rKvVxist5ExTnaDYnK0jbIEIN+VvHRTJvhmsWB7rfvdq/F8 AcQdZw4vtHPWLc1rrZ1GzvluGD+9VuDuVIl44Jn9HfGTXVCVft4SmumBcP3StYsscvYG iQ7CVZnCa5azQBE66CH4JdTUFAID0KUIc/DPkieTOiTSpBhViwKQf7DkmVT+/6k0a81L k6jQ==",
+									"type": "text"
+								},
+								{
+									"key": "To",
+									"value": " test@proxiedmail.com",
+									"type": "text"
+								},
+								{
+									"key": "Dkim-Signature",
+									"value": " v=1; a=rsa-sha256; c=relaxed/relaxed; d=graphica-io.20150623.gappssmtp.com; s=20150623; h=mime-version:from:date:message-id:subject:to; bh=3MyIFgSfTTiOt7BeAg1FzJQlLG9hfjSMonNRFK561ck=; b=cwbk3zMon4uFmNFF5NwdEiZKq4m4vkdRC1rJT1VtZVraXqyxgqy2b8gJg+6xb0MpFe Dcx4VD/mOsihOhoncjDw+/ZuwrhlS1BWI82DoRurpB6i5o2CB2VN57IKXnydqQuQPfMe /zyLRwA80TucvUNHsh5Ql/aRHWmGayDdd4aORwofTpODiQqbvHGsY19NoZJFpG4n5zYy OnkD8mETF1ecNFAe0FurVGbKMARfD+8Zh7cqlG5ZkyuyQBXewtmYhyjDe7vKx/DpasWp fbb6SAHHgA+AadffuSrnKfrYARzzaVDpzT1u6btpa9j3eXXiGxt2S7N9RIM67lQoUuOk xxaw==",
+									"type": "text"
+								},
+								{
+									"key": "subject",
+									"value": " Hey, alex",
+									"type": "text"
+								},
+								{
+									"key": "from",
+									"value": " Alex Yatsenko <alex@graphica.io>",
+									"type": "text"
+								},
+								{
+									"key": "X-Received",
+									"value": " by 2002:a9d:6752:: with SMTP id w18mr7171532otm.123.1583749899417; Mon, 09 Mar 2020 03:31:39 -0700 (PDT)",
+									"type": "text"
+								},
+								{
+									"key": "Date",
+									"value": " Mon, 9 Mar 2020 12:31:18 +0200",
+									"type": "text"
+								},
+								{
+									"key": "Message-Id",
+									"value": " <CAGaVfpUnvjTdnZ0=D1HnZyTq2hjC9aFu-cYPVq5EAJAqOMKABA@mail.gmail.com>",
+									"type": "text"
+								},
+								{
+									"key": "Mime-Version",
+									"value": " 1.0",
+									"type": "text"
+								},
+								{
+									"key": "Received",
+									"value": " from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49]) by mxa.mailgun.org with ESMTP id 5e661b0c.7efe3062a0b0-smtp-in-n02; Mon, 09 Mar 2020 10:31:40 -0000 (UTC)",
+									"type": "text"
+								},
+								{
+									"key": "Received",
+									"value": " by mail-ot1-f49.google.com with SMTP id a9so2809916otl.6 for <test@proxiedmail.com>; Mon, 09 Mar 2020 03:31:40 -0700 (PDT)",
+									"type": "text"
+								},
+								{
+									"key": "message-url",
+									"value": " https://se.api.mailgun.net/v3/domains/proxiedmail.com/messages/AgEFjzIbVcdXCdOX05VEIbh5x-1oh607ZA==",
+									"type": "text"
+								},
+								{
+									"key": "recipient",
+									"value": " test@proxiedmail.com",
+									"type": "text"
+								},
+								{
+									"key": "sender",
+									"value": " alex@graphica.io",
+									"type": "text"
+								},
+								{
+									"key": "X-Mailgun-Incoming",
+									"value": " Yes",
+									"type": "text"
+								},
+								{
+									"key": "X-Gm-Message-State",
+									"value": " ANhLgQ3UxalSqj6PZiCTb8hqVTBRLqFVjJgSZbMnA6ctHhlTVHeOI8iG 6ZE31PBS9RzAVs9eQL13LPwxTXvy89pP9n+72Rbxp/27tOQ=",
+									"type": "text"
+								},
+								{
+									"key": "message-headers",
+									"value": " [[\"X-Mailgun-Incoming\", \"Yes\"], [\"X-Envelope-From\", \"<alex@graphica.io>\"], [\"Received\", \"from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49]) by mxa.mailgun.org with ESMTP id 5e661b0c.7efe3062a0b0-smtp-in-n02; Mon, 09 Mar 2020 10:31:40 -0000 (UTC)\"], [\"Received\", \"by mail-ot1-f49.google.com with SMTP id a9so2809916otl.6 for <test@proxiedmail.com>; Mon, 09 Mar 2020 03:31:40 -0700 (PDT)\"], [\"Dkim-Signature\", \"v=1; a=rsa-sha256; c=relaxed/relaxed; d=graphica-io.20150623.gappssmtp.com; s=20150623; h=mime-version:from:date:message-id:subject:to; bh=3MyIFgSfTTiOt7BeAg1FzJQlLG9hfjSMonNRFK561ck=; b=cwbk3zMon4uFmNFF5NwdEiZKq4m4vkdRC1rJT1VtZVraXqyxgqy2b8gJg+6xb0MpFe Dcx4VD/mOsihOhoncjDw+/ZuwrhlS1BWI82DoRurpB6i5o2CB2VN57IKXnydqQuQPfMe /zyLRwA80TucvUNHsh5Ql/aRHWmGayDdd4aORwofTpODiQqbvHGsY19NoZJFpG4n5zYy OnkD8mETF1ecNFAe0FurVGbKMARfD+8Zh7cqlG5ZkyuyQBXewtmYhyjDe7vKx/DpasWp fbb6SAHHgA+AadffuSrnKfrYARzzaVDpzT1u6btpa9j3eXXiGxt2S7N9RIM67lQoUuOk xxaw==\"], [\"X-Google-Dkim-Signature\", \"v=1; a=rsa-sha256; c=relaxed/relaxed; d=1e100.net; s=20161025; h=x-gm-message-state:mime-version:from:date:message-id:subject:to; bh=3MyIFgSfTTiOt7BeAg1FzJQlLG9hfjSMonNRFK561ck=; b=U5rYzXAkH2LsB4YWXmG0pvB/ityY4loNLEfBQ82XnlsCVbq5Ab+S4+8+403OK+6M9i WgNxBHVKhMGU/tJBVzaPfv//XEyEiyMwEqeg3/RNAIggfHUFfHCx9xitvWgmlF4jujHL ZsS8FfgVNdAYO2k3fO/69rKvVxist5ExTnaDYnK0jbIEIN+VvHRTJvhmsWB7rfvdq/F8 AcQdZw4vtHPWLc1rrZ1GzvluGD+9VuDuVIl44Jn9HfGTXVCVft4SmumBcP3StYsscvYG iQ7CVZnCa5azQBE66CH4JdTUFAID0KUIc/DPkieTOiTSpBhViwKQf7DkmVT+/6k0a81L k6jQ==\"], [\"X-Gm-Message-State\", \"ANhLgQ3UxalSqj6PZiCTb8hqVTBRLqFVjJgSZbMnA6ctHhlTVHeOI8iG\\t6ZE31PBS9RzAVs9eQL13LPwxTXvy89pP9n+72Rbxp/27tOQ=\"], [\"X-Google-Smtp-Source\", \"ADFU+vvlAipL2KxN1wB+QIN1hg2MI7SJMICrvBQINatje6m8LwTXORcIb1EFd/1W9Wqg8gCzUe3olqC1IRvBx5iw70s=\"], [\"X-Received\", \"by 2002:a9d:6752:: with SMTP id w18mr7171532otm.123.1583749899417; Mon, 09 Mar 2020 03:31:39 -0700 (PDT)\"], [\"Mime-Version\", \"1.0\"], [\"From\", \"Alex Yatsenko <alex@graphica.io>\"], [\"Date\", \"Mon, 9 Mar 2020 12:31:18 +0200\"], [\"Message-Id\", \"<CAGaVfpUnvjTdnZ0=D1HnZyTq2hjC9aFu-cYPVq5EAJAqOMKABA@mail.gmail.com>\"], [\"Subject\", \"Hey, alex\"], [\"To\", \"test@proxiedmail.com\"], [\"Content-Type\", \"multipart/alternative; boundary=\\\"0000000000002b0bf405a0698243\\\"\"]]",
+									"type": "text"
+								},
+								{
+									"key": "Content-Type",
+									"value": " multipart/alternative; boundary=\"0000000000002b0bf405a0698243\"",
+									"type": "text"
+								},
+								{
+									"key": "X-Google-Smtp-Source",
+									"value": " ADFU+vvlAipL2KxN1wB+QIN1hg2MI7SJMICrvBQINatje6m8LwTXORcIb1EFd/1W9Wqg8gCzUe3olqC1IRvBx5iw70s=",
+									"type": "text"
+								},
+								{
+									"key": "Subject",
+									"value": " Hey, alex",
+									"type": "text"
+								},
+								{
+									"key": "body-plain",
+									"value": " adsd -- Best regards, Alex alex@graphica.io",
+									"type": "text"
+								},
+								{
+									"key": "body-html",
+									"value": " <div dir=\"ltr\">adsd<br clear=\"all\"><div><br></div>-- <br><div dir=\"ltr\" class=\"gmail_signature\" data-smartmail=\"gmail_signature\"><div dir=\"ltr\">Best regards,<div>Alex</div><div><a href=\"mailto:alex@graphica.io\" target=\"_blank\">alex@graphica.io</a></div></div></div></div>",
+									"type": "text"
+								},
+								{
+									"key": "stripped-text",
+									"value": " adsd",
+									"type": "text"
+								},
+								{
+									"key": "stripped-html",
+									"value": " <div dir=\"ltr\">adsd<br clear=\"all\"><div><br></div>-- <br><div dir=\"ltr\" class=\"gmail_signature\" data-smartmail=\"gmail_signature\"><div dir=\"ltr\">Best regards,<div>Alex</div><div><a href=\"mailto:alex@graphica.io\" target=\"_blank\">alex@graphica.io</a></div></div></div></div>",
+									"type": "text"
+								},
+								{
+									"key": "stripped-signature",
+									"value": " -- Best regards, Alex alex@graphica.io",
+									"type": "text"
+								},
+								{
+									"key": "@yatsenkolesh",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host_local}}/api/v1/received-emails",
+							"host": [
+								"{{host_local}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"received-emails"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

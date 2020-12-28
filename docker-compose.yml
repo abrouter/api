@@ -1,0 +1,81 @@
+version: '3.5'
+
+services:
+  mysql:
+    image: percona:5.5
+    container_name: abrouter-mysql
+    ports:
+      - "33078:3306/tcp"
+    command: --max_allowed_packet=104857600 --innodb-buffer-pool-size=256M
+    volumes:
+      - ./resources/local-dump.sql:/docker-entrypoint-initdb.d/local-dump.sql:ro
+      - mysql:/var/lib/mysql
+    environment:
+      MYSQL_USER: abrouter
+      MYSQL_PASSWORD: bestpass
+      MYSQL_ROOT_PASSWORD: "t32dsq12"
+      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+
+  consul:
+    image: consul:0.8.3
+    container_name: abrouter-consul
+    ports:
+      - "8508:8500"
+      - "8309:8300"
+    volumes:
+      - consul:/consul/data
+    command: [
+      'consul',
+      'agent',
+      '-server',
+      '-bootstrap-expect=1',
+      '-data-dir=/consul/data',
+      '-client=0.0.0.0',
+      '-ui',
+      '-advertise=172.17.0.1'
+    ]
+
+  redis:
+    image: redis:alpine
+    container_name: abrouter-redis
+    ports:
+      - "63809:6379"
+    volumes:
+      - redis:/data
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: abrouter-api
+    image: abrouter-api:abrouter-api
+    container_name: abrouter-app
+    hostname: docker-dev-local-om
+    depends_on:
+      - mysql
+      - consul
+    ports:
+      - "1020:80"
+    volumes:
+      - .:/app
+      - app-logs:/app/storage/logs
+      - nginx-logs:/var/log/nginx
+      - php-logs:/var/log/php
+    env_file:
+      - docker-compose.env
+
+volumes:
+#  consul:
+#    driver: local
+  mysql:
+    driver: local
+  redis:
+    driver: local
+  php-logs:
+    driver: local
+  app-logs:
+    driver: local
+  nginx-logs:
+    driver: local
+  consul:
+    driver: local
