@@ -1,5 +1,5 @@
 {
-    "ProxiedMail": true,
     "Core": true,
-    "Auth": true
+    "Auth": true,
+    "AbRouter": true
 }
