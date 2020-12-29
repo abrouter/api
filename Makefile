@@ -1,4 +1,4 @@
-APP = pm-app-api
+APP = abr-app-api
 
 .PHONY: provision
 provision:

@@ -1,5 +1,6 @@
 <?php
 
+use Modules\Core\Exceptions\Handler;
 use Modules\Core\Http\Kernel;
 
 $app = new Illuminate\Foundation\Application(
@@ -29,7 +30,7 @@ $app->singleton(
 
 $app->singleton(
     Illuminate\Contracts\Debug\ExceptionHandler::class,
-    \Modules\ProxiedMail\Exceptions\Handler::class
+    Handler::class
 );
 
 /*

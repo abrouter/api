@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\ProxiedMail\Exceptions;
+namespace Modules\Core\Exceptions;
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;

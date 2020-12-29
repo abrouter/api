@@ -7,7 +7,7 @@ use Exception;
 
 class Encoder
 {
-    const SALT = 'pm-app';
+    const SALT = 'abr-app';
 
     /**
      * @param int $id
