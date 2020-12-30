@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateExperimentsTable extends Migration
+class CreateExperimentUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,15 @@ class CreateExperimentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('experiments', function (Blueprint $table) {
+        Schema::create('experiment_users', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('owner_id');
-            $table->string('name', 120);
-            $table->string('uid', 80);
-            $table->string('config', 5000);
-            $table->boolean('is_enabled');
+            $table->bigInteger('owner_id');
+            $table->string('user_signature', 100);
+            $table->string('config', 100);
             $table->timestamps();
 
             $table->index('owner_id');
+            $table->index('user_signature');
         });
     }
 
@@ -33,6 +32,6 @@ class CreateExperimentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('experiments');
+        Schema::dropIfExists('experiment_users');
     }
 }

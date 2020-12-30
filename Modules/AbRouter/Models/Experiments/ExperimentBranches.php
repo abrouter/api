@@ -5,6 +5,8 @@ namespace Modules\AbRouter\Models\Experiments;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Modules\Core\EntityId\EntityIdTrait;
 
 /**
  * Class User
@@ -12,17 +14,22 @@ use Illuminate\Database\Eloquent\Model;
  * @property int id
  * @property int user_id
  * @property string name
+ * @property string uid
+ * @property int percent
  * @property string config
- * @property boolean is_enabled
  * @property Carbon created_at
  * @property Carbon updated_at
+ * @property Experiment experiment
  */
 class ExperimentBranches extends Model
 {
+    use EntityIdTrait;
+
     protected $casts = [
         'id' => 'int',
         'experiment_id' => 'int',
         'name' => 'string',
+        'uid' => 'string',
         'config' => 'string',
         'percent' => 'int',
         'created_at' => 'datetime',
@@ -32,6 +39,7 @@ class ExperimentBranches extends Model
     protected $fillable = [
         'experiment_id',
         'name',
+        'uid',
         'config',
         'percent',
     ];
@@ -39,5 +47,10 @@ class ExperimentBranches extends Model
     public static function getType(): string
     {
         return 'experiment_branches';
+    }
+
+    public function experiment(): HasOne
+    {
+        return $this->hasOne(Experiment::class, 'id', 'experiment_id');
     }
 }

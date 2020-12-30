@@ -5,6 +5,7 @@ namespace Modules\AbRouter\Models\Experiments;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Core\EntityId\EntityIdTrait;
 
 /**
  * Class User
@@ -19,25 +20,25 @@ use Illuminate\Database\Eloquent\Model;
  */
 class ExperimentUsers extends Model
 {
+    use EntityIdTrait;
+
     protected $casts = [
         'id' => 'int',
-        'user_id' => 'int',
+        'owner_id' => 'int',
         'user_signature' => 'string',
         'config' => 'string',
-        'percent' => 'int',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
 
     protected $fillable = [
-        'experiment_id',
-        'name',
+        'owner_id',
         'config',
-        'percent',
+        'user_signature',
     ];
 
     public static function getType(): string
     {
-        return 'experiment_branches';
+        return 'experiment_users';
     }
 }

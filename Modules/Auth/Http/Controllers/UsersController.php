@@ -5,7 +5,7 @@ namespace Modules\Auth\Http\Controllers;
 use Illuminate\Routing\Controller;
 use Modules\Auth\Exposable\AuthDecorator;
 use Modules\Auth\Http\Requests\User\UserCreateRequest;
-use Modules\Auth\Http\Resources\AccessToken\AccessTokenResource;
+use Modules\Auth\Http\Resources\AccessToken\ExperimentBranchUserResource;
 use Modules\Auth\Http\Resources\User\UserResource;
 use Modules\Auth\Http\Transformers\Users\UserTransformer;
 use Modules\Auth\Services\Users\Creator;
@@ -17,7 +17,7 @@ class UsersController extends Controller
      * @param UserCreateRequest $request
      * @param UserTransformer $transformer
      * @param Creator $creator
-     * @return AccessTokenResource
+     * @return ExperimentBranchUserResource
      * @throws Throwable
      */
     public function create(UserCreateRequest $request, UserTransformer $transformer, Creator $creator)
@@ -25,7 +25,7 @@ class UsersController extends Controller
         $userCreateDTO = $transformer->transform($request);
         $userWithAccessToken = $creator->create($userCreateDTO);
 
-        return new AccessTokenResource($userWithAccessToken);
+        return new ExperimentBranchUserResource($userWithAccessToken);
     }
 
     public function me(AuthDecorator $authDecorator)

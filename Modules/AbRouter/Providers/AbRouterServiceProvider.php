@@ -2,11 +2,13 @@
 
 namespace Modules\AbRouter\Providers;
 
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
 
 class AbRouterServiceProvider extends ServiceProvider
 {
+
     /**
      * Boot the application events.
      *
@@ -42,7 +44,8 @@ class AbRouterServiceProvider extends ServiceProvider
             module_path('AbRouter', 'Config/config.php') => config_path('abrouter.php'),
         ], 'config');
         $this->mergeConfigFrom(
-            module_path('AbRouter', 'Config/config.php'), 'abrouter'
+            module_path('Abrouter', 'Config/config.php'),
+            'abrouter'
         );
     }
 
@@ -53,17 +56,9 @@ class AbRouterServiceProvider extends ServiceProvider
      */
     public function registerViews()
     {
-        $viewPath = resource_path('views/modules/abrouter');
-
         $sourcePath = module_path('AbRouter', 'Resources/views');
 
-        $this->publishes([
-            $sourcePath => $viewPath
-        ],'views');
-
-        $this->loadViewsFrom(array_merge(array_map(function ($path) {
-            return $path . '/modules/abrouter';
-        }, \Config::get('view.paths')), [$sourcePath]), 'abrouter');
+        View::addNamespace('abrouter', $sourcePath);
     }
 
     /**

@@ -1,11 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace Modules\Auth\Http\Resources\AccessToken;
+namespace Modules\AbRouter\Http\Resources\ExperimentBranch;
 
 use JsonApi\JsonApi\Elements\JsonApi;
+use JsonApi\JsonApi\Elements\ResourceObjectCollection;
 use JsonApi\JsonApi\Factories\ObjectFactory;
 use JsonApi\JsonApi\Responses\JsonResource;
+use Modules\AbRouter\Http\Resources\ExperimentBranch\ExperimentBranchObject;
 use Modules\Auth\Entities\AccessToken\UserWithAccessToken;
 
 /**
@@ -13,12 +15,12 @@ use Modules\Auth\Entities\AccessToken\UserWithAccessToken;
  * @package Modules\Auth\Http\Resources\AccessToken
  * @property UserWithAccessToken
  */
-class AccessTokenResource extends JsonResource
+class ExperimentBranchResource extends JsonResource
 {
     public function jsonApiRoot(): JsonApi
     {
-        return new JsonApi(
-            (new ObjectFactory())->get(ExperimentBranchUserObject::class, $this->resource)
-        );
+        return (new JsonApi(
+            (new ObjectFactory())->get(ExperimentBranchObject::class, $this->resource)
+        ));
     }
 }

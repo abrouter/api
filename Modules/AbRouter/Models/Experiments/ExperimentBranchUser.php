@@ -5,6 +5,8 @@ namespace Modules\AbRouter\Models\Experiments;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Modules\Core\EntityId\EntityIdTrait;
 
 /**
  * Class User
@@ -12,12 +14,19 @@ use Illuminate\Database\Eloquent\Model;
  * @property int id
  * @property int experiment_user_id
  * @property int experiment_id
- * @property int experiment_branch_id
+ * @property int experiment_branch_xid
  * @property Carbon created_at
  * @property Carbon updated_at
+ * @property ExperimentUsers experimentUser
+ * @property Experiment experiment
+ * @property ExperimentBranches experimentBranch
  */
-class ExperimentBranchUsers extends Model
+class ExperimentBranchUser extends Model
 {
+    use EntityIdTrait;
+
+    protected $table = 'experiment_user_branches';
+
     protected $casts = [
         'id' => 'int',
         'experiment_user_id' => 'int',
@@ -36,5 +45,20 @@ class ExperimentBranchUsers extends Model
     public static function getType(): string
     {
         return 'experiment_branch_users';
+    }
+
+    public function experimentUser(): HasOne
+    {
+        return $this->hasOne(ExperimentUsers::class, 'id', 'experiment_user_id');
+    }
+
+    public function experiment(): HasOne
+    {
+        return $this->hasOne(Experiment::class, 'id', 'experiment_id');
+    }
+
+    public function experimentBranch(): HasOne
+    {
+        return $this->hasOne(ExperimentBranches::class, 'id', 'experiment_branch_id');
     }
 }
