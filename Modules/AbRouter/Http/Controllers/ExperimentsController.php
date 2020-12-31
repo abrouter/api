@@ -10,7 +10,7 @@ use Modules\AbRouter\Http\Transformers\Experiments\RunExperimentTransformer;
 use Modules\AbRouter\Models\Experiments\Experiment;
 use Modules\AbRouter\Services\Experiment\RunService;
 use Modules\Auth\Exposable\AuthDecorator;
-use Modules\ProxiedMail\Http\Resources\ProxyBinding\ExperimentCollection;
+use Modules\AbRouter\Http\Resources\Experiment\ExperimentCollection;
 
 class ExperimentsController extends Controller
 {

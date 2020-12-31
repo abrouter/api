@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Modules\ProxiedMail\Http\Resources\ProxyBinding;
+namespace Modules\AbRouter\Http\Resources\Experiment;
 
 use Illuminate\Support\Collection;
 use JsonApi\JsonApi\Elements\JsonApi;
@@ -9,7 +9,6 @@ use JsonApi\JsonApi\Factories\ObjectFactory;
 use JsonApi\JsonApi\Responses\JsonCollection;
 use Modules\AbRouter\Models\Experiments\Experiment;
 use Modules\AbRouter\Http\Resources\ExperimentBranch\ExperimentBranchObject;
-use Modules\Auth\Http\Resources\AccessToken\ExperimentObject;
 
 /**
  * Class UserSearchCollection

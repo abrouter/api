@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Modules\Auth\Http\Resources\AccessToken;
+namespace Modules\AbRouter\Http\Resources\Experiment;
 
 use JsonApi\JsonApi\Base\BaseObject;
 use JsonApi\JsonApi\Elements\AttributesObject;
