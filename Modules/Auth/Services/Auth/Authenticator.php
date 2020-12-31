@@ -5,9 +5,9 @@ namespace Modules\Auth\Services\Auth;
 
 use Exception;
 use Modules\Auth\Entities\AccessToken\AccessToken;
-use Modules\Auth\Entities\AccessToken\UserWithAccessToken;
 use Modules\Auth\Repositories\User\UserRepository;
 use Modules\Auth\Services\Auth\DTO\AuthRequestDTO;
+use Modules\Auth\Entities\User\UserWithAccessToken;
 
 class Authenticator
 {
