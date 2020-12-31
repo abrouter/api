@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Modules\Auth\Entities\AccessToken;
+namespace Modules\Auth\Entities\User;
 
 use Modules\Auth\Models\User\User;
 use Modules\Core\EntityId\ResourceIdInterface;
