@@ -11,14 +11,14 @@ use Modules\Auth\Entities\AccessToken\UserWithAccessToken;
 /**
  * Class AccessTokenResource
  * @package Modules\Auth\Http\Resources\AccessToken
- * @property UserWithAccessToken
+ * @property UserWithAccessToken\
  */
 class AccessTokenResource extends JsonResource
 {
     public function jsonApiRoot(): JsonApi
     {
         return new JsonApi(
-            (new ObjectFactory())->get(ExperimentBranchUserObject::class, $this->resource)
+            (new ObjectFactory())->get(AccessTokenObject::class, $this->resource)
         );
     }
 }
