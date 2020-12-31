@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Modules\Auth\Services\Users;
 
 use Modules\Auth\Entities\AccessToken\AccessToken;
-use Modules\Auth\Entities\AccessToken\UserWithAccessToken;
+use Modules\Auth\Entities\User\UserWithAccessToken;
 use Modules\Auth\Models\User\User;
 use Modules\Auth\Repositories\User\UserRepository;
 use Modules\Auth\Services\Users\DTO\UserCreateDTO;

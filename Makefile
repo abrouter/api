@@ -1,4 +1,4 @@
-APP = abr-app-api
+    APP = abr-app-api
 
 .PHONY: provision
 provision:

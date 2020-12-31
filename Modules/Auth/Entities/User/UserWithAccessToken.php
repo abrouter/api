@@ -5,6 +5,7 @@ namespace Modules\Auth\Entities\User;
 
 use Modules\Auth\Models\User\User;
 use Modules\Core\EntityId\ResourceIdInterface;
+use Modules\Auth\Entities\AccessToken\AccessToken;
 
 class UserWithAccessToken implements ResourceIdInterface
 {
