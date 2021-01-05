@@ -8,9 +8,12 @@ use JsonApi\JsonApi\Elements\AttributesObject;
 use JsonApi\JsonApi\Elements\Relationship;
 use JsonApi\JsonApi\Elements\RelationshipsCollection;
 use JsonApi\JsonApi\Elements\ResourceIdentifier;
+use JsonApi\JsonApi\Elements\ResourceIdentifierCollection;
 use JsonApi\JsonApi\Elements\ResourceLinkage;
 use JsonApi\JsonApi\Elements\ResourceObject;
+use Modules\AbRouter\Http\Resources\ExperimentBranch\ExperimentBranchObject;
 use Modules\AbRouter\Models\Experiments\Experiment;
+use Modules\AbRouter\Models\Experiments\ExperimentBranches;
 use Modules\Auth\Entities\AccessToken\UserWithAccessToken;
 
 /**
@@ -33,11 +36,20 @@ class ExperimentObject extends BaseObject
             'is_enabled' => $this->model->is_enabled
         ]);
 
+        $collection = $this
+            ->model
+            ->branches
+            ->reduce(function (array $acc, ExperimentBranches $branch) {
+                $acc[] = new ResourceIdentifier($branch->getEntityId(), $branch::getType());
+                return $acc;
+            }, []);
+
         $relationships = new RelationshipsCollection([
             'owner' => new Relationship(new ResourceLinkage(new ResourceIdentifier(
                 $this->model->owner->getEntityId(),
                 'users'
-            )))
+            ))),
+            'branches' => new Relationship(new ResourceLinkage(new ResourceIdentifierCollection($collection))),
         ]);
 
         return $resource
