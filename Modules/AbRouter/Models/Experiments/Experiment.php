@@ -30,7 +30,7 @@ class Experiment extends Model
 
     protected $casts = [
         'id' => 'int',
-        'user_id' => 'int',
+        'owner_id' => 'int',
         'name' => 'string',
         'uid' => 'string',
         'config' => 'string',
@@ -44,6 +44,8 @@ class Experiment extends Model
         'name',
         'config',
         'is_enabled',
+        'uid',
+        'owner_id',
     ];
 
     public static function getType(): string

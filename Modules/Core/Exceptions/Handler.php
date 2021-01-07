@@ -73,7 +73,7 @@ class Handler extends ExceptionHandler
 
     protected function convertExceptionToArray(Exception $e)
     {
-        $message = '';
+        $message = $e->getMessage();
         if ($e instanceof ValidationException) {
             $key = array_keys($e->errors())[0];
             $message = $e->errors()[$key][0];
