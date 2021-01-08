@@ -30,6 +30,9 @@ class ExperimentBranchUserObject extends BaseObject
         $uid = sprintf('%s-%s', $this->model->experiment->uid, $this->model->experimentBranch->uid);
         $attributes = new AttributesObject([
             'run-uid' => $uid,
+            'branch-uid' => $this->model->experimentBranch->uid,
+            'experiment-uid' => $this->model->experiment->uid,
+
         ]);
 
         $relationships = new RelationshipsCollection([
