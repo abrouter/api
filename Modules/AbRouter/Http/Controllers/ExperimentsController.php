@@ -10,9 +10,11 @@ use Modules\AbRouter\Http\Resources\Experiment\ExperimentResource;
 use Modules\AbRouter\Http\Resources\ExperimentBranchUser\ExperimentBranchUserResource;
 use Modules\AbRouter\Http\Transformers\Experiments\ExperimentTransformer;
 use Modules\AbRouter\Http\Transformers\Experiments\RunExperimentTransformer;
+use Modules\AbRouter\Http\Transformers\Experiments\SimpleRunTransformer;
 use Modules\AbRouter\Models\Experiments\Experiment;
 use Modules\AbRouter\Services\Experiment\ExperimentService;
 use Modules\AbRouter\Services\Experiment\RunService;
+use Modules\AbRouter\Services\Experiment\SimpleRunService;
 use Modules\Auth\Exposable\AuthDecorator;
 use Modules\AbRouter\Http\Resources\Experiment\ExperimentCollection;
 
@@ -48,6 +50,14 @@ class ExperimentsController extends Controller
         return new ExperimentResource($experiment);
     }
 
+    public function runSimple(
+        SimpleRunTransformer $simpleRunTransformer,
+        SimpleRunService $simpleRunService,
+        Request $request
+    ) {
+        return $simpleRunService->run($simpleRunTransformer->transform($request));
+    }
+
     /**
      * @param AuthDecorator $authDecorator
      * @param Experiment $experiment
@@ -57,8 +67,8 @@ class ExperimentsController extends Controller
     public function index(AuthDecorator $authDecorator, Experiment $experiment)
     {
         $userId = $authDecorator->get()->getId();
-        return new ExperimentCollection(
+        return (new ExperimentCollection(
             $experiment->newQuery()->where('owner_id', $userId)->get()->all()
-        );
+        ));
     }
 }

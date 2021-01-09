@@ -25,7 +25,11 @@ class RunService
 
     public function run(RunExperimentDTO $runExperimentDTO): ExperimentBranchUser
     {
-        $expInternalId = (new Encoder())->decode($runExperimentDTO->getExperimentId(), 'experiments');
+        try {
+            $expInternalId = (new Encoder())->decode($runExperimentDTO->getExperimentId(), 'experiments');
+        } catch (\Throwable $e) {
+            throw new NotFoundHttpException('Failed to find an experiment');
+        }
 
         /**
          * @var Experiment $experiment
