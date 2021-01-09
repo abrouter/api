@@ -29,7 +29,7 @@ class ExperimentBranchObject extends BaseObject
         );
 
         $attributes = new AttributesObject([
-            'name' => $this->model->name,
+            'name' => $this->model->uid,
             'uid' => $this->model->uid,
             'percent' => $this->model->percent,
             'config' => json_decode($this->model->config, true),
