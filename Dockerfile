@@ -1,4 +1,4 @@
-FROM webdevops/php-nginx:7.1 as abr-api
+FROM webdevops/php-nginx:7.2 as abr-api
 
 ARG BUILD_ID=0
 ARG VERSION=0.0.1

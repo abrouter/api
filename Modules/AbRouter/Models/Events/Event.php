@@ -1,0 +1,67 @@
+<?php
+declare(strict_types=1);
+
+namespace Modules\AbRouter\Models\Events;
+
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Collection;
+use Modules\Auth\Models\User\User;
+use Modules\Core\EntityId\EntityIdTrait;
+
+/**
+ * Class Event
+ * @package Modules\AbRouter\Models\Experiments
+ * @property int id
+ * @property int owner_id
+ * @property string temporary_user_id
+ * @property string user_id
+ * @property string event
+ * @property string tag
+ * @property string referrer
+ * @property string meta
+ * @property Carbon created_at
+ * @property Carbon updated_at
+ *  @property User owner
+ */
+class Event extends Model
+{
+    use EntityIdTrait;
+
+    protected $casts = [
+        'id' => 'int',
+        'owner_id' => 'int',
+        'temporary_user_id' => 'string',
+        'user_id' => 'string',
+        'event' => 'string',
+        'tag' => 'string',
+        'referrer' => 'string',
+        'meta' => 'string',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
+    protected $fillable = [
+        'owner_id',
+        'temporary_user_id',
+        'user_id',
+        'event',
+        'tag',
+        'referrer',
+        'meta'
+    ];
+
+    public static function getType(): string
+    {
+        return 'events';
+    }
+    
+    /**
+     * @return HasOne
+     */
+    public function owner(): HasOne
+    {
+        return $this->hasOne(User::class, 'id', 'owner_id');
+    }
+}

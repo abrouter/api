@@ -1,25 +1,22 @@
 <?php
 declare(strict_types=1);
 
-namespace Modules\AbRouter\Http\Resources\Experiment;
+namespace Modules\AbRouter\Http\Resources\Event;
 
 use JsonApi\JsonApi\Base\BaseObject;
 use JsonApi\JsonApi\Elements\AttributesObject;
 use JsonApi\JsonApi\Elements\Relationship;
 use JsonApi\JsonApi\Elements\RelationshipsCollection;
 use JsonApi\JsonApi\Elements\ResourceIdentifier;
-use JsonApi\JsonApi\Elements\ResourceIdentifierCollection;
 use JsonApi\JsonApi\Elements\ResourceLinkage;
 use JsonApi\JsonApi\Elements\ResourceObject;
-use Modules\AbRouter\Models\Experiments\Experiment;
-use Modules\AbRouter\Models\Experiments\ExperimentBranches;
+use Modules\AbRouter\Models\Events\Event;
 
 /**
- * Class UserObject
- * @package Modules\Auth\Http\Resources\User
- * @property Experiment $model
+ * Class EventObject
+ * @property Event $model
  */
-class ExperimentObject extends BaseObject
+class EventObject extends BaseObject
 {
     public function getInstance(): ResourceObject
     {
@@ -29,25 +26,19 @@ class ExperimentObject extends BaseObject
         );
 
         $attributes = new AttributesObject([
-            'name' => $this->model->name,
-            'config' => json_decode($this->model->config, true),
-            'is_enabled' => $this->model->is_enabled
+            'temporary_user_id' => $this->model->temporary_user_id,
+            'user_id' => $this->model->user_id,
+            'event' => $this->model->event,
+            'tag' => $this->model->tag,
+            'referrer' => $this->model->referrer,
         ]);
 
-        $collection = $this
-            ->model
-            ->branches
-            ->reduce(function (array $acc, ExperimentBranches $branch) {
-                $acc[] = new ResourceIdentifier($branch->getEntityId(), $branch::getType());
-                return $acc;
-            }, []);
 
         $relationships = new RelationshipsCollection([
             'owner' => new Relationship(new ResourceLinkage(new ResourceIdentifier(
                 $this->model->owner->getEntityId(),
                 'users'
             ))),
-            'branches' => new Relationship(new ResourceLinkage(new ResourceIdentifierCollection($collection))),
         ]);
 
         return $resource
