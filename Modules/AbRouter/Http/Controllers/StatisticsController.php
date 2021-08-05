@@ -116,6 +116,11 @@ class StatisticsController
     
         foreach ($events as $eventName) {
             $counter = $eventCounters[$eventName];
+            
+            if ($uniqUsersCount ===0) {
+                $eventPercentage[$eventName] = 0;
+                continue;
+            }
             $eventPercentage[$eventName] = intval(($counter / $uniqUsersCount) * 100);
         }
         
