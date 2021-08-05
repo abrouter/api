@@ -10,4 +10,5 @@ Route::middleware(['api', 'auth:api'])->group(function () {
     Route::post('/v1/experiment/run', 'ExperimentsController@run');
     
     Route::post('/v1/event', 'StatisticsController@create');
+    Route::post('/v1/event/funnel', 'StatisticsController@showStats');
 });

@@ -22,7 +22,13 @@ class CreateEvents extends Migration
             $table->string('tag');
             $table->string('referrer');
             $table->string('meta', 1500);
+            $table->string('ip', 50);
+            
             $table->timestamps();
+            
+            $table->index(['owner_id', 'temporary_user_id']);
+            $table->index('user_id');
+            $table->index('event');
         });
     }
 

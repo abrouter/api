@@ -37,6 +37,7 @@ class Event extends Model
         'event' => 'string',
         'tag' => 'string',
         'referrer' => 'string',
+        'ip'=> 'string',
         'meta' => 'string',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
@@ -49,7 +50,8 @@ class Event extends Model
         'event',
         'tag',
         'referrer',
-        'meta'
+        'meta',
+        "ip",
     ];
 
     public static function getType(): string

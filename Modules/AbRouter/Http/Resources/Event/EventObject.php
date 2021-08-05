@@ -31,6 +31,8 @@ class EventObject extends BaseObject
             'event' => $this->model->event,
             'tag' => $this->model->tag,
             'referrer' => $this->model->referrer,
+            'ip' => $this->model->ip,
+            'meta' => $this->model->meta,
         ]);
 
 

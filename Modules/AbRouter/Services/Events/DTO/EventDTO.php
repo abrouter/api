@@ -41,6 +41,11 @@ class EventDTO
     private $meta;
     
     /**
+     * @var string
+     */
+    private $ip;
+    
+    /**
      * EventDTO constructor.
      *
      * @param int    $ownerId
@@ -50,6 +55,7 @@ class EventDTO
      * @param string $tag
      * @param string $referrer
      * @param array  $meta
+     * @param string $ip
      */
     public function __construct(
         int $ownerId,
@@ -58,7 +64,8 @@ class EventDTO
         string $event,
         string $tag,
         string $referrer,
-        array $meta
+        array $meta,
+        string $ip
     ) {
         $this->ownerId = $ownerId;
         $this->temporaryUserId = $temporaryUserId;
@@ -67,6 +74,7 @@ class EventDTO
         $this->tag = $tag;
         $this->referrer = $referrer;
         $this->meta = $meta;
+        $this->ip = $ip;
     }
     
     /**
@@ -123,5 +131,13 @@ class EventDTO
     public function getMeta(): array
     {
         return $this->meta;
+    }
+    
+    /**
+     * @return string
+     */
+    public function getIp(): string
+    {
+        return $this->ip;
     }
 }
