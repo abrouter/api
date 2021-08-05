@@ -52,6 +52,7 @@ class StatisticsController
             'open_contact_form',
             'visit_form_filler',
             'fill_form_later',
+            'form_filler_complete',
             'visited_nutritionists_page',
             'visited_book_call',
             'skip_call_booking',
