@@ -46,6 +46,11 @@ class EventDTO
     private $ip;
     
     /**
+     * @var string
+     */
+    private $countryCode;
+    
+    /**
      * EventDTO constructor.
      *
      * @param int    $ownerId
@@ -56,6 +61,7 @@ class EventDTO
      * @param string $referrer
      * @param array  $meta
      * @param string $ip
+     * @param string $countryCode
      */
     public function __construct(
         int $ownerId,
@@ -65,7 +71,8 @@ class EventDTO
         string $tag,
         string $referrer,
         array $meta,
-        string $ip
+        string $ip,
+        string $countryCode
     ) {
         $this->ownerId = $ownerId;
         $this->temporaryUserId = $temporaryUserId;
@@ -75,6 +82,7 @@ class EventDTO
         $this->referrer = $referrer;
         $this->meta = $meta;
         $this->ip = $ip;
+        $this->countryCode = $countryCode;
     }
     
     /**
@@ -139,5 +147,13 @@ class EventDTO
     public function getIp(): string
     {
         return $this->ip;
+    }
+    
+    /**
+     * @return string
+     */
+    public function getCountryCode(): string
+    {
+        return $this->countryCode;
     }
 }

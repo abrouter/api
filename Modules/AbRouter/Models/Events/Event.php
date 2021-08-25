@@ -24,6 +24,7 @@ use Modules\Core\EntityId\EntityIdTrait;
  * @property Carbon created_at
  * @property Carbon updated_at
  *  @property User owner
+ * @property string country_code
  */
 class Event extends Model
 {
@@ -41,6 +42,7 @@ class Event extends Model
         'meta' => 'string',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'country_code' => 'string',
     ];
 
     protected $fillable = [
@@ -52,6 +54,7 @@ class Event extends Model
         'referrer',
         'meta',
         "ip",
+        'country_code',
     ];
 
     public static function getType(): string

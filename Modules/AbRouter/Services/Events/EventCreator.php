@@ -20,6 +20,7 @@ class EventCreator
             'tag' => $eventDTO->getTag(),
             'referrer' => $eventDTO->getReferrer(),
             'meta' => json_encode($eventDTO->getMeta()),
+            'country_code' => $eventDTO->getCountryCode(),
         ]);
         
         $event->save();
