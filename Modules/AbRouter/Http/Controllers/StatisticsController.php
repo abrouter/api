@@ -67,6 +67,7 @@ class StatisticsController
         $allUserEvents = $event
             ->newQuery()
             ->where('owner_id', $owner->id)
+            ->where('tag', 's3g')
             ->get();
         $eventCounters = [];
         $eventPercentage = [];
