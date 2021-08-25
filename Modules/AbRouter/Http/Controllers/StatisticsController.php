@@ -40,6 +40,10 @@ class StatisticsController
     public function create(Request $request)
     {
         $eventDTO = $this->eventTransformer->transform($request);
+        if ($eventDTO->getCountryCode() === 'UA') {
+            return \response()->json(['status' => 'received']);
+        }
+        
         $event = $this->eventCreator->create($eventDTO);
         
         return new EventResource($event);
