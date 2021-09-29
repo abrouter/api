@@ -30,7 +30,7 @@ class ExperimentBranchUserResource extends JsonResource
         $obj = new ExperimentBranchObject($this->resource->experimentBranch);
         $objArr = $obj->getInstance()->toArray();
         $experimentRelationship = $objArr['relationships']['experiment']['data'];
-        $relationships = [new Relationship(
+        $relationships = ['experiment' => new Relationship(
             new ResourceLinkage(new ResourceIdentifier($experimentRelationship['id'], $experimentRelationship['type']))
         )];
 
