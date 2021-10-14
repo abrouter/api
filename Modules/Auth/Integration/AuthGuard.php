@@ -10,6 +10,7 @@ use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Http\Request;
 use Modules\Auth\Models\User\User;
 use Modules\Auth\Repositories\Auth\TokenRepository;
+use Modules\Auth\Services\Auth\ShortTokenAuthorizer;
 
 class AuthGuard implements Guard
 {
@@ -17,21 +18,31 @@ class AuthGuard implements Guard
 
     private $request;
     private $client;
-
+    
+    /**
+     * @var ShortTokenAuthorizer
+     */
+    private $shortTokenAuthorizer;
+    
     /**
      * OAuthGuard constructor.
      *
      * Creates a new authentication guard.
      *
-     * @param UserProvider $provider
-     * @param Request      $request
-     * @param AuthClient $client
+     * @param UserProvider         $provider
+     * @param Request              $request
+     * @param AuthClient           $client
+     * @param ShortTokenAuthorizer $shortTokenAuthorizer
      */
-    public function __construct(UserProvider $provider, Request $request, AuthClient $client)
-    {
+    public function __construct(
+        UserProvider $provider,
+        Request $request,
+        AuthClient $client
+    ) {
         $this->provider = $provider;
         $this->request = $request;
         $this->client = $client;
+        $this->shortTokenAuthorizer = app()->make(ShortTokenAuthorizer::class);
     }
 
     /**
@@ -71,10 +82,17 @@ class AuthGuard implements Guard
     public function getCredentials() : array
     {
         try {
-            if (!$accessToken = $this->request->bearerToken()) {
+            $token = $this->shortTokenAuthorizer->authorize($this->request->header('Authorization'));
+            $accessToken = $token !== null ? $token->getAccessToken()->getToken() : null;
+            if ($accessToken === null) {
+                $accessToken = $this->request->bearerToken();
+            }
+            if (empty($accessToken)) {
                 return [];
             }
             $jwtToken = $this->client->parseJwt($accessToken);
+
+            
             /**
              * @var TokenRepository $tokenRepository
              */
