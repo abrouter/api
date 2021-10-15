@@ -21,8 +21,13 @@ class ShortTokenAuthorizer
         $this->tokenRepository = $repository;
     }
     
-    public function authorize(string $token): ?UserWithAccessToken
+    public function authorize(?string $token): ?UserWithAccessToken
     {
+        
+        if ($token === null) {
+            return null;
+        }
+        
         $auth = strtr($token, [
             'Bearer ' => '',
         ]);
