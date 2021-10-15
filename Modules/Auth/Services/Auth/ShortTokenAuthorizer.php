@@ -31,6 +31,9 @@ class ShortTokenAuthorizer
         }
     
         $token = $this->tokenRepository->find($token);
+        if (empty($token)) {
+            return null;
+        }
     
         /**
          * @var User $user
