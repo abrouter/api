@@ -15,8 +15,8 @@ return [
     */
 
     'mailgun' => [
-        'domain' => env('MAILGUN_DOMAIN', 'proxiedmail.com'),
-        'secret' => env('MAILGUN_SECRET', 'key-30b273441ecc2d0e1e9375c30667eadb'),
+        'domain' => env('MAILGUN_DOMAIN', 'post.abrouter.com'),
+        'secret' => env('MAILGUN_SECRET', '379f5403f29641aa19f41e5cfa2d04b2-2bf328a5-fa70cb19'),
         'endpoint' => env('MAILGUN_ENDPOINT', 'api.mailgun.net'),
     ],
 

@@ -11,7 +11,7 @@
         "php": "^7.2",
         "ext-json": "*",
         "fideloper/proxy": "^4.0",
-        "jsonapi/laravel-json-api-sdk": "v1.0.0",
+        "jsonapi/laravel-json-api-sdk": "^1.0",
         "laravel/framework": "^6.2",
         "laravel/passport": "^8.4",
         "laravel/tinker": "^2.0",
@@ -69,7 +69,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "git@github.com:yatsenkolesh/laravel-json-api.git"
+            "url": "git@github.com:abrouter/laravel-json-api.git"
         }
     ]
 }

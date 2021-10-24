@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2403e501140aca1b38e66bf5f1645970",
+    "content-hash": "10871b339b3f5fde7f6f75f675280dfd",
     "packages": [
         {
             "name": "defuse/php-encryption",
@@ -700,12 +700,12 @@
             "version": "v1.0.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:yatsenkolesh/laravel-json-api.git",
+                "url": "git@github.com:abrouter/laravel-json-api.git",
                 "reference": "990239d8b7ebb8050d3d711bc49c11db5fda2c76"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yatsenkolesh/laravel-json-api/zipball/990239d8b7ebb8050d3d711bc49c11db5fda2c76",
+                "url": "https://api.github.com/repos/abrouter/laravel-json-api/zipball/990239d8b7ebb8050d3d711bc49c11db5fda2c76",
                 "reference": "990239d8b7ebb8050d3d711bc49c11db5fda2c76",
                 "shasum": ""
             },
@@ -729,8 +729,7 @@
             },
             "description": "Laravel json api response helper",
             "support": {
-                "source": "https://github.com/yatsenkolesh/laravel-json-api/tree/v1.0.0",
-                "issues": "https://github.com/yatsenkolesh/laravel-json-api/issues"
+                "source": "https://github.com/abrouter/laravel-json-api/tree/v1.0.0"
             },
             "time": "2020-03-07T09:27:41+00:00"
         },
@@ -7731,5 +7730,5 @@
         "ext-json": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.0.0"
+    "plugin-api-version": "2.1.0"
 }

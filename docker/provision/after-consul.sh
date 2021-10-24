@@ -7,4 +7,4 @@ cd /app
 php artisan cache:clear
 php artisan migrate --force
 COMPOSER_ALLOW_SUPERUSER=1 /usr/local/bin/composer dump-autoload
-/etc/init.d/php7.1-fpm reload
+#/etc/init.d/php7.1-fpm reload
