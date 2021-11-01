@@ -7,7 +7,9 @@ use Illuminate\Http\Request;
 use Modules\AbRouter\Http\Resources\Event\EventResource;
 use Modules\AbRouter\Http\Transformers\Events\EventTransformer;
 use Modules\AbRouter\Models\Events\Event;
+use Modules\AbRouter\Models\CustomizationEvent\DisplayUserEvent;
 use Modules\AbRouter\Services\Events\EventCreator;
+use Modules\AbRouter\Repositories\Events\EventsRepository;
 use Modules\Auth\Exposable\AuthDecorator;
 
 class StatisticsController
@@ -49,20 +51,15 @@ class StatisticsController
         return new EventResource($event);
     }
     
-    public function showStats(Request $request, Event $event)
+    public function showStats(Request $request, Event $event, EventsRepository $eventsRepository)
     {
-        $events = [
-            'visit_mainpage',
-            'open_contact_form',
-            'visit_form_filler',
-            'fill_form_later',
-            'form_filler_complete',
-            'visited_nutritionists_page',
-            'visited_book_call',
-            'skip_call_booking',
-            'visited_almost_done_page',
-            'thankyou_page',
-        ];
+        $allDisplayUserEvents = $eventsRepository->getEventsByUser($this->authDecorator->get()->getId());
+        $events = [];
+
+        foreach($allDisplayUserEvents as $allDisplayUserEvent){
+            $events[] = $allDisplayUserEvent['event_name'];
+        }
+
         $owner = $this->authDecorator->get()->model();
         $allUserEvents = $event
             ->newQuery()
@@ -123,7 +120,7 @@ class StatisticsController
         foreach ($events as $eventName) {
             $counter = $eventCounters[$eventName];
             
-            if ($uniqUsersCount ===0) {
+            if ($uniqUsersCount === 0) {
                 $eventPercentage[$eventName] = 0;
                 continue;
             }
