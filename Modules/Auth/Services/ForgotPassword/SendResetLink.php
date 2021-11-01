@@ -38,14 +38,8 @@ class SendResetLink
 
         $saveToken->saveOrFail();
 
-        try {
-            $mail = Mail::to($email)->send(new SendResetPasswordLink($token, $email));
-            
-        } catch (\Throwable $e) {
-            die(var_dump($e->getMessage()));
-            
-            
-        }
+        $mail = Mail::to($email)->send(new SendResetPasswordLink($token, $email));
+
         return json_encode('Mail send');
     }
 }

@@ -35,9 +35,7 @@ class SendResetPasswordLink extends Mailable
     {
         $resetData = ['token' => $this->token, 'email' => $this->email];
 
-        return $this
-            ->subject('Reset link')
-            ->from('mail@post.abrouter.com')
+        return $this->subject('Reset link')
             ->markdown('auth::emails.resetlink', compact('resetData'))
             ->with([
                 'name' => 'Reset link',
