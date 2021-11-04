@@ -12,6 +12,8 @@ Route::middleware(['api', 'auth:api'])->group(function () {
     Route::post('/v1/event', 'StatisticsController@create');
     Route::post('/v1/event/funnel', 'StatisticsController@showStats');
 
+    Route::get('/v1/user-tags', 'StatisticsController@showTags');
+
     Route::get('/v1/user-events', 'CustomizationEventController@index');
     Route::post('/v1/user-events', 'CustomizationEventController@create');
     Route::patch('/v1/user-events/{id}', 'CustomizationEventController@update');

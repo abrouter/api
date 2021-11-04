@@ -29,6 +29,7 @@ class CreateEvents extends Migration
             $table->index(['owner_id', 'temporary_user_id']);
             $table->index('user_id');
             $table->index('event');
+            $table->index('tag');
         });
     }
 

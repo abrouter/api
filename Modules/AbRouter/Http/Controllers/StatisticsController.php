@@ -10,6 +10,8 @@ use Modules\AbRouter\Models\Events\Event;
 use Modules\AbRouter\Models\CustomizationEvent\DisplayUserEvent;
 use Modules\AbRouter\Services\Events\EventCreator;
 use Modules\AbRouter\Repositories\Events\EventsRepository;
+use Modules\AbRouter\Repositories\Events\UserEventsRepository;
+use Modules\AbRouter\Repositories\Tags\TagsRepository;
 use Modules\Auth\Exposable\AuthDecorator;
 
 class StatisticsController
@@ -51,21 +53,21 @@ class StatisticsController
         return new EventResource($event);
     }
     
-    public function showStats(Request $request, Event $event, EventsRepository $eventsRepository)
-    {
+    public function showStats(
+        Request $request, 
+        UserEventsRepository $userEventsRepository, 
+        EventsRepository $eventsRepository
+    ) {
         $allDisplayUserEvents = $eventsRepository->getEventsByUser($this->authDecorator->get()->getId());
         $events = [];
-
+        
         foreach($allDisplayUserEvents as $allDisplayUserEvent){
             $events[] = $allDisplayUserEvent['event_name'];
         }
 
         $owner = $this->authDecorator->get()->model();
-        $allUserEvents = $event
-            ->newQuery()
-            ->where('owner_id', $owner->id)
-            ->where('tag', 's3g')
-            ->get();
+        $tag = $request->input('filter.tag');
+        $allUserEvents = $userEventsRepository->getEvents($owner->id, $tag);
         $eventCounters = [];
         $eventPercentage = [];
         $temporaryUserGluesToPersistId = [];
@@ -131,5 +133,12 @@ class StatisticsController
             'percentage' => $eventPercentage,
             'counters' => $eventCounters,
         ];
+    }
+
+    public function showTags(TagsRepository $tagsRepository)
+    {
+        $userTags = $tagsRepository->getTagsByUser($this->authDecorator->get()->getId());
+        
+        return $userTags;
     }
 }
