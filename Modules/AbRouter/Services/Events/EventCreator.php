@@ -5,9 +5,21 @@ namespace Modules\AbRouter\Services\Events;
 
 use Modules\AbRouter\Models\Events\Event;
 use Modules\AbRouter\Services\Events\DTO\EventDTO;
+use Modules\AbRouter\Services\RelatedUser\DTO\RelatedUserDTO;
+use Modules\AbRouter\Services\RelatedUser\RelatedUserCreator;
 
 class EventCreator
 {
+    /**
+     * @var RelatedUserCreator
+     */
+    private $relatedUserCreator;
+    
+    public function __construct(RelatedUserCreator $relatedUserCreator)
+    {
+        $this->relatedUserCreator = $relatedUserCreator;
+    }
+    
     public function create(EventDTO $eventDTO): Event
     {
         $event = new Event();
@@ -23,7 +35,16 @@ class EventCreator
             'country_code' => $eventDTO->getCountryCode(),
         ]);
         
-        $event->save();
+        $saved = $event->save();
+        if ($saved) {
+            $this->relatedUserCreator->create(new RelatedUserDTO(
+                $eventDTO->getOwnerId(),
+                $eventDTO->getUserId(),
+                $eventDTO->getTemporaryUserId(),
+                $event->id
+            ));
+        }
+        
         return $event;
     }
 }

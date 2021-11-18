@@ -9,7 +9,7 @@ class EventDTO
      * @var int
      */
     private $ownerId;
-    
+
     /**
      * @var string
      */
@@ -65,7 +65,7 @@ class EventDTO
      */
     public function __construct(
         int $ownerId,
-        string $temporaryUserId,
+        ?string $temporaryUserId,
         string $userId,
         string $event,
         string $tag,
@@ -92,11 +92,11 @@ class EventDTO
     {
         return $this->ownerId;
     }
-    
+
     /**
      * @return string
      */
-    public function getTemporaryUserId(): string
+    public function getTemporaryUserId(): ?string
     {
         return $this->temporaryUserId;
     }

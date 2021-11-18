@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Modules\AbRouter\Http\Resources\Event;
+namespace Modules\AbRouter\Http\Resources\RelatedUser;
 
 use JsonApi\JsonApi\Base\BaseObject;
 use JsonApi\JsonApi\Elements\AttributesObject;
@@ -10,13 +10,14 @@ use JsonApi\JsonApi\Elements\RelationshipsCollection;
 use JsonApi\JsonApi\Elements\ResourceIdentifier;
 use JsonApi\JsonApi\Elements\ResourceLinkage;
 use JsonApi\JsonApi\Elements\ResourceObject;
-use Modules\AbRouter\Models\Events\Event;
+use Modules\Core\EntityId\Encoder;
+use Modules\AbRouter\Models\RelatedUser\RelatedUser;
 
 /**
- * Class EventObject
- * @property Event $model
+ * Class RelatedUserObject
+ * @property RelatedUser $model
  */
-class EventObject extends BaseObject
+class RelatedUserObject extends BaseObject
 {
     public function getInstance(): ResourceObject
     {
@@ -27,16 +28,12 @@ class EventObject extends BaseObject
 
         $attributes = new AttributesObject([
             'user_id' => $this->model->user_id,
-            'event' => $this->model->event,
-            'tag' => $this->model->tag,
-            'referrer' => $this->model->referrer,
-            'ip' => $this->model->ip,
-            'meta' => $this->model->meta,
+            'related_user_id' => $this->model->related_user_id
         ]);
 
 
         $relationships = new RelationshipsCollection([
-            'owner' => new Relationship(new ResourceLinkage(new ResourceIdentifier(
+            'owner_id' => new Relationship(new ResourceLinkage(new ResourceIdentifier(
                 $this->model->owner->getEntityId(),
                 'users'
             ))),

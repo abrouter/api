@@ -3,26 +3,23 @@ declare(strict_types=1);
 
 namespace Modules\AbRouter\Repositories\Events;
 
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\Eloquent\Collection;
 use Modules\AbRouter\Models\Events\Event;
 use Modules\Core\Repositories\BaseRepository;
-use Illuminate\Support\Collection;
 
 class UserEventsRepository extends BaseRepository
 {
-    public function getEvents(int $owner, string $tag = null)
+    public function getWithOwnerByTag(int $owner, ?string $tag): Collection
     {
-        /**
-         * @var Event $model
-         */
-
-        $model = $this->query()->where('owner_id', $owner);
+        $query = $this
+            ->query()
+            ->where('owner_id', $owner);
         
-        if($tag !== null) {
-            $model->where('tag', $tag);
+        if (!empty($tag)) {
+            $query = $query->where('tag', $tag);
         }
         
-        return $model->get();
+        return $query->get();
     }
 
     protected function getModel()

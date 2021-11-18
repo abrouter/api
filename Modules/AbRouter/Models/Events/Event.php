@@ -5,8 +5,10 @@ namespace Modules\AbRouter\Models\Events;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
+use Modules\AbRouter\Models\RelatedUsers\RelatedUser;
 use Modules\Auth\Models\User\User;
 use Modules\Core\EntityId\EntityIdTrait;
 
@@ -23,8 +25,9 @@ use Modules\Core\EntityId\EntityIdTrait;
  * @property string meta
  * @property Carbon created_at
  * @property Carbon updated_at
- *  @property User owner
+ * @property User owner
  * @property string country_code
+ * @property Collection relatedUsers
  */
 class Event extends Model
 {
@@ -68,5 +71,10 @@ class Event extends Model
     public function owner(): HasOne
     {
         return $this->hasOne(User::class, 'id', 'owner_id');
+    }
+    
+    public function relatedUsers(): HasMany
+    {
+        return $this->hasMany(RelatedUser::class, 'event_id', 'id');
     }
 }

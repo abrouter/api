@@ -20,6 +20,7 @@ class AbRouterServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->registerFactories();
+        $this->commands([\Modules\AbRouter\Console\MigrateTemporaryUser::class]);
         $this->loadMigrationsFrom(module_path('AbRouter', 'Database/Migrations'));
     }
 
