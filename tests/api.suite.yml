@@ -1,0 +1,23 @@
+actor: ApiTester
+modules:
+    enabled:
+        - REST:
+            url: /api/v1/
+            depends: Laravel5
+            part: Json
+        - Tests\Module\Database:
+            dsn: 'mysql:host=mysql'
+            user: 'root'
+            password: 'bestpass'
+            initial_queries:
+             - 'CREATE DATABASE IF NOT EXISTS abr_test;'
+             - 'USE abr_test;'
+             - 'SET NAMES utf8;'
+        - Laravel5:
+            cleanup: true
+            database_migrations_path: [
+                '/Modules/AbRouter/Database/Migrations',
+                '/Modules/Auth/Database/Migrations'
+                ]
+            run_database_migrations: true
+        - Tests\Module\Fixture\Users

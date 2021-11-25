@@ -33,6 +33,6 @@ class CreateTableExperimentBranches extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('table_experiment_branches');
+        Schema::dropIfExists('experiment_branches');
     }
 }

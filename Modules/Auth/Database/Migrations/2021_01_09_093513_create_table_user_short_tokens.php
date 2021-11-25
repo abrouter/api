@@ -30,6 +30,6 @@ class CreateTableUserShortTokens extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('table_user_short_tokens');
+        Schema::dropIfExists('user_short_tokens');
     }
 }
