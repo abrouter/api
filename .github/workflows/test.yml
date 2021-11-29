@@ -46,4 +46,3 @@ jobs:
           rm .env
           cp .env.ci .env
           vendor/bin/codecept run
-

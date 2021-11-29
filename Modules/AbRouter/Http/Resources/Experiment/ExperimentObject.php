@@ -30,6 +30,7 @@ class ExperimentObject extends BaseObject
 
         $attributes = new AttributesObject([
             'name' => $this->model->name,
+            'alias' => $this->model->alias,
             'config' => json_decode($this->model->config, true),
             'is_enabled' => $this->model->is_enabled
         ]);

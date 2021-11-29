@@ -7,6 +7,7 @@ use Modules\AbRouter\Models\Experiments\Experiment;
 use Modules\AbRouter\Models\Experiments\ExperimentBranches;
 use Modules\AbRouter\Services\Experiment\DTO\BranchDTO;
 use Modules\AbRouter\Services\Experiment\DTO\ExperimentDTO;
+use Modules\AbRouter\Services\Experiment\CreateAliasExperiments;
 use Modules\Auth\Exposable\AuthDecorator;
 use Modules\Core\EntityId\Encoder;
 
@@ -22,10 +23,11 @@ class ExperimentService
      */
     private $authDecorator;
 
-    public function __construct(Encoder $encoder, AuthDecorator $authDecorator)
+    public function __construct(Encoder $encoder, AuthDecorator $authDecorator, CreateAliasExperiments $createAlias)
     {
         $this->encoder = $encoder;
         $this->authDecorator = $authDecorator;
+        $this->createAlias = $createAlias;
     }
 
     public function createOrUpdate(ExperimentDTO $experimentDTO)
@@ -46,6 +48,7 @@ class ExperimentService
         $experiment->fill([
             'owner_id' => $this->authDecorator->get()->getId(),
             'name' => $experimentDTO->getName(),
+            'alias' => $this->createAlias->create($experimentDTO->getName()),
             'config' => json_encode($experimentDTO->getConfig()),
             'is_enabled' => true,
             'uid' => $experimentDTO->getName(),

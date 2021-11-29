@@ -125,9 +125,10 @@ class ExperimentCest
         $response = json_decode($I->grabResponse(), true);
 
         $experimentId = (new Encoder())->decode($response['data']['id'], 'experiments');
+        $alias = $response['data']['attributes']['alias'];
         $config = $response['data']['attributes']['config'];
         $isEnabled = $response['data']['attributes']['is_enabled'];
-        $recordExperiment = ['name' => $experimentName, 'is_enabled' => $isEnabled, 'owner_id' => $user['id']];
+        $recordExperiment = ['name' => $experimentName, 'alias' => $alias, 'is_enabled' => $isEnabled, 'owner_id' => $user['id']];
 
         $I->seeResponseCodeIsSuccessful(201);
         $I->seeResponseContainsJson([
@@ -136,6 +137,7 @@ class ExperimentCest
                 'type' => 'experiments',
                 'attributes' => [
                     'name' => $experimentName,
+                    'alias' => $alias,
                     'config' => $config,
                     'is_enabled' => $isEnabled
                 ],

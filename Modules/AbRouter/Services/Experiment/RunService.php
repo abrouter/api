@@ -7,9 +7,9 @@ use Modules\AbRouter\Models\Experiments\Experiment;
 use Modules\AbRouter\Models\Experiments\ExperimentBranches;
 use Modules\AbRouter\Models\Experiments\ExperimentBranchUser;
 use Modules\AbRouter\Models\Experiments\ExperimentUsers;
+use Modules\AbRouter\Repositories\Experiments\ExperimentsRepository;
 use Modules\AbRouter\Services\Experiment\DTO\RunExperimentDTO;
 use Modules\Core\EntityId\Encoder;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class RunService
 {
@@ -18,30 +18,26 @@ class RunService
      */
     private $diceService;
 
-    public function __construct(DiceService $diceService)
-    {
+    /**
+     * @var ExperimentsRepository
+     */
+    private $experimentsRepository;
+
+    public function __construct(
+        DiceService $diceService, 
+        ExperimentsRepository $experimentsRepository
+    ) {
         $this->diceService = $diceService;
+        $this->experimentsRepository = $experimentsRepository;
     }
 
     public function run(RunExperimentDTO $runExperimentDTO): ExperimentBranchUser
     {
-        try {
-            $expInternalId = (new Encoder())->decode($runExperimentDTO->getExperimentId(), 'experiments');
-        } catch (\Throwable $e) {
-            throw new NotFoundHttpException('Failed to find an experiment');
-        }
+        $checkId = preg_match('/^([A-Z0-9]{8})(-){1}([A-Z0-9]{4})(-){1}([A-Z0-9]{4})(-){1}([A-Z0-9]{8})$/', $runExperimentDTO->getExperimentId());
 
-        /**
-         * @var Experiment $experiment
-         */
-        $experiment = (new Experiment())
-            ->newQuery()
-            ->where('id', $expInternalId)
-            ->where('owner_id', $runExperimentDTO->getOwnerId())
-            ->first();
-        if (empty($experiment)) {
-            throw new NotFoundHttpException('Failed to find experiment with given uid');
-        }
+        if ($checkId) {
+            $experiment = $this->experimentsRepository->getExperimentsById($runExperimentDTO->getExperimentId(), $runExperimentDTO->getOwnerId());
+        } else $experiment = $this->experimentsRepository->getExperimentsByAlias($runExperimentDTO->getExperimentId(), $runExperimentDTO->getOwnerId());
 
         $user = (new ExperimentUsers())
             ->newQuery()

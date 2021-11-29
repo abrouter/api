@@ -5,6 +5,7 @@ namespace Tests\Module\Fixture;
 
 use Codeception\Module\Laravel;
 use Modules\Core\EntityId\Encoder;
+use Modules\AbRouter\Services\Experiment\CreateAliasExperiments;
 use Codeception\Lib\Interfaces\DependsOnModule;
 use Codeception\Module;
 
@@ -27,6 +28,7 @@ class Experiment extends Module implements DependsOnModule
     public function haveExperiment(int $owner)
     {
         $experimentName = 'experiment_' . uniqid();
+        $experimentAlias = (new CreateAliasExperiments())->create($experimentName);
         $branchName = 'branch_' . uniqid();
         $config = '[]';
         $percent = random_int(1, 100);
@@ -34,6 +36,7 @@ class Experiment extends Module implements DependsOnModule
         $recordExperiment = [
             'owner_id' => $owner,
             'name' => $experimentName,
+            'alias' => $experimentAlias,
             'config' => $config,
             'is_enabled' => true,
             'uid' => $experimentName,
@@ -41,7 +44,7 @@ class Experiment extends Module implements DependsOnModule
             'updated_at' => $date
         ];
 
-        $experimentId =  $this->laravel->haveRecord(self::TABLE_EXPERIMENTS, $recordExperiment);
+        $experimentId = $this->laravel->haveRecord(self::TABLE_EXPERIMENTS, $recordExperiment);
         $this->laravel->seeRecord(self::TABLE_EXPERIMENTS, $recordExperiment);
         
         $encodeExperimentId = (new Encoder())->encode($experimentId, 'experiments');
@@ -56,10 +59,10 @@ class Experiment extends Module implements DependsOnModule
             'updated_at' => $date
         ];
 
-        $idBranch =  $this->laravel->haveRecord(self::TABLE_EXPERIMENT_BRANCHES, $recordBranch);
+        $idBranch = $this->laravel->haveRecord(self::TABLE_EXPERIMENT_BRANCHES, $recordBranch);
         $this->laravel->seeRecord(self::TABLE_EXPERIMENT_BRANCHES, $recordBranch);
         
-        return ['encodeExperimentId' => $encodeExperimentId, 'experimentId' => $experimentId, 'name' => $experimentName];
+        return ['encodeExperimentId' => $encodeExperimentId, 'experimentId' => $experimentId, 'name' => $experimentName, 'alias' => $experimentAlias];
     }
     
     /**
@@ -68,7 +71,7 @@ class Experiment extends Module implements DependsOnModule
     public function _depends(): array
     {
         return [
-            Laravel::class => sprintf('%s is mandatory dependency', Laravel5::class),
+            Laravel::class => sprintf('%s is mandatory dependency', Laravel::class),
         ];
     }
 }

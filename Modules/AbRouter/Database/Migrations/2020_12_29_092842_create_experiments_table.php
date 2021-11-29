@@ -18,6 +18,7 @@ class CreateExperimentsTable extends Migration
             $table->integer('owner_id');
             $table->string('name', 120);
             $table->string('uid', 80);
+            $table->string('alias', 200);
             $table->string('config', 5000);
             $table->boolean('is_enabled');
             $table->timestamps();

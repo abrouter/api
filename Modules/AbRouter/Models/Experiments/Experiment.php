@@ -33,6 +33,7 @@ class Experiment extends Model
         'owner_id' => 'int',
         'name' => 'string',
         'uid' => 'string',
+        'alias' => 'string',
         'config' => 'string',
         'is_enabled' => 'bool',
         'created_at' => 'datetime',
@@ -42,6 +43,7 @@ class Experiment extends Model
     protected $fillable = [
         'user_id',
         'name',
+        'alias',
         'config',
         'is_enabled',
         'uid',
