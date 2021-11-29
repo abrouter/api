@@ -51,9 +51,9 @@ class Users extends Module implements DependsOnModule
         ]);
 
         $token = $response['data']['attributes']['token'];
-        $userDecodeId = $response['data']['relationships']['user']['data']['id'];
-        $userId = (new Encoder())->decode($userDecodeId, 'users');
-        $user = ['id' => $userId, 'username' => $username, 'password' => $password, 'token' => $token];
+        $userEncodeId = $response['data']['relationships']['user']['data']['id'];
+        $userId = (new Encoder())->decode($userEncodeId, 'users');
+        $user = ['id' => $userId, 'encodeId' => $userEncodeId , 'username' => $username, 'password' => $password, 'token' => $token];
 
         return $user;
     }

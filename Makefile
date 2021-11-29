@@ -31,14 +31,14 @@ route-cache: check ./docker-compose.env
 
 .PHONY: test-run
 test-run:
+	docker exec $(APP) php artisan abrouter:create-database abr_test
 	docker exec $(APP) php build/switch.php  --mode=test
-	docker exec $(APP)  php artisan migrate --path=/database/migrations
-	docker exec $(APP)  php artisan passport:install
-	docker exec $(APP)  php ./vendor/bin/codecept build
-	docker exec $(APP)  php ./vendor/bin/codecept run ${ARGS}
-	docker exec $(APP)  php ./vendor/bin/codecept clean
-	docker exec $(APP)  php artisan module:migrate-rollback
-	docker exec $(APP)  php artisan migrate:rollback
+	docker exec $(APP) php artisan migrate
+	docker exec $(APP) php artisan passport:install
+	docker exec $(APP) php ./vendor/bin/codecept build
+	docker exec $(APP) php ./vendor/bin/codecept run ${ARGS}
+	docker exec $(APP) php ./vendor/bin/codecept clean
+	docker exec $(APP) php artisan abrouter:drop-database abr_test
 	docker exec $(APP) php build/switch.php  --mode=dev
 
 %:

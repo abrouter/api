@@ -1,2 +1,4 @@
 vendor
 .env
+storage/oauth-private.key
+storage/oauth-public.key

@@ -24,7 +24,6 @@
         "codeception/module-asserts": "^1.0.0",
         "codeception/module-db": "^1.1",
         "codeception/module-laravel": "^2.1",
-        "codeception/module-laravel5": "^1.1",
         "codeception/module-phpbrowser": "^1.0.0",
         "codeception/module-rest": "^1.4",
         "facade/ignition": "^1.4",
