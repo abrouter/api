@@ -34,4 +34,30 @@ class UserCest
             ],
         ]);
     }
+
+    public function meTestWithRealBearerToken(ApiTester $I)
+    {
+        $user = $I->haveUser($I);
+        $token = $I->haveLogin($I, $user['username'], $user['password']);
+
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->haveHttpHeader('Accept', 'application/json, application/vnd.api+json');
+        $I->amBearerAuthenticated($token);
+        $I->sendGet('/users/me');
+
+        $response = json_decode($I->grabResponse(), true);
+        
+        $I->seeResponseCodeIsSuccessful(201);
+        $I->seeResponseContainsJson([
+            'data' => [
+                'id' => $response['data']['id'],
+                'type' => 'users',
+                'attributes' => [
+                    'username' => $response['data']['attributes']['username'],
+                    'created_at' => $response['data']['attributes']['created_at'],
+                    'updated_at' => $response['data']['attributes']['updated_at'],
+                ],
+            ],
+        ]);
+    }
 }

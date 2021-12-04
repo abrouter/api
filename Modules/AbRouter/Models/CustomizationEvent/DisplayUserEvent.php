@@ -41,7 +41,7 @@ class DisplayUserEvent extends Model
 
     public static function getType(): string
     {
-        return 'dislpay_user_events';
+        return 'display_user_events';
     }
 
     /**

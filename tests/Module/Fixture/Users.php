@@ -57,6 +57,48 @@ class Users extends Module implements DependsOnModule
 
         return $user;
     }
+
+    public function haveLogin($I, $username, $password)
+    {
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->haveHttpHeader('Accept', 'application/json');
+
+        $I->sendPost('/auth', [
+            "data" => [
+                "type" => "auth-request",
+                "attributes" => [
+                    "username" => $username,
+                    "password" => $password
+                ]
+            ]
+        ]);
+
+        $response = json_decode($I->grabResponse(), true);
+
+        $I->seeResponseCodeIsSuccessful(201);
+        $I->seeResponseContainsJson([
+            'data' => [
+                'id' => $response['data']['id'],
+                'type' => 'oauth-access-tokens',
+                'attributes' => [
+                    'token' => $response['data']['attributes']['token'],
+                    'expires_at' => $response['data']['attributes']['expires_at']
+                ],
+                'relationships' => [
+                    'user' => [
+                        'data' => [
+                            'type' => $response['data']['relationships']['user']['data']['type'],
+                            'id' => $response['data']['relationships']['user']['data']['id']
+                        ],
+                    ],
+                ]
+            ]
+        ]);
+
+        $token = $response['data']['attributes']['token'];
+
+        return $token;
+    }
     
     /**
      * {@inheritdoc}
