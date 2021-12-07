@@ -60,9 +60,10 @@ class Experiment extends Module implements DependsOnModule
         ];
 
         $idBranch = $this->laravel->haveRecord(self::TABLE_EXPERIMENT_BRANCHES, $recordBranch);
+        $encodeExperimentBranchId = (new Encoder())->encode($idBranch, 'experiment_branches');
         $this->laravel->seeRecord(self::TABLE_EXPERIMENT_BRANCHES, $recordBranch);
         
-        return ['encodeExperimentId' => $encodeExperimentId, 'experimentId' => $experimentId, 'name' => $experimentName, 'alias' => $experimentAlias];
+        return ['encodeExperimentId' => $encodeExperimentId, 'experimentId' => $experimentId, 'name' => $experimentName, 'alias' => $experimentAlias, 'idBranch' => $encodeExperimentBranchId];
     }
     
     /**

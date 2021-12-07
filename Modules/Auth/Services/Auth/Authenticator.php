@@ -8,6 +8,7 @@ use Modules\Auth\Entities\AccessToken\AccessToken;
 use Modules\Auth\Repositories\User\UserRepository;
 use Modules\Auth\Services\Auth\DTO\AuthRequestDTO;
 use Modules\Auth\Entities\User\UserWithAccessToken;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class Authenticator
 {
@@ -24,14 +25,14 @@ class Authenticator
     /**
      * @param AuthRequestDTO $authRequestDTO
      * @return UserWithAccessToken
-     * @throws Exception
+     * @throws AccessDeniedHttpException
      */
     public function auth(AuthRequestDTO $authRequestDTO): UserWithAccessToken
     {
         $user = $this->userRepository->getOneByUsername($authRequestDTO->getUsername());
         $isMatch = decrypt($user->password) === $authRequestDTO->getPassword();
         if (!$isMatch) {
-            throw new Exception('Password mismatch');
+            throw new AccessDeniedHttpException('Password mismatch');
         }
 
         return new UserWithAccessToken($user, new AccessToken($user->createToken('default')));

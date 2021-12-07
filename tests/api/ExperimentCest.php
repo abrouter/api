@@ -270,4 +270,111 @@ class ExperimentCest
         $I->seeRecord('experiment_user_branches', $recordBranchUsers);
         $I->seeRecord('experiment_users', $recordExperimentUsers);
     }
+
+    public function updateExperiment(ApiTester $I)
+    {
+        $user = $I->haveUser($I);
+        $experiment = $I->haveExperiment($user['id']);
+        $experimentId = $experiment['encodeExperimentId'];
+        $experimentName = 'experiment_' . uniqid();
+        $branchName = 'branch_' . uniqid();
+        $percent = random_int(1,100);
+
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->haveHttpHeader('Accept', 'application/json');
+        $I->amBearerAuthenticated($user['token']);
+
+        $I->sendPatch("/experiments/{$experimentId}", [
+            'data' => [
+                'id' => $experimentId,
+                'type' => 'experiments',
+                'attributes' => [
+                    'name' => $experimentName,
+                    'is_enabled' => true,
+                    'config' => [],
+                ],
+                'relationships' => [
+                    'branches' => [
+                        'data' => [
+                            'id' => $experiment['idBranch'],
+                            'type' => 'experiment_branches',
+                        ]
+                    ],
+                    'owner' => [
+                        'data' => [
+                            'id' => $user['encodeId'],
+                            'type' => 'users',
+                        ]
+                    ]
+                ]
+            ],
+            'included' => [
+                [ 
+                    'id' => $experiment['idBranch'],
+                    'type' => 'experiment_branches',
+                    'attributes' => [
+                        'name' => $branchName,
+                        'percent' => $percent,
+                        'config' => [],
+                        'uid' => $branchName,
+                    ],
+                    'relationships' => [
+                        'experiment' => [
+                            'data' => [
+                                'id' => $experimentId,
+                                'type' => 'experiments',
+                            ],
+                        ],
+                        'owner' => [
+                            'data' => [
+                                'id' => $user['encodeId'],
+                                'type' => 'users',
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+    
+        $response = json_decode($I->grabResponse(), true);
+
+        $alias = $response['data']['attributes']['alias'];
+        $config = $response['data']['attributes']['config'];
+        $isEnabled = $response['data']['attributes']['is_enabled'];
+        $recordExperiment = ['name' => $experimentName, 'alias' => $alias, 'is_enabled' => $isEnabled, 'owner_id' => $user['id']];
+        $recordBranch = ['experiment_id' => $experiment['experimentId'],'name' => $branchName, 'uid' => $branchName, 'percent' => $percent];
+
+        $I->seeResponseCodeIsSuccessful(201);
+        $I->seeResponseContainsJson([
+            'data' => [
+                'id' => $response['data']['id'],
+                'type' => 'experiments',
+                'attributes' => [
+                    'name' => $experimentName,
+                    'alias' => $alias,
+                    'config' => $config,
+                    'is_enabled' => $isEnabled
+                ],
+                'relationships' => [
+                    'owner' => [
+                        'data' => [
+                            'id' => $user['encodeId'],
+                            'type' => 'users'
+                        ]
+                    ],
+                    'branches' => [
+                        'data' => [
+                            [
+                                'id' => $experiment['idBranch'],
+                                'type' => 'experiment_branches'
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+        ]);
+
+        $I->seeRecord('experiments', $recordExperiment);
+        $I->seeRecord('experiment_branches', $recordBranch);
+    }
 }
