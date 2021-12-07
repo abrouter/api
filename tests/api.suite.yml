@@ -9,4 +9,7 @@ modules:
         - Tests\Module\Fixture\Users
         - Tests\Module\Fixture\Experiment:
             depends: ["Laravel"]
-        - Tests\Module\Fixture\DisplayUserEvents
+        - Tests\Module\Fixture\DisplayUserEvents:
+            depends: ["Laravel"]
+        - Tests\Module\Fixture\Events:
+            depends: ["Laravel"]

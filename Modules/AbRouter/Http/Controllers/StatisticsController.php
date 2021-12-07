@@ -5,13 +5,13 @@ namespace Modules\AbRouter\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Modules\AbRouter\Http\Resources\Event\EventResource;
+use Modules\AbRouter\Http\Resources\Tag\TagCollection;
 use Modules\AbRouter\Http\Transformers\Events\EventTransformer;
 use Modules\AbRouter\Models\Events\Event;
 use Modules\AbRouter\Services\Events\DTO\StatsQueryDTO;
 use Modules\AbRouter\Services\Events\EventCreator;
 use Modules\AbRouter\Repositories\Events\EventsRepository;
 use Modules\AbRouter\Repositories\Events\UserEventsRepository;
-use Modules\AbRouter\Repositories\Tags\TagsRepository;
 use Modules\AbRouter\Repositories\RelatedUser\RelatedUserRepository;
 use Modules\AbRouter\Services\Events\SimpleStatsService;
 use Modules\Auth\Exposable\AuthDecorator;
@@ -70,10 +70,12 @@ class StatisticsController
         ];
     }
 
-    public function showTags(TagsRepository $tagsRepository)
+    public function showTags(Event $event)
     {
-        $userTags = $tagsRepository->getTagsByUser($this->authDecorator->get()->getId());
-        
-        return $userTags;
+        $owner = $this->authDecorator->get()->getId();
+
+        return new TagCollection(
+            $event->newQuery()->select('tag')->where('owner_id', $owner)->distinct()->get()
+        );
     }
 }

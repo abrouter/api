@@ -13,9 +13,9 @@ class TagsRepository extends BaseRepository
     public function getTagsByUser(int $ownerId):Collection
     {
         /**
-         * @var Event $collection
+         * @var Collection $collection
          */
-        $collection = $this->query()->select('tag')->where('owner_id', $ownerId)->distinct()->get();
+        $collection = $this->query()->select('tag', 'owner_id')->where('owner_id', $ownerId)->distinct()->get();
         return $collection;
     }
 
