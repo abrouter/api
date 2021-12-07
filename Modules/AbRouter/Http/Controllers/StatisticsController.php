@@ -61,7 +61,7 @@ class StatisticsController
     ) {
         $results = $simpleStatsService->getStats(new StatsQueryDTO(
             $authDecorator->get()->getId(),
-            $request->input('tag')
+            $request->input('filter.tag')
         ));
         
         return [
