@@ -25,13 +25,18 @@ class DisplayUserEvents extends Module implements DependsOnModule
 
     public function haveUserEvents()
     {
-        $events = [];
-
-        for ($i = 0; $i < 10; $i++) { 
-            $event = 'event_' . uniqid();
-            
-            $events[] = $event;
-        }
+        $events = [
+            'visit_mainpage',
+            'open_contact_form',
+            'visited_book_call',
+            'fill_form_later',
+            'form_filler_complete',
+            'visited_nutrionists_page',
+            'skip_call_booking',
+            'thankyou_page',
+            'leave',
+            'sign up'
+        ];
 
         return $events;
     }

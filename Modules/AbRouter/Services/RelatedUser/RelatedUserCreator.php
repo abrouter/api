@@ -14,7 +14,8 @@ class RelatedUserCreator
         $relatedUser->fill([
             'owner_id' => $relatedUserDTO->getOwnerId(),
             'user_id' => $relatedUserDTO->getUserId(),
-            'related_user_id' => $relatedUserDTO->getRelatedUserId()
+            'related_user_id' => $relatedUserDTO->getRelatedUserId(),
+            'event_id' => $relatedUserDTO->getEventId()
         ]);
         
         $relatedUser->save();

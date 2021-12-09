@@ -53,7 +53,7 @@ class SimpleStatsService
         
         $uniqUsersIds = $this->getUniqUsersIds($allUserEvents);
         $uniqRelatedUsersIds = $this->getUniqRelatedUsersIds($uniqUsersIds, $allRelatedUsers->all());
-        $uniqUsers  = $this->getFinalUniqUsers($uniqUsersIds, $uniqRelatedUsersIds);
+        $uniqUsers = $this->getFinalUniqUsers($uniqUsersIds, $uniqRelatedUsersIds);
         
         $uniqUsersCount = count($uniqUsers);
         
@@ -78,7 +78,10 @@ class SimpleStatsService
             return $acc;
         }, []);
         $users = array_unique($users);
-        
+        $usersFlip = array_flip($users);
+        unset($usersFlip['']);
+        $users = array_flip($usersFlip);
+
         return $users;
     }
     
@@ -98,7 +101,6 @@ class SimpleStatsService
         $relatedUsersIds = [];
         $glueUserRelatedUser = [];
         $glueRelatedUser = [];
-        
         
         foreach ($allRelatedUsers as $relatedUser) {
             /**
@@ -165,7 +167,7 @@ class SimpleStatsService
         array $uniqUsers
     ): array {
         
-        $uniqUsers = array_filter(array_flip($uniqUsers));
+        $uniqUsers = array_flip($uniqUsers);
         $eventCounters = [];
         $userEventAdded = [];
         
@@ -209,18 +211,18 @@ class SimpleStatsService
                     break;
                 }
             }
-                
+            
             if (!$hasUserInRelated && !isset($uniqUsers[$event->user_id])) {
                 continue;
             }
-                
+            
             if ($hasUserInRelated) {
                 $userEventAdded[$relatedUsersKey] = true;
             }
             if (isset($uniqUsers[$event->user_id])) {
                 $userEventAdded[$userEventKey] = true;
             }
-    
+            
             if (!isset($eventCounters[$event->event])) {
                 $eventCounters[$event->event] = 0;
             }
