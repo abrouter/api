@@ -10,6 +10,8 @@ use Modules\AbRouter\Models\RelatedUsers\RelatedUser;
 use Modules\AbRouter\Repositories\Events\EventsRepository;
 use Modules\AbRouter\Repositories\Events\UserEventsRepository;
 use Modules\AbRouter\Repositories\RelatedUser\RelatedUserRepository;
+use Modules\AbRouter\Repositories\Experiments\ExperimentBranchUserRepository;
+use Modules\AbRouter\Repositories\Experiments\ExperimentBranchRepository;
 use Modules\AbRouter\Services\Events\DTO\StatsQueryDTO;
 use Modules\AbRouter\Services\Events\DTO\StatsResultsDTO;
 
@@ -18,17 +20,17 @@ class SimpleStatsService
     /**
      * @var UserEventsRepository
      */
-    private $userEventsRepository;
+    protected $userEventsRepository;
     
     /**
      * @var EventsRepository
      */
-    private $eventsRepository;
+    protected $eventsRepository;
     
     /**
      * @var RelatedUserRepository
      */
-    private $relatedUserRepository;
+    protected $relatedUserRepository;
     
     public function __construct(
         UserEventsRepository $userEventsRepository,
@@ -71,7 +73,7 @@ class SimpleStatsService
         return new StatsResultsDTO($eventPercentages, $eventCounters);
     }
     
-    private function getUniqUsersIds(Collection $allUserEvents): array
+    protected function getUniqUsersIds(Collection $allUserEvents): array
     {
         $users = $allUserEvents->reduce(function (array $acc, Event $event) {
             $acc[] = $event->user_id;
@@ -85,7 +87,7 @@ class SimpleStatsService
         return $users;
     }
     
-    private function getDisplayEvents(int $ownerId): array
+    protected function getDisplayEvents(int $ownerId): array
     {
         return $this
             ->eventsRepository
@@ -96,7 +98,7 @@ class SimpleStatsService
             }, []);
     }
     
-    private function getUniqRelatedUsersIds(array $uniqUsersIds, array $allRelatedUsers): array
+    protected function getUniqRelatedUsersIds(array $uniqUsersIds, array $allRelatedUsers): array
     {
         $relatedUsersIds = [];
         $glueUserRelatedUser = [];
@@ -136,12 +138,12 @@ class SimpleStatsService
         return array_unique($relatedUsersIds);
     }
     
-    private function getFinalUniqUsers(array $usersIds, array $relatedUsersIds): array
+    protected function getFinalUniqUsers(array $usersIds, array $relatedUsersIds): array
     {
         return array_unique(array_merge($usersIds, $relatedUsersIds));
     }
     
-    private function getEventsPercentages(array $events, array $eventCounters, int $uniqUsersCount): array
+    protected function getEventsPercentages(array $events, array $eventCounters, int $uniqUsersCount): array
     {
         $eventPercentage = [];
         foreach ($events as $eventName) {
@@ -161,8 +163,8 @@ class SimpleStatsService
         
         return $eventPercentage;
     }
-    
-    private function getEventCounters(
+
+    protected function getEventCounters(
         Collection $eventsList,
         array $uniqUsers
     ): array {

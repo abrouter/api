@@ -36,6 +36,7 @@ class Experiment extends Model
         'alias' => 'string',
         'config' => 'string',
         'is_enabled' => 'bool',
+        'is_feature_toggle' => 'bool',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
@@ -46,6 +47,7 @@ class Experiment extends Model
         'alias',
         'config',
         'is_enabled',
+        'is_feature_toggle',
         'uid',
         'owner_id',
     ];

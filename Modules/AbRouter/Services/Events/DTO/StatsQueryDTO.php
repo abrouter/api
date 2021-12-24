@@ -14,11 +14,17 @@ class StatsQueryDTO
      * @var string|null
      */
     private $tag;
+
+    /**
+     * @var int|null
+     */
+    private $experimentBranchId;
     
-    public function __construct(int $ownerId, ?string $tag)
+    public function __construct(int $ownerId, ?string $tag, ?int $experimentBranchId)
     {
         $this->ownerId = $ownerId;
         $this->tag = $tag;
+        $this->experimentBranchId = $experimentBranchId;
     }
     
     /**
@@ -35,6 +41,14 @@ class StatsQueryDTO
     public function getTag(): ?string
     {
         return $this->tag;
+    }
+
+    /**
+     * @return int
+     */
+    public function getExperimentBranchId(): ?int
+    {
+        return $this->experimentBranchId;
     }
     
     public function hasTag(): bool

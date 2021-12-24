@@ -51,6 +51,7 @@ class ExperimentService
             'alias' => $this->createAlias->create($experimentDTO->getName()),
             'config' => json_encode($experimentDTO->getConfig()),
             'is_enabled' => true,
+            'is_feature_toggle' => true,
             'uid' => $experimentDTO->getName(),
         ]);
         $experiment->save();

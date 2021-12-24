@@ -7,13 +7,18 @@ use Illuminate\Http\Request;
 use Modules\AbRouter\Http\Resources\Event\EventResource;
 use Modules\AbRouter\Http\Resources\Tag\TagCollection;
 use Modules\AbRouter\Http\Transformers\Events\EventTransformer;
+use Modules\AbRouter\Http\Transformers\Experiments\ExperimentStatsTransformer;
 use Modules\AbRouter\Models\Events\Event;
 use Modules\AbRouter\Services\Events\DTO\StatsQueryDTO;
 use Modules\AbRouter\Services\Events\EventCreator;
+use Modules\AbRouter\Services\Events\SimpleStatsService;
+use Modules\AbRouter\Services\Events\ExperimentStatsService;
+use Modules\AbRouter\Services\Experiment\DTO\StatsExperimentsQueryDTO;
+use Modules\AbRouter\Services\Experiment\SimpleStatsExperimentService;
 use Modules\AbRouter\Repositories\Events\EventsRepository;
 use Modules\AbRouter\Repositories\Events\UserEventsRepository;
+use Modules\AbRouter\Repositories\Tags\TagsRepository;
 use Modules\AbRouter\Repositories\RelatedUser\RelatedUserRepository;
-use Modules\AbRouter\Services\Events\SimpleStatsService;
 use Modules\Auth\Exposable\AuthDecorator;
 
 class StatisticsController
@@ -27,6 +32,11 @@ class StatisticsController
      * @var EventCreator
      */
     private $eventCreator;
+
+    /**
+     * @var ExperimentStatsTransformer
+     */
+    private $experimentStatsTransformer;
     
     /**
      * @var AuthDecorator
@@ -61,8 +71,22 @@ class StatisticsController
     ) {
         $results = $simpleStatsService->getStats(new StatsQueryDTO(
             $authDecorator->get()->getId(),
-            $request->input('filter.tag')
+            $request->input('filter.tag'),
+            null
         ));
+        
+        return [
+            'percentage' => $results->getPercentage(),
+            'counters' => $results->getCounters(),
+        ];
+    }
+
+    public function showStatsByExperiments(
+        Request $request,
+        ExperimentStatsService $simpleStatsService,
+        ExperimentStatsTransformer $experimentStatsTransformer
+    ) {
+        $results = $simpleStatsService->getStatsByExperimentBranch($experimentStatsTransformer->transform($request));
         
         return [
             'percentage' => $results->getPercentage(),

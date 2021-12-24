@@ -13,3 +13,7 @@ modules:
             depends: ["Laravel"]
         - Tests\Module\Fixture\Events:
             depends: ["Laravel"]
+        - Tests\Module\Fixture\FeatureToggle:
+            depends: ["Laravel"]
+        - Tests\Module\Fixture\ExperimentEvents:
+            depends: ["Laravel"]

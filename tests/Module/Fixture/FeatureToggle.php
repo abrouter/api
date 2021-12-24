@@ -9,7 +9,7 @@ use Modules\AbRouter\Services\Experiment\CreateAliasExperiments;
 use Codeception\Lib\Interfaces\DependsOnModule;
 use Codeception\Module;
 
-class Experiment extends Module implements DependsOnModule
+class FeatureToggle extends Module implements DependsOnModule
 {   
     public const TABLE_EXPERIMENTS = 'experiments';
     public const TABLE_EXPERIMENT_BRANCHES = 'experiment_branches';
@@ -25,22 +25,21 @@ class Experiment extends Module implements DependsOnModule
         $this->laravel = $laravel;
     }
 
-    public function haveExperiment(int $owner)
+    public function haveFeatureToggle(int $owner)
     {
-        $experimentName = 'experiment_' . uniqid();
-        $experimentAlias = (new CreateAliasExperiments())->create($experimentName);
+        $experimentAlias = (new CreateAliasExperiments())->create('feature-toggle-experiment');
         $branchName = 'branch_' . uniqid();
         $config = '[]';
         $percent = random_int(1, 100);
         $date = (new \DateTime())->format('Y-m-d');
         $recordExperiment = [
             'owner_id' => $owner,
-            'name' => $experimentName,
+            'name' => 'feature-toggle-experiment',
             'alias' => $experimentAlias,
             'config' => $config,
             'is_enabled' => true,
             'is_feature_toggle' => true,
-            'uid' => $experimentName,
+            'uid' => 'feature-toggle-experiment',
             'created_at' => $date,
             'updated_at' => $date
         ];
@@ -50,21 +49,27 @@ class Experiment extends Module implements DependsOnModule
         
         $encodeExperimentId = (new Encoder())->encode($experimentId, 'experiments');
 
-        $recordBranch = [
-            'experiment_id' => $experimentId,
-            'name' => $branchName,
-            'config' => $config,
-            'percent' => $percent,
-            'uid' => $branchName,
-            'created_at' => $date,
-            'updated_at' => $date
-        ];
+        $branchName = ['ON', 'OFF'];
+        $percent = [100, 0];
+        $encodeExperimentBranchId = [];
 
-        $idBranch = $this->laravel->haveRecord(self::TABLE_EXPERIMENT_BRANCHES, $recordBranch);
-        $encodeExperimentBranchId = (new Encoder())->encode($idBranch, 'experiment_branches');
-        $this->laravel->seeRecord(self::TABLE_EXPERIMENT_BRANCHES, $recordBranch);
+        for ($i = 0; $i < 2; $i++) { 
+            $recordBranch = [
+                'experiment_id' => $experimentId,
+                'name' => $branchName[$i],
+                'config' => $config,
+                'percent' => $percent[$i],
+                'uid' => $branchName[$i],
+                'created_at' => $date,
+                'updated_at' => $date
+            ];
+    
+            $idBranch = $this->laravel->haveRecord(self::TABLE_EXPERIMENT_BRANCHES, $recordBranch);
+            $encodeExperimentBranchId[] = (new Encoder())->encode($idBranch, 'experiment_branches');
+            $this->laravel->seeRecord(self::TABLE_EXPERIMENT_BRANCHES, $recordBranch);
+        }
         
-        return ['encodeExperimentId' => $encodeExperimentId, 'experimentId' => $experimentId, 'name' => $experimentName, 'alias' => $experimentAlias, 'idBranch' => $encodeExperimentBranchId];
+        return ['encodeExperimentId' => $encodeExperimentId, 'experimentId' => $experimentId, 'name' => 'feature-toggle-experiment', 'alias' => $experimentAlias, 'idBranch' => $encodeExperimentBranchId];
     }
     
     /**
