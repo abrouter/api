@@ -296,9 +296,76 @@ class Events extends Module implements DependsOnModule
             $this->laravel->haveRecord(self::TABLE_RELATED_USERS, $recordRelatedUsers);
             $this->laravel->seeRecord(self::TABLE_RELATED_USERS, $recordRelatedUsers);
 
+            $users[] = $userId ?? $temporaryUserId;
             unset($userId);
             unset($temporaryUserId);
         }
+    }
+
+    public function createEventsWithRelatedUserAndUserForExperimentStats(int $owner, array $events)
+    {
+        $c = 0;
+
+        for($i = 0, $m = 0, $n = 0; $i < 190; $i++, $m++, $n++) {
+
+            if($m === 10) {
+                $m = 0;
+            }
+            
+            if($n === 10) {
+                $n = 0;
+                $c++;
+
+                if($c === 4) {
+                    $c = 0;
+                }
+            }
+
+            if($m % 3 === 0) {
+                $userId = (new Encoder())->encode($m, 'users');
+            } else $temporaryUserId = substr(md5('user_' . $m), 0, 13);
+            
+            
+            $tag = 'test';
+            $referrer = '';
+            $ip = random_int(1, 255) . '.' . random_int(1, 255) . '.' . random_int(1, 255) . '.' . random_int(1, 255);
+            $meta = '[]';
+            $createdAt = (new \DateTime())->format('Y-m-d');
+            $updatedAt = (new \DateTime())->format('Y-m-d');
+
+            $recordEvents = [
+                'owner_id' => $owner,
+                'temporary_user_id' => $temporaryUserId ?? '',
+                'user_id' => $userId ?? '',
+                'event' => $events[$c],
+                'tag' => $tag,
+                'referrer' => $referrer,
+                'ip' => $ip,
+                'meta' => $meta,
+                'created_at' => $createdAt,
+                'updated_at' => $updatedAt
+            ];
+
+            $eventId = $this->laravel->haveRecord(self::TABLE_EVENTS, $recordEvents);
+            $this->laravel->seeRecord(self::TABLE_EVENTS, $recordEvents);
+
+            $recordRelatedUsers = [
+                'owner_id' => $owner,
+                'event_id' => $eventId,
+                'user_id' => $userId ?? '',
+                'related_user_id' => $temporaryUserId ?? '',
+                'created_at' => $createdAt,
+            ];
+            
+            $this->laravel->haveRecord(self::TABLE_RELATED_USERS, $recordRelatedUsers);
+            $this->laravel->seeRecord(self::TABLE_RELATED_USERS, $recordRelatedUsers);
+
+            $users[] = $userId ?? $temporaryUserId;
+            unset($userId);
+            unset($temporaryUserId);
+        }
+        
+        return $users;
     }
 
     /**

@@ -41,6 +41,18 @@ class DisplayUserEvents extends Module implements DependsOnModule
         return $events;
     }
 
+    public function haveUserEventsForExperimentStats()
+    {
+        $events = [
+            'visit_mainpage',
+            'open_contact_form',
+            'visited_book_call',
+            'fill_form_later',
+        ];
+
+        return $events;
+    }
+
     public function saveUserEvents(int $owner, array $events)
     {
         $eventsId = [];

@@ -6,8 +6,9 @@ namespace Modules\AbRouter\Http\Transformers\Experiments;
 use Illuminate\Http\Request;
 use Modules\AbRouter\Services\Events\DTO\StatsQueryDTO;
 use Modules\Auth\Exposable\AuthDecorator;
+use Modules\Core\EntityId\Encoder;
 
-class ExperimentStatsTransformer
+class ExperimentBranchStatsTransformer
 {
     /**
      * @var AuthDecorator $authDecorator
@@ -24,7 +25,8 @@ class ExperimentStatsTransformer
         return new StatsQueryDTO(
             $this->authDecorator->get()->getId(),
             null,
-            $request->input('filter.experimentId')
+            null,
+            (new Encoder())->decode($request->input('filter.experimentBranchId'), 'experiment_branches')
         );
     }
 }

@@ -67,7 +67,7 @@ class ExperimentEvents extends Module implements DependsOnModule
             $this->laravel->seeRecord(self::TABLE_EXPERIMENT_BRANCHES, $recordBranch);
         }
         
-        return ['alias' => $experimentAlias, 'idBranch' => $encodeExperimentBranchId, 'branchName' => $branchName];
+        return ['alias' => $experimentAlias, 'experimentId' => $encodeExperimentId, 'idBranch' => $encodeExperimentBranchId, 'branchName' => $branchName];
     }
 
     public function haveExperimentWithTwoBranch(int $owner)
@@ -93,7 +93,7 @@ class ExperimentEvents extends Module implements DependsOnModule
         
         $encodeExperimentId = (new Encoder())->encode($experimentId, 'experiments');
         $branchName = ['branch_first', 'branch_second'];
-        $percent = [50, 50];
+        $percent = 50;
         $encodeExperimentBranchId = [];
 
         for ($i = 0; $i < 2; $i++) { 
@@ -101,7 +101,7 @@ class ExperimentEvents extends Module implements DependsOnModule
                 'experiment_id' => $experimentId,
                 'name' => $branchName[$i],
                 'config' => $config,
-                'percent' => $percent[$i],
+                'percent' => $percent,
                 'uid' => $branchName[$i],
                 'created_at' => $date,
                 'updated_at' => $date
@@ -112,12 +112,12 @@ class ExperimentEvents extends Module implements DependsOnModule
             $this->laravel->seeRecord(self::TABLE_EXPERIMENT_BRANCHES, $recordBranch);
         }
         
-        return ['alias' => $experimentAlias, 'idBranch' => $encodeExperimentBranchId, 'branchName' => $branchName];
+        return ['alias' => $experimentAlias, 'experimentId' => $encodeExperimentId, 'idBranch' => $encodeExperimentBranchId, 'branchName' => $branchName];
     }
 
-    public function runExperiments($I, $token, $experimentAlias)
-    {
-        $userSignature = ['first-user', 'second-user', 'third-user', 'fourth-user'];
+    public function runExperiments($I, $token, $experimentAlias, $users)
+    {   
+        $branchesId = [];
 
         for ($i = 0, $n = 0; $i < 190; $i++, $n++) {
             if($n === 4) {
@@ -132,7 +132,7 @@ class ExperimentEvents extends Module implements DependsOnModule
                 'data' => [
                     'type' => 'experiment-run',
                     'attributes' => [
-                        'userSignature' => $userSignature[$n]
+                        'userSignature' => $users[$n]
                     ],
                     'relationships' => [
                         'experiment' => [
@@ -144,7 +144,17 @@ class ExperimentEvents extends Module implements DependsOnModule
                     ]
                 ]                
             ]);
+
+            $response = json_decode($I->grabResponse(), true);
+
+            $I->seeResponseCodeIsSuccessful(201);
+
+            if(empty($branchesId[$response['included'][0]['id']])) {
+                $branchesId[$response['included'][0]['id']] = $response['included'][0]['id'];
+            }
         }
+
+        return $branchesId;
     }
     
     /**

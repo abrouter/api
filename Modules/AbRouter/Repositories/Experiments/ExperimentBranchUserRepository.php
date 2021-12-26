@@ -9,15 +9,27 @@ use Modules\Core\Repositories\BaseRepository;
 
 class ExperimentBranchUserRepository extends BaseRepository
 {
-    public function getUsersId(int $branchId): Collection
+    public function getUsersIdByBranchId(int $branchId)
     {
         /**
          * @var Collection $collection
          */
         $collection = $this->query()
-            ->where('experiment_branch_id', $branchId)
+            ->where('experiment_branch_id', $branchId)       
             ->get();
-        
+
+        return $collection;
+    }
+
+    public function getUsersIdByExperimentId(int $experimentId)
+    {
+        /**
+         * @var Collection $collection
+         */
+        $collection = $this->query()
+            ->where('experiment_id', $experimentId)
+            ->get();
+
         return $collection;
     }
 

@@ -10,8 +10,9 @@ Route::middleware(['api', 'auth:api'])->group(function () {
     Route::post('/v1/experiment/run', 'ExperimentsController@run');
     Route::post('/v1/feature-toggles/', 'FeatureTogglesController@createOrUpdate');
     Route::post('/v1/feature-toggles/run', 'FeatureTogglesController@run');
-    Route::get('/v1/experiments/branch-stats', 'StatisticsController@showStatsByExperiments');
-    
+    Route::get('/v1/experiments/branch-stats', 'StatisticsController@showStatsByExperimentBranch');
+    Route::get('/v1/experiments/stats', 'StatisticsController@showStatsByExperiment');
+
     Route::post('/v1/event', 'StatisticsController@create');
     Route::post('/v1/event/funnel', 'StatisticsController@showStats');
 

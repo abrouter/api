@@ -16,14 +16,20 @@ class StatsQueryDTO
     private $tag;
 
     /**
+     * @var string|null
+     */
+    private $experimentId;
+
+    /**
      * @var int|null
      */
     private $experimentBranchId;
     
-    public function __construct(int $ownerId, ?string $tag, ?int $experimentBranchId)
+    public function __construct(int $ownerId, ?string $tag, ?string $experimentId = null, ?int $experimentBranchId = null)
     {
         $this->ownerId = $ownerId;
         $this->tag = $tag;
+        $this->experimentId = $experimentId;
         $this->experimentBranchId = $experimentBranchId;
     }
     
@@ -44,7 +50,15 @@ class StatsQueryDTO
     }
 
     /**
-     * @return int
+     * @return string|null
+     */
+    public function getExperimentId(): ?string
+    {
+        return $this->experimentId;
+    }
+
+    /**
+     * @return int|null
      */
     public function getExperimentBranchId(): ?int
     {
