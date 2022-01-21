@@ -13,7 +13,8 @@ COPY . /app
 ADD 	 https://releases.hashicorp.com/consul-template/${CONSUL_TEMPLATE_VERSION}/consul-template_${CONSUL_TEMPLATE_VERSION}_linux_amd64.zip /usr/bin/
 RUN 	 unzip /usr/bin/consul-template_${CONSUL_TEMPLATE_VERSION}_linux_amd64.zip && \
     	 mv consul-template /usr/local/bin/consul-template && \
-    	 rm -rf /usr/bin/consul-template_${CONSUL_TEMPLATE_VERSION}_linux_amd64.zip
+    	 rm -rf /usr/bin/consul-template_${CONSUL_TEMPLATE_VERSION}_linux_amd64.zip && \
+         mkdir /var/cache/nginx
 
 RUN mkdir -p /entrypoint.d \
     && cp -R /app/docker/provision/entrypoint.d/* /entrypoint.d/ \
