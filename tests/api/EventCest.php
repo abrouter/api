@@ -24,6 +24,7 @@ class EventCest
             $referrer = '';
             $ip = random_int(1, 255) . '.' . random_int(1, 255) . '.' . random_int(1, 255) . '.' . random_int(1, 255);
             $meta = [];
+            $date = (new \DateTime())->format('Y-m-d');
 
             $I->sendPost('/event', [
                 'data' => [
@@ -35,7 +36,8 @@ class EventCest
                         'tag' => $tag,
                         'referrer' => $referrer,
                         'ip' => $ip,
-                        'meta' => $meta
+                        'meta' => $meta,
+                        'created_at' => $date
                     ],
                     'relationships' => [
                         'owner' => [
@@ -47,8 +49,9 @@ class EventCest
                     ]
                 ]
             ]);
-                
+
             $response = json_decode($I->grabResponse(), true);
+
             $I->seeResponseCodeIsSuccessful(201);
             $I->seeResponseContainsJson([
                 'data' => [
@@ -60,7 +63,8 @@ class EventCest
                         'tag' => $response['data']['attributes']['tag'],
                         'referrer' => $response['data']['attributes']['referrer'],
                         'ip' => $response['data']['attributes']['ip'],
-                        'meta' => $response['data']['attributes']['meta']
+                        'meta' => $response['data']['attributes']['meta'],
+                        'created_at' => $response['data']['attributes']['created_at']
                     ],
                     'relationships' => [
                         'owner' => [
@@ -80,7 +84,8 @@ class EventCest
                 'tag' => $tag,
                 'referrer' => $referrer,
                 'ip' => $ip,
-                'owner_id' => $user['id']
+                'owner_id' => $user['id'],
+                'created_at' => $date
             ];
 
             $I->seeRecord('events', $recordEvents);

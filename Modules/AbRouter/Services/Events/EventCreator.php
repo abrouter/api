@@ -32,10 +32,12 @@ class EventCreator
             'tag' => $eventDTO->getTag(),
             'referrer' => $eventDTO->getReferrer(),
             'meta' => json_encode($eventDTO->getMeta()),
+            'created_at' => $eventDTO->getCreatedAt() ?? (new \DateTime())->format('Y-m-d'),
             'country_code' => $eventDTO->getCountryCode(),
         ]);
-        
+
         $saved = $event->save();
+
         if ($saved) {
             $this->relatedUserCreator->create(new RelatedUserDTO(
                 $eventDTO->getOwnerId(),

@@ -44,6 +44,11 @@ class EventDTO
      * @var string
      */
     private $ip;
+
+    /**
+     * @var string|null
+     */
+    private $created_at;
     
     /**
      * @var string
@@ -53,15 +58,16 @@ class EventDTO
     /**
      * EventDTO constructor.
      *
-     * @param int    $ownerId
-     * @param string $temporaryUserId
-     * @param string $userId
-     * @param string $event
-     * @param string $tag
-     * @param string $referrer
-     * @param array  $meta
-     * @param string $ip
-     * @param string $countryCode
+     * @param int         $ownerId
+     * @param string      $temporaryUserId
+     * @param string      $userId
+     * @param string      $event
+     * @param string      $tag
+     * @param string      $referrer
+     * @param array       $meta
+     * @param string      $ip
+     * @param string|null $created_at
+     * @param string      $countryCode
      */
     public function __construct(
         int $ownerId,
@@ -72,6 +78,7 @@ class EventDTO
         string $referrer,
         array $meta,
         string $ip,
+        ?string $created_at,
         string $countryCode
     ) {
         $this->ownerId = $ownerId;
@@ -82,6 +89,7 @@ class EventDTO
         $this->referrer = $referrer;
         $this->meta = $meta;
         $this->ip = $ip;
+        $this->created_at = $created_at;
         $this->countryCode = $countryCode;
     }
     
@@ -148,7 +156,15 @@ class EventDTO
     {
         return $this->ip;
     }
-    
+
+    /**
+     * @return string|null
+     */
+    public function getCreatedAt(): ?string
+    {
+        return $this->created_at;
+    }
+
     /**
      * @return string
      */

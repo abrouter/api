@@ -57,6 +57,7 @@ class Event extends Model
         'referrer',
         'meta',
         "ip",
+        'created_at',
         'country_code',
     ];
 

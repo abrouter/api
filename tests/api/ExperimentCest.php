@@ -29,6 +29,7 @@ class ExperimentCest
                 'attributes' => [
                     'name' => $experimentName,
                     'is_enabled' => true,
+                    'is_feature_toggle' => false,
                     'config' => [],
                 ],
                 'relationships' => [
@@ -128,7 +129,8 @@ class ExperimentCest
         $alias = $response['data']['attributes']['alias'];
         $config = $response['data']['attributes']['config'];
         $isEnabled = $response['data']['attributes']['is_enabled'];
-        $recordExperiment = ['name' => $experimentName, 'alias' => $alias, 'is_enabled' => $isEnabled, 'owner_id' => $user['id']];
+        $isFeatureToggle = $response['data']['attributes']['is_feature_toggle'];
+        $recordExperiment = ['name' => $experimentName, 'alias' => $alias, 'is_enabled' => $isEnabled, 'is_feature_toggle' => $isFeatureToggle , 'owner_id' => $user['id']];
 
         $I->seeResponseCodeIsSuccessful(201);
         $I->seeResponseContainsJson([
@@ -139,7 +141,8 @@ class ExperimentCest
                     'name' => $experimentName,
                     'alias' => $alias,
                     'config' => $config,
-                    'is_enabled' => $isEnabled
+                    'is_enabled' => $isEnabled,
+                    'is_feature_toggle' => $isFeatureToggle
                 ],
                 'relationships' => [
                     'owner' => [
@@ -291,6 +294,7 @@ class ExperimentCest
                 'attributes' => [
                     'name' => $experimentName,
                     'is_enabled' => true,
+                    'is_feature_toggle' => false,
                     'config' => [],
                 ],
                 'relationships' => [
@@ -341,7 +345,8 @@ class ExperimentCest
         $alias = $response['data']['attributes']['alias'];
         $config = $response['data']['attributes']['config'];
         $isEnabled = $response['data']['attributes']['is_enabled'];
-        $recordExperiment = ['name' => $experimentName, 'alias' => $alias, 'is_enabled' => $isEnabled, 'owner_id' => $user['id']];
+        $isFeatureToggle = $response['data']['attributes']['is_feature_toggle'];
+        $recordExperiment = ['name' => $experimentName, 'alias' => $alias, 'is_enabled' => $isEnabled, 'is_feature_toggle' => $isFeatureToggle, 'owner_id' => $user['id']];
         $recordBranch = ['experiment_id' => $experiment['experimentId'],'name' => $branchName, 'uid' => $branchName, 'percent' => $percent];
 
         $I->seeResponseCodeIsSuccessful(201);
@@ -353,7 +358,8 @@ class ExperimentCest
                     'name' => $experimentName,
                     'alias' => $alias,
                     'config' => $config,
-                    'is_enabled' => $isEnabled
+                    'is_enabled' => $isEnabled,
+                    'is_feature_toggle' => $isFeatureToggle
                 ],
                 'relationships' => [
                     'owner' => [
@@ -376,5 +382,55 @@ class ExperimentCest
 
         $I->seeRecord('experiments', $recordExperiment);
         $I->seeRecord('experiment_branches', $recordBranch);
+    }
+
+    public function deleteExperiment(ApiTester $I)
+    {
+        $user = $I->haveUser($I);
+        $experiment = $I->haveExperiment($user['id']);
+        $experimentId = $experiment['encodeExperimentId'];
+        $experimentName = 'experiment_' . uniqid();
+        $branchName = 'branch_' . uniqid();
+        $percent = random_int(1,100);
+
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->haveHttpHeader('Accept', 'application/json');
+        $I->amBearerAuthenticated($user['token']);
+
+        $I->sendDelete("/experiments/{$experimentId}", [
+            'data' => [
+                'id' => $experimentId,
+                'type' => 'experiments',
+                'attributes' => [
+                    'name' => $experimentName,
+                ],
+                'relationships' => [
+                    'branches' => [
+                        'data' => [
+                            [
+                            'id' => $experiment['idBranch'],
+                            'type' => 'experiment_branches',
+                            ]
+                        ]
+                    ],
+                    'owner' => [
+                        'data' => [
+                            'id' => $user['encodeId'],
+                            'type' => 'users',
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+    
+        $response = json_decode($I->grabResponse(), true);
+
+        $recordExperiment = ['name' => $experimentName, 'owner_id' => $user['id']];
+        $recordBranch = ['experiment_id' => $experiment['experimentId']];
+
+        $I->seeResponseCodeIsSuccessful(204);
+
+        $I->dontSeeRecord('experiments', $recordExperiment);
+        $I->dontSeeRecord('experiment_branches', $recordBranch);
     }
 }

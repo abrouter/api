@@ -24,6 +24,8 @@ class ExperimentStatsTransformer
         return new StatsQueryDTO(
             $this->authDecorator->get()->getId(),
             null,
+            null,
+            null,
             $request->input('filter.experimentId')
         );
     }

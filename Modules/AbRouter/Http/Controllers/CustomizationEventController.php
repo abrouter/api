@@ -79,10 +79,8 @@ class CustomizationEventController extends Controller
         CustomizationEventUpdateRequests $request,
         CustomizationEventUpdateTransformer $transformer,
         CustomizationEventDeleterService $customizationEventDeleter
-    ) {
+    ): void {
         $customizationEventDeleteDTO = $transformer->transform($request);
         $deleteCustomEvent = $customizationEventDeleter->delete($customizationEventDeleteDTO);
-
-        return $deleteCustomEvent;
     }
 }

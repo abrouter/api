@@ -27,6 +27,7 @@ class FeatureToggleCest
                 'attributes' => [
                     'name' => $featureToggleName,
                     'is_enabled' => true,
+                    'is_feature_toggle' => true,
                     'config' => [],
                 ],
                 'relationships' => [
@@ -102,7 +103,8 @@ class FeatureToggleCest
         $alias = $response['data']['attributes']['alias'];
         $config = $response['data']['attributes']['config'];
         $isEnabled = $response['data']['attributes']['is_enabled'];
-        $recordExperiment = ['name' => $featureToggleName, 'alias' => $alias, 'is_enabled' => $isEnabled, 'owner_id' => $user['id']];
+        $isFeatureToggle = $response['data']['attributes']['is_feature_toggle'];
+        $recordExperiment = ['name' => $featureToggleName, 'alias' => $alias, 'is_enabled' => $isEnabled, 'is_feature_toggle' => $isFeatureToggle, 'owner_id' => $user['id']];
 
         $I->seeResponseCodeIsSuccessful(201);
         $I->seeResponseContainsJson([
@@ -114,6 +116,7 @@ class FeatureToggleCest
                     'alias' => $alias,
                     'config' => $config,
                     'is_enabled' => $isEnabled,
+                    'is_feature_toggle' => $isFeatureToggle
                 ],
                 'relationships' => [
                     'owner' => [
@@ -259,6 +262,7 @@ class FeatureToggleCest
                 'attributes' => [
                     'name' => $featureToggleName,
                     'is_enabled' => true,
+                    'is_feature_toggle' => true,
                     'config' => [],
                 ],
                 'relationships' => [
@@ -352,6 +356,7 @@ class FeatureToggleCest
                 'attributes' => [
                     'name' => $featureToggleName,
                     'is_enabled' => true,
+                    'is_feature_toggle' => true,
                     'config' => [],
                 ],
                 'relationships' => [
@@ -424,5 +429,58 @@ class FeatureToggleCest
         $response = json_decode($I->grabResponse(), true);
 
         $I->seeResponseCodeIs(422);
-    } 
+    }
+
+    public function delete(ApiTester $I)
+    {
+        $user = $I->haveUser($I);
+        $featureToggle = $I->haveFeatureToggle($user['id']);
+
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->haveHttpHeader('Accept', 'application/json');
+        $I->amBearerAuthenticated($user['token']);
+
+        $I->sendDelete('/feature-toggles/' . $featureToggle['encodeExperimentId'], [
+            'data' => [
+                'id' => $featureToggle['encodeExperimentId'],
+                'type' => 'feature-toggles',
+                'attributes' => [
+                    'name' => $featureToggle['name'],
+                ],
+                'relationships' => [
+                    'branches' => [
+                        'data' => [
+                            [
+                                'id' => $featureToggle['idBranch'][0],
+                                'type' => 'experiment_branches',
+                            ],
+                            [
+                                'id' => $featureToggle['idBranch'][1],
+                                'type' => 'experiment_branches',
+                            ]
+                        ]
+                    ],
+                    'owner' => [
+                        'data' => [
+                            'id' => $user['encodeId'],
+                            'type' => 'users',
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+    
+        $response = json_decode($I->grabResponse(), true);
+
+        $recordExperiment = ['name' => $featureToggle['name'], 'owner_id' => $user['id']];
+
+        $I->seeResponseCodeIsSuccessful(204);
+
+        $I->dontSeeRecord('experiments', $recordExperiment);
+        
+        for ($n = 0; $n < count($featureToggle['idBranch']); $n++) { 
+            $recordBranch = ['experiment_id' => $featureToggle['experimentId']];
+            $I->dontSeeRecord('experiment_branches', $recordBranch);
+        }
+    }
 }

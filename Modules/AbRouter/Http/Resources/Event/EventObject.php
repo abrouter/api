@@ -32,6 +32,7 @@ class EventObject extends BaseObject
             'referrer' => $this->model->referrer,
             'ip' => $this->model->ip,
             'meta' => $this->model->meta,
+            'created_at' => $this->model->created_at
         ]);
 
 

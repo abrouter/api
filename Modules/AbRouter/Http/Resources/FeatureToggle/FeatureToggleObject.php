@@ -32,7 +32,8 @@ class FeatureToggleObject extends BaseObject
             'run-uid' => $uid,
             'branch-uid' => $this->model->experimentBranch->uid,
             'experiment-uid' => $this->model->experiment->uid,
-            'is_enabled' => $this->model->experiment->is_enabled
+            'is_enabled' => $this->model->experiment->is_enabled,
+            'is_feature_toggle' => $this->model->experiment->is_feature_toggle
         ]);
 
         $relationships = new RelationshipsCollection([

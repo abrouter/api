@@ -50,15 +50,15 @@ class ExperimentService
             'name' => $experimentDTO->getName(),
             'alias' => $this->createAlias->create($experimentDTO->getName()),
             'config' => json_encode($experimentDTO->getConfig()),
-            'is_enabled' => true,
-            'is_feature_toggle' => true,
+            'is_enabled' => $experimentDTO->getIsEnabled(),
+            'is_feature_toggle' => $experimentDTO->getIsFeatureToggle(),
             'uid' => $experimentDTO->getName(),
         ]);
         $experiment->save();
         $experiment->refresh();
 
+        $this->deleteBranches($experimentDTO, $experiment);
         $this->updateBranches($experimentDTO, $experiment);
-
 
         return $experiment;
     }
@@ -101,5 +101,40 @@ class ExperimentService
         }
 
         return $models;
+    }
+
+    private function deleteBranches(ExperimentDTO $experimentDTO, Experiment $experiment): void
+    {
+        $branchesIds = array_reduce($experimentDTO->getBranches(), function (array $acc, BranchDTO $branchDTO) {
+            try {
+                $acc[] = $this->encoder->decode($branchDTO->getId(), ExperimentBranches::getType());
+            } catch (\Throwable $e) {
+            }
+
+            return $acc;
+        }, []);
+        
+        if (!empty($branchesIds)) {
+            $allBranchesExperiment = (new ExperimentBranches())->newQuery()->select('id')->where('experiment_id', $experiment->id)->get();
+            
+            foreach ($allBranchesExperiment as $branch) {
+                $allBranches[] = $branch->id;            
+            }
+            
+            $missingBranchesId = array_diff($allBranches, $branchesIds);
+
+            if (!empty($missingBranchesId)) {
+                foreach ($missingBranchesId as $branchId) {
+                    if ($branchId === null) {
+                        break;
+                    }
+
+                    $deleteBranch = (new ExperimentBranches())->newQuery()
+                        ->where('id', $branchId)
+                        ->where('experiment_id', $experiment->id)
+                        ->delete();
+                }
+            }
+        }
     }
 }

@@ -32,7 +32,8 @@ class ExperimentObject extends BaseObject
             'name' => $this->model->name,
             'alias' => $this->model->alias,
             'config' => json_decode($this->model->config, true),
-            'is_enabled' => $this->model->is_enabled
+            'is_enabled' => $this->model->is_enabled,
+            'is_feature_toggle' => $this->model->is_feature_toggle
         ]);
 
         $collection = $this

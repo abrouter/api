@@ -15,6 +15,7 @@ use Modules\Core\EntityId\EntityIdTrait;
  * @property int id
  * @property string username
  * @property string password
+ * @property string google_id
  * @property Carbon created_at
  * @property Carbon updated_at
  */
@@ -26,6 +27,7 @@ class User extends Authenticatable
         'id' => 'int',
         'username' => 'string',
         'password' => 'string',
+        'google_id' => 'string',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
@@ -33,6 +35,7 @@ class User extends Authenticatable
     protected $fillable = [
         'username',
         'password',
+        'google_id'
     ];
 
     public static function getType(): string

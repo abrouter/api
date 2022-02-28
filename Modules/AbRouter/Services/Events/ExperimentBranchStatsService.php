@@ -30,10 +30,16 @@ class ExperimentBranchStatsService extends SimpleStatsService
     }
 
     public function getStatsByExperimentBranch(StatsQueryDTO $statsQueryDTO): StatsResultsDTO
-    {   
-        $allUserEvents = $this->userEventsRepository->getWithOwnerByTag(
+    {
+        if(!empty($statsQueryDTO->getDateFrom() && $statsQueryDTO->getDateTo())) {
+            $date = $this->convertDateTime($statsQueryDTO->getDateFrom(), $statsQueryDTO->getDateTo()) ;
+        }
+
+        $allUserEvents = $this->userEventsRepository->getWithOwnerByTagAndDate(
             $statsQueryDTO->getOwnerId(),
-            $statsQueryDTO->getTag()
+            $statsQueryDTO->getTag(),
+            $date['date_from'] ?? null,
+            $date['date_to'] ?? null
         );
         $allUserEvents->load('relatedUsers');
         $allRelatedUsers = $allUserEvents->pluck('relatedUsers')->flatten();

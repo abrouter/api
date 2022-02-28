@@ -35,10 +35,16 @@ class ExperimentStatsService extends SimpleStatsService
     }
 
     public function getStatsByExperiment(StatsQueryDTO $statsQueryDTO): StatsResultsDTO
-    {   
-        $allUserEvents = $this->userEventsRepository->getWithOwnerByTag(
+    {
+        if(!empty($statsQueryDTO->getDateFrom() && $statsQueryDTO->getDateTo())) {
+            $date = $this->convertDateTime($statsQueryDTO->getDateFrom(), $statsQueryDTO->getDateTo()) ;
+        }
+
+        $allUserEvents = $this->userEventsRepository->getWithOwnerByTagAndDate(
             $statsQueryDTO->getOwnerId(),
-            $statsQueryDTO->getTag()
+            $statsQueryDTO->getTag(),
+            $date['date_from'] ?? null,
+            $date['date_to'] ?? null
         );
         $allUserEvents->load('relatedUsers');
         $allRelatedUsers = $allUserEvents->pluck('relatedUsers')->flatten();
@@ -82,6 +88,13 @@ class ExperimentStatsService extends SimpleStatsService
         return $usersIdCollection;
     }
 
+    private function getExperimentIdById(string $experimentId , int $owner): Experiment
+    {
+        $experiment = $this->experimentsRepository->getExperimentsById($experimentId, $owner);
+
+        return $experiment;
+    }
+
     private function getExperimentByAlias(string $alias, int $owner): Experiment
     {
         $experiment = $this->experimentsRepository->getExperimentsByAlias($alias, $owner);
@@ -99,14 +112,13 @@ class ExperimentStatsService extends SimpleStatsService
         $checkId = preg_match('/^([A-Z0-9]{8})(-){1}([A-Z0-9]{4})(-){1}([A-Z0-9]{4})(-){1}([A-Z0-9]{8})$/', $experimentId);
         
         if($checkId) {
-            $decodeExperimentId = (new Encoder())->decode($experimentId, 'experiments');
-            $usersId = $this->getExperimentUsersIdByExperimentBranchId($decodeExperimentId);
+            $experiment = $this->getExperimentIdById($experimentId, $owner);
         } else $experiment = $this->getExperimentByAlias($experimentId, $owner);
         
         if(isset($experiment)) {
             $usersId = $this->getExperimentUsersIdByExperimentBranchId($experiment->id);
         }
-        
+
         $usersId->load('experimentBranch', 'experimentUser');
         $branchesNames = $usersId->pluck('experimentBranch')->flatten()->pluck('name', 'id')->toArray();
 

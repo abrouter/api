@@ -27,10 +27,17 @@ class ExperimentDTO
      */
     private $id;
 
-    public function __construct(?string $id, string $name, array $config, string $owner, BranchDTO...$branches)
+     /**
+     * @var string
+     */
+    private $isEnabled;
+
+    public function __construct(?string $id, string $name, bool $isEnabled, bool $isFeatureToggle, array $config, string $owner, BranchDTO...$branches)
     {
         $this->id = $id;
         $this->name = $name;
+        $this->isEnabled = $isEnabled;
+        $this->isFeatureToggle = $isFeatureToggle;
         $this->config = $config;
         $this->owner = $owner;
         $this->branches = $branches;
@@ -74,5 +81,21 @@ class ExperimentDTO
     public function getId(): ?string
     {
         return $this->id;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsEnabled(): bool
+    {
+        return $this->isEnabled;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsFeatureToggle(): bool
+    {
+        return $this->isFeatureToggle;
     }
 }

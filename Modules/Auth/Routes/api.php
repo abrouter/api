@@ -10,3 +10,4 @@ Route::post('/v1/users/forgotpassword', 'ForgotPasswordController@restore');
 Route::post('/v1/users/resetpassword', 'ResetPasswordController@reset');
 
 Route::post('/v1/auth', 'AuthController@auth');
+Route::post('/v1/auth/google', 'AuthController@authWithGoogle');

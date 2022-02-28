@@ -35,6 +35,8 @@ class FeatureToggleCreateTransformer
         $experiment = new ExperimentDTO(
             $request->input('data.id'),
             $request->input('data.attributes.name'),
+            $request->input('data.attributes.is_enabled'),
+            $request->input('data.attributes.is_feature_toggle'),
             $request->input('data.attributes.config', []),
             $request->input('data.relationships.owner.data.id', []),
             ...$branches

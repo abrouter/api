@@ -9,8 +9,12 @@ use Modules\Core\Repositories\BaseRepository;
 
 class UserEventsRepository extends BaseRepository
 {
-    public function getWithOwnerByTag(int $owner, ?string $tag): Collection
-    {
+    public function getWithOwnerByTagAndDate(
+        int $owner,
+        ?string $tag,
+        ?string $dateFrom,
+        ?string $dateTo
+    ): Collection {
         $query = $this
             ->query()
             ->where('owner_id', $owner);
@@ -18,11 +22,15 @@ class UserEventsRepository extends BaseRepository
         if (!empty($tag)) {
             $query = $query->where('tag', $tag);
         }
+
+        if(!empty($dateFrom) && !empty($dateTo)) {
+            $query = $query->whereBetween('created_at', [$dateFrom, $dateTo]);
+        }
         
         return $query->get();
     }
 
-    protected function getModel()
+    protected function getModel(): Event
     {
         return new Event();
     }

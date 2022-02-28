@@ -6,9 +6,12 @@ Route::get('/v1/experiment/run', 'ExperimentsController@runSimple');
 Route::middleware(['api', 'auth:api'])->group(function () {
     Route::post('/v1/experiments/', 'ExperimentsController@createOrUpdate');
     Route::patch('/v1/experiments/{id}', 'ExperimentsController@createOrUpdate');
+    Route::delete('/v1/experiments/{id}', 'ExperimentsController@delete');
     Route::get('/v1/experiments', 'ExperimentsController@index');
     Route::post('/v1/experiment/run', 'ExperimentsController@run');
     Route::post('/v1/feature-toggles/', 'FeatureTogglesController@createOrUpdate');
+    Route::patch('/v1/feature-toggles/{id}', 'FeatureTogglesController@createOrUpdate');
+    Route::delete('/v1/feature-toggles/{id}', 'FeatureTogglesController@delete');
     Route::post('/v1/feature-toggles/run', 'FeatureTogglesController@run');
     Route::get('/v1/experiments/branch-stats', 'StatisticsController@showStatsByExperimentBranch');
     Route::get('/v1/experiments/stats', 'StatisticsController@showStatsByExperiment');

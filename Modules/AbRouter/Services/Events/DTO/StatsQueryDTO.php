@@ -18,6 +18,16 @@ class StatsQueryDTO
     /**
      * @var string|null
      */
+    private $dateFrom;
+
+    /**
+     * @var string|null
+     */
+    private $dateTo;
+
+    /**
+     * @var string|null
+     */
     private $experimentId;
 
     /**
@@ -25,10 +35,18 @@ class StatsQueryDTO
      */
     private $experimentBranchId;
     
-    public function __construct(int $ownerId, ?string $tag, ?string $experimentId = null, ?int $experimentBranchId = null)
-    {
+    public function __construct(
+        int $ownerId,
+        ?string $tag,
+        ?string $dateFrom,
+        ?string $dateTo,
+        ?string $experimentId = null,
+        ?int $experimentBranchId = null
+    ) {
         $this->ownerId = $ownerId;
         $this->tag = $tag;
+        $this->dateFrom = $dateFrom;
+        $this->dateTo = $dateTo;
         $this->experimentId = $experimentId;
         $this->experimentBranchId = $experimentBranchId;
     }
@@ -47,6 +65,22 @@ class StatsQueryDTO
     public function getTag(): ?string
     {
         return $this->tag;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDateFrom(): ?string
+    {
+        return $this->dateFrom;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDateTo(): ?string
+    {
+        return $this->dateTo;
     }
 
     /**

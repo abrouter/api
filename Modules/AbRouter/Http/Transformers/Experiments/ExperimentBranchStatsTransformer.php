@@ -26,6 +26,8 @@ class ExperimentBranchStatsTransformer
             $this->authDecorator->get()->getId(),
             null,
             null,
+            $request->input('filter.date_from'),
+            $request->input('filter.date_to'),
             (new Encoder())->decode($request->input('filter.experimentBranchId'), 'experiment_branches')
         );
     }

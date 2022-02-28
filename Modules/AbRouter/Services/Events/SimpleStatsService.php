@@ -10,7 +10,6 @@ use Modules\AbRouter\Models\RelatedUsers\RelatedUser;
 use Modules\AbRouter\Repositories\Events\EventsRepository;
 use Modules\AbRouter\Repositories\Events\UserEventsRepository;
 use Modules\AbRouter\Repositories\RelatedUser\RelatedUserRepository;
-use Modules\AbRouter\Repositories\Experiments\ExperimentBranchUserRepository;
 use Modules\AbRouter\Repositories\Experiments\ExperimentBranchRepository;
 use Modules\AbRouter\Services\Events\DTO\StatsQueryDTO;
 use Modules\AbRouter\Services\Events\DTO\StatsResultsDTO;
@@ -44,9 +43,15 @@ class SimpleStatsService
     
     public function getStats(StatsQueryDTO $statsQueryDTO): StatsResultsDTO
     {
-        $allUserEvents = $this->userEventsRepository->getWithOwnerByTag(
+        if(!empty($statsQueryDTO->getDateFrom() && $statsQueryDTO->getDateTo())) {
+            $date = $this->convertDateTime($statsQueryDTO->getDateFrom(), $statsQueryDTO->getDateTo()) ;
+        }
+
+        $allUserEvents = $this->userEventsRepository->getWithOwnerByTagAndDate(
             $statsQueryDTO->getOwnerId(),
-            $statsQueryDTO->getTag()
+            $statsQueryDTO->getTag(),
+            $date['date_from'] ?? null,
+            $date['date_to'] ?? null
         );
         $allUserEvents->load('relatedUsers');
         $allRelatedUsers = $allUserEvents->pluck('relatedUsers')->flatten();
@@ -233,5 +238,16 @@ class SimpleStatsService
         }
         
         return $eventCounters;
+    }
+
+    protected function convertDateTime($dateFrom = null, $dateTo = null)
+    {
+        if(!empty($dateFrom && $dateTo)) {
+            $dateFromConverted = \DateTime::createFromFormat('m-d-Y', $dateFrom)->format('Y-m-d');
+            $dateToConverted = \DateTime::createFromFormat('m-d-Y', $dateTo)->format('Y-m-d');
+            $dateConverted = ['date_from' => $dateFromConverted, 'date_to' => $dateToConverted];
+
+            return $dateConverted;
+        }
     }
 }
