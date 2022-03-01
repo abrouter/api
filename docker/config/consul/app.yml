@@ -17,5 +17,8 @@ $SERVICE_REGION$/apps/$SERVICE_NAME$/api/redis/sessions_db: 1
 $SERVICE_REGION$/apps/$SERVICE_NAME$/api/redis/rw_timeout: 60
 $SERVICE_REGION$/apps/$SERVICE_NAME$/api/redis/port: 6379
 
+$SERVICE_REGION$/apps/$SERVICE_NAME$/google/client_id: 575253665892-8dg5mkdn6rdm3a52hi44nhsd3qud9vbh.apps.googleusercontent.com
+
+
 $SERVICE_REGION$/apps/$SERVICE_NAME$/api/host: http://localhost:933
 $SERVICE_REGION$/apps/$SERVICE_NAME$/api/host_internal: http://abr-app-api
