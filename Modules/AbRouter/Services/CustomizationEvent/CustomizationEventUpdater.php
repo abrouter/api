@@ -13,15 +13,16 @@ class CustomizationEventUpdater
     {
         $verificationUser = app()->make(CheckUserMiddleware::class);
         $verificationUser->handle($customizationEventUpdateDTO->getUserId());
-        $displayUserEvent = new DisplayUserEvent();
-        $displayUserEvent->where('id', $customizationEventUpdateDTO->getId())
-                        ->update(['user_id' => $customizationEventUpdateDTO->getUserId(),
+
+        DisplayUserEvent
+            ::where('id', $customizationEventUpdateDTO->getId())
+            ->update(['user_id' => $customizationEventUpdateDTO->getUserId(),
                                   'event_name' => $customizationEventUpdateDTO->getEventName()
                                 ]);
         
-        $displayUserEvent = new DisplayUserEvent();
-        $updatedEvent = $displayUserEvent->where('id', $customizationEventUpdateDTO->getId())->get();
-                                
-        return $updatedEvent;
+        return DisplayUserEvent
+            ::find(
+                $customizationEventUpdateDTO->getId()
+            );
     }
 }

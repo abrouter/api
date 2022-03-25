@@ -7,7 +7,6 @@ use Modules\AbRouter\Models\Experiments\Experiment;
 use Modules\AbRouter\Models\Experiments\ExperimentBranches;
 use Modules\AbRouter\Services\Experiment\DTO\BranchDTO;
 use Modules\AbRouter\Services\Experiment\DTO\ExperimentDTO;
-use Modules\AbRouter\Services\Experiment\CreateAliasExperiments;
 use Modules\Auth\Exposable\AuthDecorator;
 use Modules\Core\EntityId\Encoder;
 

@@ -19,6 +19,7 @@ use Modules\Core\EntityId\EntityIdTrait;
  * @property string uid
  * @property string config
  * @property boolean is_enabled
+ * @property boolean is_feature_toggle
  * @property Carbon created_at
  * @property Carbon updated_at
  * @property User owner
@@ -51,6 +52,9 @@ class Experiment extends Model
         'uid',
         'owner_id',
     ];
+    /**
+     * @var int|mixed|void
+     */
 
     public static function getType(): string
     {

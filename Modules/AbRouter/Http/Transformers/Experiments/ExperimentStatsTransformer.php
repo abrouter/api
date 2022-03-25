@@ -23,9 +23,9 @@ class ExperimentStatsTransformer
     {
         return new StatsQueryDTO(
             $this->authDecorator->get()->getId(),
-            null,
-            null,
-            null,
+            $request->input('filter.tag'),
+            $request->input('filter.date_from'),
+            $request->input('filter.date_to'),
             $request->input('filter.experimentId')
         );
     }

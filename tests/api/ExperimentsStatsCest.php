@@ -104,8 +104,15 @@ class ExperimentsStatsCest
         
         $I->seeResponseCodeIsSuccessful(201);
         
-        foreach($response['counters'] as $branch => $event) {
+        foreach($response['eventCountersWithDate'] as $branch => $event) {
             $I->seeResponseContainsJson([
+                'experiment' => [
+                    'id' => $response['experiment']['id'],
+                    'name' => $response['experiment']['name'],
+                    'is_enabled' => $response['experiment']['is_enabled'],
+                    'days_running' => $response['experiment']['days_running'],
+                    'total_users' => $response['experiment']['total_users']
+                ],
                 'percentage' => [
                     $branch => [
                         'visit_mainpage' => $response['percentage'][$branch]['visit_mainpage'],
@@ -114,12 +121,20 @@ class ExperimentsStatsCest
                         'fill_form_later' => $response['percentage'][$branch]['fill_form_later']
                     ]
                 ],
-                'counters' => [
+                'eventCountersWithDate' => [
                     $branch => [
-                        'visit_mainpage' => $response['counters'][$branch]['visit_mainpage'],
-                        'open_contact_form' => $response['counters'][$branch]['open_contact_form'],
-                        'visited_book_call' => $response['counters'][$branch]['visited_book_call'],
-                        'fill_form_later' => $response['counters'][$branch]['fill_form_later']
+                        'visit_mainpage' => $response['eventCountersWithDate'][$branch]['visit_mainpage'],
+                        'open_contact_form' => $response['eventCountersWithDate'][$branch]['open_contact_form'],
+                        'visited_book_call' => $response['eventCountersWithDate'][$branch]['visited_book_call'],
+                        'fill_form_later' => $response['eventCountersWithDate'][$branch]['fill_form_later']
+                    ]
+                ],
+                'eventCountersWithDate' => [
+                    $branch => [
+                        'visit_mainpage' => $response['eventCountersWithDate'][$branch]['visit_mainpage'],
+                        'open_contact_form' => $response['eventCountersWithDate'][$branch]['open_contact_form'],
+                        'visited_book_call' => $response['eventCountersWithDate'][$branch]['visited_book_call'],
+                        'fill_form_later' => $response['eventCountersWithDate'][$branch]['fill_form_later']
                     ]
                 ]
             ]);
@@ -147,8 +162,15 @@ class ExperimentsStatsCest
         
         $I->seeResponseCodeIsSuccessful(201);
         
-        foreach($response['counters'] as $branch => $event) {
+        foreach($response['eventCountersWithDate'] as $branch => $event) {
             $I->seeResponseContainsJson([
+                'experiment' => [
+                    'id' => $response['experiment']['id'],
+                    'name' => $response['experiment']['name'],
+                    'is_enabled' => $response['experiment']['is_enabled'],
+                    'days_running' => $response['experiment']['days_running'],
+                    'total_users' => $response['experiment']['total_users']
+                ],
                 'percentage' => [
                     $branch => [
                         'visit_mainpage' => $response['percentage'][$branch]['visit_mainpage'],
@@ -157,12 +179,12 @@ class ExperimentsStatsCest
                         'fill_form_later' => $response['percentage'][$branch]['fill_form_later']
                     ]
                 ],
-                'counters' => [
+                'eventCountersWithDate' => [
                     $branch => [
-                        'visit_mainpage' => $response['counters'][$branch]['visit_mainpage'],
-                        'open_contact_form' => $response['counters'][$branch]['open_contact_form'],
-                        'visited_book_call' => $response['counters'][$branch]['visited_book_call'],
-                        'fill_form_later' => $response['counters'][$branch]['fill_form_later']
+                        'visit_mainpage' => $response['eventCountersWithDate'][$branch]['visit_mainpage'],
+                        'open_contact_form' => $response['eventCountersWithDate'][$branch]['open_contact_form'],
+                        'visited_book_call' => $response['eventCountersWithDate'][$branch]['visited_book_call'],
+                        'fill_form_later' => $response['eventCountersWithDate'][$branch]['fill_form_later']
                     ]
                 ]
             ]);
@@ -190,8 +212,15 @@ class ExperimentsStatsCest
         
         $I->seeResponseCodeIsSuccessful(201);
         
-        foreach($response['counters'] as $branch => $event) {
+        foreach($response['eventCountersWithDate'] as $branch => $event) {
             $I->seeResponseContainsJson([
+                'experiment' => [
+                    'id' => $response['experiment']['id'],
+                    'name' => $response['experiment']['name'],
+                    'is_enabled' => $response['experiment']['is_enabled'],
+                    'days_running' => $response['experiment']['days_running'],
+                    'total_users' => $response['experiment']['total_users']
+                ],
                 'percentage' => [
                     $branch => [
                         'visit_mainpage' => $response['percentage'][$branch]['visit_mainpage'],
@@ -200,12 +229,12 @@ class ExperimentsStatsCest
                         'fill_form_later' => $response['percentage'][$branch]['fill_form_later']
                     ]
                 ],
-                'counters' => [
+                'eventCountersWithDate' => [
                     $branch => [
-                        'visit_mainpage' => $response['counters'][$branch]['visit_mainpage'],
-                        'open_contact_form' => $response['counters'][$branch]['open_contact_form'],
-                        'visited_book_call' => $response['counters'][$branch]['visited_book_call'],
-                        'fill_form_later' => $response['counters'][$branch]['fill_form_later']
+                        'visit_mainpage' => $response['eventCountersWithDate'][$branch]['visit_mainpage'],
+                        'open_contact_form' => $response['eventCountersWithDate'][$branch]['open_contact_form'],
+                        'visited_book_call' => $response['eventCountersWithDate'][$branch]['visited_book_call'],
+                        'fill_form_later' => $response['eventCountersWithDate'][$branch]['fill_form_later']
                     ]
                 ]
             ]);
@@ -233,8 +262,15 @@ class ExperimentsStatsCest
         
         $I->seeResponseCodeIsSuccessful(201);
         
-        foreach($response['counters'] as $branch => $event) {
+        foreach($response['eventCountersWithDate'] as $branch => $event) {
             $I->seeResponseContainsJson([
+                'experiment' => [
+                    'id' => $response['experiment']['id'],
+                    'name' => $response['experiment']['name'],
+                    'is_enabled' => $response['experiment']['is_enabled'],
+                    'days_running' => $response['experiment']['days_running'],
+                    'total_users' => $response['experiment']['total_users']
+                ],
                 'percentage' => [
                     $branch => [
                         'visit_mainpage' => $response['percentage'][$branch]['visit_mainpage'],
@@ -243,12 +279,12 @@ class ExperimentsStatsCest
                         'fill_form_later' => $response['percentage'][$branch]['fill_form_later']
                     ]
                 ],
-                'counters' => [
+                'eventCountersWithDate' => [
                     $branch => [
-                        'visit_mainpage' => $response['counters'][$branch]['visit_mainpage'],
-                        'open_contact_form' => $response['counters'][$branch]['open_contact_form'],
-                        'visited_book_call' => $response['counters'][$branch]['visited_book_call'],
-                        'fill_form_later' => $response['counters'][$branch]['fill_form_later']
+                        'visit_mainpage' => $response['eventCountersWithDate'][$branch]['visit_mainpage'],
+                        'open_contact_form' => $response['eventCountersWithDate'][$branch]['open_contact_form'],
+                        'visited_book_call' => $response['eventCountersWithDate'][$branch]['visited_book_call'],
+                        'fill_form_later' => $response['eventCountersWithDate'][$branch]['fill_form_later']
                     ]
                 ]
             ]);

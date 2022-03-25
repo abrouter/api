@@ -3,6 +3,7 @@ declare(strict_types =1);
 
 namespace Modules\AbRouter\Services\Events;
 
+use Exception;
 use Illuminate\Support\Collection;
 use Modules\AbRouter\Models\CustomizationEvent\DisplayUserEvent;
 use Modules\AbRouter\Models\Events\Event;
@@ -10,7 +11,6 @@ use Modules\AbRouter\Models\RelatedUsers\RelatedUser;
 use Modules\AbRouter\Repositories\Events\EventsRepository;
 use Modules\AbRouter\Repositories\Events\UserEventsRepository;
 use Modules\AbRouter\Repositories\RelatedUser\RelatedUserRepository;
-use Modules\AbRouter\Repositories\Experiments\ExperimentBranchRepository;
 use Modules\AbRouter\Services\Events\DTO\StatsQueryDTO;
 use Modules\AbRouter\Services\Events\DTO\StatsResultsDTO;
 
@@ -40,23 +40,28 @@ class SimpleStatsService
         $this->eventsRepository = $eventsRepository;
         $this->relatedUserRepository = $relatedUserRepository;
     }
-    
+
     public function getStats(StatsQueryDTO $statsQueryDTO): StatsResultsDTO
     {
-        if(!empty($statsQueryDTO->getDateFrom() && $statsQueryDTO->getDateTo())) {
-            $date = $this->convertDateTime($statsQueryDTO->getDateFrom(), $statsQueryDTO->getDateTo()) ;
-        }
-
-        $allUserEvents = $this->userEventsRepository->getWithOwnerByTagAndDate(
-            $statsQueryDTO->getOwnerId(),
-            $statsQueryDTO->getTag(),
-            $date['date_from'] ?? null,
-            $date['date_to'] ?? null
+        $date = $this->convertDateTime(
+            $statsQueryDTO->getDateFrom(),
+            $statsQueryDTO->getDateTo()
         );
-        $allUserEvents->load('relatedUsers');
+
+        $allUserEvents = $this
+            ->userEventsRepository
+            ->getWithOwnerByTagAndDate(
+                $statsQueryDTO->getOwnerId(),
+                $statsQueryDTO->getTag(),
+                $date['date_from'],
+                $date['date_to']
+            )
+            ->load('relatedUsers');
+
         $allRelatedUsers = $allUserEvents->pluck('relatedUsers')->flatten();
         
         $eventsNames = $this->getDisplayEvents($statsQueryDTO->getOwnerId());
+        $referrers = $this->getReferrers($statsQueryDTO->getOwnerId());
         
         $uniqUsersIds = $this->getUniqUsersIds($allUserEvents);
         $uniqRelatedUsersIds = $this->getUniqRelatedUsersIds($uniqUsersIds, $allRelatedUsers->all());
@@ -64,18 +69,47 @@ class SimpleStatsService
         
         $uniqUsersCount = count($uniqUsers);
         
-        $eventCounters = $this->getEventCounters(
+        $eventCounters = $this->getCounters(
             $allUserEvents,
-            $uniqUsers
+            $uniqUsers,
+            'event'
+        );
+
+        $eventCountersWithDate = $this->getCounters(
+            $allUserEvents,
+            $uniqUsers,
+            'event',
+            true
         );
         
-        $eventPercentages = $this->getEventsPercentages(
+        $eventPercentages = $this->getPercentages(
             $eventsNames,
             $eventCounters,
             $uniqUsersCount
         );
-        
-        return new StatsResultsDTO($eventPercentages, $eventCounters);
+
+        $referrerCounters = $this->getCounters(
+            $allUserEvents,
+            $uniqUsers,
+            'referrer'
+        );
+
+        $referrerPercentage = $this->getPercentages(
+            $referrers,
+            $referrerCounters,
+            $uniqUsersCount
+        );
+
+        arsort($eventPercentages);
+        arsort($referrerCounters);
+
+        return new StatsResultsDTO(
+            $eventPercentages,
+            $eventCounters,
+            $referrerCounters,
+            $referrerPercentage,
+            $eventCountersWithDate
+        );
     }
     
     protected function getUniqUsersIds(Collection $allUserEvents): array
@@ -84,12 +118,12 @@ class SimpleStatsService
             $acc[] = $event->user_id;
             return $acc;
         }, []);
+
         $users = array_unique($users);
         $usersFlip = array_flip($users);
         unset($usersFlip['']);
-        $users = array_flip($usersFlip);
 
-        return $users;
+        return array_flip($usersFlip);
     }
     
     protected function getDisplayEvents(int $ownerId): array
@@ -102,7 +136,27 @@ class SimpleStatsService
                 return $acc;
             }, []);
     }
-    
+
+    protected function getReferrers(int $ownerId): array
+    {
+        return $this
+            ->userEventsRepository
+            ->getReferrersByOwner($ownerId)
+            ->reduce(function (array $acc, Event $event) {
+                $check = preg_match(
+                    '/(http|https):\/\/([\w.]+\/?)/',
+                    $event->referrer,
+                    $matches
+                );
+
+                if ($matches) {
+                    $acc[] = $matches[0];
+                }
+
+                return $acc;
+            }, []);
+    }
+
     protected function getUniqRelatedUsersIds(array $uniqUsersIds, array $allRelatedUsers): array
     {
         $relatedUsersIds = [];
@@ -148,7 +202,7 @@ class SimpleStatsService
         return array_unique(array_merge($usersIds, $relatedUsersIds));
     }
     
-    protected function getEventsPercentages(array $events, array $eventCounters, int $uniqUsersCount): array
+    protected function getPercentages(array $events, array $eventCounters, int $uniqUsersCount): array
     {
         $eventPercentage = [];
         foreach ($events as $eventName) {
@@ -169,9 +223,11 @@ class SimpleStatsService
         return $eventPercentage;
     }
 
-    protected function getEventCounters(
+    protected function getCounters(
         Collection $eventsList,
-        array $uniqUsers
+        array $uniqUsers,
+        string $action,
+        bool $date = false
     ): array {
         
         $uniqUsers = array_flip($uniqUsers);
@@ -182,7 +238,22 @@ class SimpleStatsService
             /**
              * @var Event $event
              */
-                
+
+            $eventOrReferrer = $action === 'event' ? $event->event : $event->referrer;
+
+            if ($action === 'referrer') {
+                preg_match(
+                    '/(http|https):\/\/([\w.]+\/?)/',
+                    $eventOrReferrer,
+                    $matches
+                );
+
+                if (!$matches) {
+                    continue;
+                }
+                $eventOrReferrer = $matches[0];
+            }
+
             $relatedUsersIds = $event
                 ->relatedUsers
                 ->reduce(function (array $acc, RelatedUser $relatedUser) {
@@ -194,7 +265,7 @@ class SimpleStatsService
                     return $acc;
                 }, []);
     
-            $userEventKey = $event->event . '_' . $event->user_id;
+            $userEventKey = $eventOrReferrer . '_' . $event->user_id;
             
             if (!empty($event->user_id) && isset($userEventAdded[$userEventKey])) {
                 continue;
@@ -202,7 +273,7 @@ class SimpleStatsService
                 
             sort($relatedUsersIds);
             if (!empty($relatedUsersIds)) {
-                $relatedUsersKey = $event->event . '_' . join('_', $relatedUsersIds);
+                $relatedUsersKey = $eventOrReferrer . '_' . join('_', $relatedUsersIds);
             } else {
                 $relatedUsersKey = '';
             }
@@ -229,25 +300,43 @@ class SimpleStatsService
             if (isset($uniqUsers[$event->user_id])) {
                 $userEventAdded[$userEventKey] = true;
             }
-            
-            if (!isset($eventCounters[$event->event])) {
-                $eventCounters[$event->event] = 0;
+
+            if ($date) {
+                $convertDate = $event->created_at->format('Y-m-d');
+
+                if (!isset($eventCounters[$eventOrReferrer][$convertDate])) {
+                    $eventCounters[$eventOrReferrer][$convertDate] = 0;
+                }
+
+                $eventCounters[$eventOrReferrer][$convertDate] ++;
+
+                continue;
             }
-                
-            $eventCounters[$event->event] ++;
+
+            if (!isset($eventCounters[$eventOrReferrer])) {
+                $eventCounters[$eventOrReferrer] = 0;
+            }
+
+            $eventCounters[$eventOrReferrer] ++;
         }
         
         return $eventCounters;
     }
 
-    protected function convertDateTime($dateFrom = null, $dateTo = null)
+    /**
+     * @throws Exception
+     */
+    protected function convertDateTime($dateFrom = null, $dateTo = null): array
     {
         if(!empty($dateFrom && $dateTo)) {
             $dateFromConverted = \DateTime::createFromFormat('m-d-Y', $dateFrom)->format('Y-m-d');
             $dateToConverted = \DateTime::createFromFormat('m-d-Y', $dateTo)->format('Y-m-d');
-            $dateConverted = ['date_from' => $dateFromConverted, 'date_to' => $dateToConverted];
-
-            return $dateConverted;
+            return ['date_from' => $dateFromConverted, 'date_to' => $dateToConverted];
         }
+
+        $dateFrom = (new \DateTime())->format('Y-m-d');
+        $dateTo = (new \DateTime($dateFrom))->add(new \DateInterval('P1D'))->format('Y-m-d');
+
+        return ['date_from' => $dateFrom, 'date_to' => $dateTo];
     }
 }

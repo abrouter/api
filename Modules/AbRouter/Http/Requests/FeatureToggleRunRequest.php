@@ -20,7 +20,6 @@ class FeatureToggleRunRequest extends FormRequest
                 'required',
                 Rule::in('feature-toggles')
             ],
-            'data.attributes.userSignature' => 'required|string',
             'data.relationships.feature-toggle.data.id' => 'required|string',
             'data.relationships.feature-toggle.data.type' => 'required|in:feature-toggles',
         ];

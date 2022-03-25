@@ -1,5 +1,5 @@
 <?php
-declare(strict_types =1);
+declare(strict_types=1);
 
 namespace Modules\AbRouter\Services\Events;
 
@@ -14,9 +14,9 @@ use Modules\AbRouter\Services\Events\DTO\StatsResultsDTO;
 class ExperimentBranchStatsService extends SimpleStatsService
 {
     function __construct(
-        UserEventsRepository $userEventsRepository,
-        EventsRepository $eventsRepository,
-        RelatedUserRepository $relatedUserRepository,
+        UserEventsRepository           $userEventsRepository,
+        EventsRepository               $eventsRepository,
+        RelatedUserRepository          $relatedUserRepository,
         ExperimentBranchUserRepository $experimentBranchUserRepository
     )
     {
@@ -31,65 +31,70 @@ class ExperimentBranchStatsService extends SimpleStatsService
 
     public function getStatsByExperimentBranch(StatsQueryDTO $statsQueryDTO): StatsResultsDTO
     {
-        if(!empty($statsQueryDTO->getDateFrom() && $statsQueryDTO->getDateTo())) {
-            $date = $this->convertDateTime($statsQueryDTO->getDateFrom(), $statsQueryDTO->getDateTo()) ;
-        }
+        $date = $this->convertDateTime($statsQueryDTO->getDateFrom(), $statsQueryDTO->getDateTo());
 
         $allUserEvents = $this->userEventsRepository->getWithOwnerByTagAndDate(
             $statsQueryDTO->getOwnerId(),
             $statsQueryDTO->getTag(),
-            $date['date_from'] ?? null,
-            $date['date_to'] ?? null
+            $date['date_from'],
+            $date['date_to']
         );
-        $allUserEvents->load('relatedUsers');
-        $allRelatedUsers = $allUserEvents->pluck('relatedUsers')->flatten();
-        
+
+        $allRelatedUsers = $allUserEvents
+            ->load('relatedUsers')
+            ->pluck('relatedUsers')
+            ->flatten();
+
         $eventsNames = $this->getDisplayEvents($statsQueryDTO->getOwnerId());
-        
+
         $uniqUsersIds = $this->getUniqUsersIds($allUserEvents);
         $uniqRelatedUsersIds = $this->getUniqRelatedUsersIds($uniqUsersIds, $allRelatedUsers->all());
-        $uniqUsers  = $this->getFinalUniqUsers($uniqUsersIds, $uniqRelatedUsersIds);
-        $jointUsers = $this->getJointUsersFromEventsAndExperimentBranch($statsQueryDTO->getExperimentBranchId(), $uniqUsers);
-        $uniqUsersCount = count($jointUsers);
-        
-        $eventCounters = $this->getEventCounters(
-            $allUserEvents,
-            $jointUsers
+        $uniqUsers = $this->getFinalUniqUsers($uniqUsersIds, $uniqRelatedUsersIds);
+        $jointUsers = $this->getJointUsersFromEventsAndExperimentBranch(
+            $statsQueryDTO->getExperimentBranchId(),
+            $uniqUsers
         );
-        
-        $eventPercentages = $this->getEventsPercentages(
+        $uniqUsersCount = count($jointUsers);
+
+        $eventCounters = $this->getCounters(
+            $allUserEvents,
+            $jointUsers,
+            'event'
+        );
+
+        $eventPercentages = $this->getPercentages(
             $eventsNames,
             $eventCounters,
             $uniqUsersCount
         );
-        
-        return new StatsResultsDTO($eventPercentages, $eventCounters);
+
+        return new StatsResultsDTO(
+            $eventPercentages,
+            $eventCounters,
+            [],
+            [],
+            []
+        );
     }
 
     private function getExperimentUsersIdByExperimentBranchId(int $branchId): Collection
     {
-        $usersIdCollection = $this->experimentBranchUserRepository->getUsersIdByBranchId($branchId);
-
-        return $usersIdCollection;
+        return $this->experimentBranchUserRepository->getUsersIdByBranchId($branchId);
     }
 
     private function getJointUsersFromEventsAndExperimentBranch(int $branchId, array $uniqUsers): array
     {
-        $jointUsers = [];
-    
-        $usersId = $this->getExperimentUsersIdByExperimentBranchId($branchId);
-        
-        $usersId->load('experimentUser');
-        
-        $usersSignatures = $usersId->pluck('experimentUser')->flatten()->pluck('user_signature')->toArray();
-        $uniqUsersSignatures = array_flip(array_unique($usersSignatures));
+        $usersSignatures = $this
+            ->getExperimentUsersIdByExperimentBranchId($branchId)
+            ->load('experimentUser')
+            ->pluck('experimentUser')
+            ->flatten()
+            ->pluck('user_signature')
+            ->unique()
+            ->flip();
 
-        foreach($uniqUsers as $uniqUser) {
-            if(isset($uniqUsersSignatures[$uniqUser])) {
-                $jointUsers[] = $uniqUser;
-            }
-        }
-
-        return $jointUsers;
+        return array_filter($uniqUsers, function(string $item) use ($usersSignatures): bool {
+            return $usersSignatures->has($item);
+        });
     }
 }

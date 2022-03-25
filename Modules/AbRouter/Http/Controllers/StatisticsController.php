@@ -68,6 +68,9 @@ class StatisticsController
         return [
             'percentage' => $results->getPercentage(),
             'counters' => $results->getCounters(),
+            'referrersCounters' => $results->getReferrersCounters(),
+            'referrersPercentage' => $results->getReferrersPercentage(),
+            'eventCountersWithDate' => $results->getEventCountersWithDate()
         ];
     }
 
@@ -76,7 +79,10 @@ class StatisticsController
         ExperimentBranchStatsService $experimentBranchStatsService,
         ExperimentBranchStatsTransformer $experimentBranchStatsTransformer
     ) {
-        $results = $experimentBranchStatsService->getStatsByExperimentBranch($experimentBranchStatsTransformer->transform($request));
+        $results = $experimentBranchStatsService
+            ->getStatsByExperimentBranch(
+                $experimentBranchStatsTransformer->transform($request)
+            );
         
         return [
             'percentage' => $results->getPercentage(),
@@ -89,11 +95,15 @@ class StatisticsController
         ExperimentStatsService $experimentStatsService,
         ExperimentStatsTransformer $experimentStatsTransformer
     ) {
-        $results = $experimentStatsService->getStatsByExperiment($experimentStatsTransformer->transform($request));
+        $results = $experimentStatsService
+            ->getStatsByExperiment(
+                $experimentStatsTransformer->transform($request)
+            );
         
         return [
+            'experiment' => $results->getExperiments(),
             'percentage' => $results->getPercentage(),
-            'counters' => $results->getCounters(),
+            'eventCountersWithDate' => $results->getEventCountersWithDate()
         ];
     }
 

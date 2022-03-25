@@ -12,8 +12,8 @@ class UserEventsRepository extends BaseRepository
     public function getWithOwnerByTagAndDate(
         int $owner,
         ?string $tag,
-        ?string $dateFrom,
-        ?string $dateTo
+        string $dateFrom = null,
+        string $dateTo = null
     ): Collection {
         $query = $this
             ->query()
@@ -24,10 +24,22 @@ class UserEventsRepository extends BaseRepository
         }
 
         if(!empty($dateFrom) && !empty($dateTo)) {
-            $query = $query->whereBetween('created_at', [$dateFrom, $dateTo]);
+            $query = $query->select()->whereBetween('created_at', [$dateFrom, $dateTo]);
         }
         
         return $query->get();
+    }
+
+    public function getReferrersByOwner(int $owner): Collection
+    {
+        $query = $this
+            ->query()
+            ->select('referrer')
+            ->where('owner_id', $owner)
+            ->distinct()
+            ->get();
+
+        return $query;
     }
 
     protected function getModel(): Event
