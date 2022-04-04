@@ -32,14 +32,12 @@ class UserEventsRepository extends BaseRepository
 
     public function getReferrersByOwner(int $owner): Collection
     {
-        $query = $this
+        return $this
             ->query()
             ->select('referrer')
             ->where('owner_id', $owner)
             ->distinct()
             ->get();
-
-        return $query;
     }
 
     protected function getModel(): Event

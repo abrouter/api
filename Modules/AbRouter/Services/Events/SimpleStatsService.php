@@ -144,13 +144,13 @@ class SimpleStatsService
             ->getReferrersByOwner($ownerId)
             ->reduce(function (array $acc, Event $event) {
                 $check = preg_match(
-                    '/(http|https):\/\/([\w.]+\/?)/',
+                    '/((http|https):\/\/([\w.]+\/?))|()/',
                     $event->referrer,
                     $matches
                 );
 
                 if ($matches) {
-                    $acc[] = $matches[0];
+                    $acc[] = $matches[0] === '' ? 'direct' : $matches[0];
                 }
 
                 return $acc;
@@ -243,7 +243,7 @@ class SimpleStatsService
 
             if ($action === 'referrer') {
                 preg_match(
-                    '/(http|https):\/\/([\w.]+\/?)/',
+                    '/((http|https):\/\/([\w.]+\/?))|()/',
                     $eventOrReferrer,
                     $matches
                 );
@@ -251,7 +251,7 @@ class SimpleStatsService
                 if (!$matches) {
                     continue;
                 }
-                $eventOrReferrer = $matches[0];
+                $eventOrReferrer = $matches[0] === '' ? 'direct' : $matches[0];
             }
 
             $relatedUsersIds = $event
