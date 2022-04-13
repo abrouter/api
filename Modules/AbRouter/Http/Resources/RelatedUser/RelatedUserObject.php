@@ -10,8 +10,7 @@ use JsonApi\JsonApi\Elements\RelationshipsCollection;
 use JsonApi\JsonApi\Elements\ResourceIdentifier;
 use JsonApi\JsonApi\Elements\ResourceLinkage;
 use JsonApi\JsonApi\Elements\ResourceObject;
-use Modules\Core\EntityId\Encoder;
-use Modules\AbRouter\Models\RelatedUser\RelatedUser;
+use Modules\AbRouter\Models\RelatedUsers\RelatedUser;
 
 /**
  * Class RelatedUserObject

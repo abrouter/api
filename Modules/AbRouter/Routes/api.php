@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/v1/experiment/run', 'ExperimentsController@runSimple');
 
 Route::middleware(['api', 'auth:api'])->group(function () {
+    Route::get('/v1/api-info/{ip}', 'IpInfoController');
+
     Route::post('/v1/experiments/', 'ExperimentsController@createOrUpdate');
     Route::patch('/v1/experiments/{id}', 'ExperimentsController@createOrUpdate');
     Route::delete('/v1/experiments/{id}', 'ExperimentsController@delete');

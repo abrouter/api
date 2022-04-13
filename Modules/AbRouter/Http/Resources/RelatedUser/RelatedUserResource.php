@@ -6,7 +6,7 @@ namespace Modules\AbRouter\Http\Resources\RelatedUser;
 use JsonApi\JsonApi\Elements\JsonApi;
 use JsonApi\JsonApi\Factories\ObjectFactory;
 use JsonApi\JsonApi\Responses\JsonResource;
-use Modules\AbRouter\Models\RelatedUser\RelatedUser;
+use Modules\AbRouter\Models\RelatedUsers\RelatedUser;
 
 /**
  * Class AccessTokenResource
