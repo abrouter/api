@@ -4,6 +4,7 @@ declare(strict_types =1);
 namespace Modules\AbRouter\Services\Events;
 
 use Modules\AbRouter\Models\Events\Event;
+use Modules\AbRouter\Repositories\IpInfo\IpInfoWithCacheRepository;
 use Modules\AbRouter\Services\Events\DTO\EventDTO;
 use Modules\AbRouter\Services\RelatedUser\DTO\RelatedUserDTO;
 use Modules\AbRouter\Services\RelatedUser\RelatedUserCreator;
@@ -14,10 +15,18 @@ class EventCreator
      * @var RelatedUserCreator
      */
     private $relatedUserCreator;
-    
-    public function __construct(RelatedUserCreator $relatedUserCreator)
-    {
+
+    /**
+     * @var IpInfoWithCacheRepository
+     */
+    private $ipInfoWithCacheRepository;
+
+    public function __construct(
+        RelatedUserCreator $relatedUserCreator,
+        IpInfoWithCacheRepository $ipInfoWithCacheRepository
+    ) {
         $this->relatedUserCreator = $relatedUserCreator;
+        $this->ipInfoWithCacheRepository = $ipInfoWithCacheRepository;
     }
     
     public function create(EventDTO $eventDTO): Event
@@ -31,9 +40,9 @@ class EventCreator
             'ip' => $eventDTO->getIp(),
             'tag' => $eventDTO->getTag(),
             'referrer' => $eventDTO->getReferrer(),
-            'meta' => json_encode($eventDTO->getMeta()),
+            'meta' => json_encode($this->getMetadata($eventDTO)),
             'created_at' => $eventDTO->getCreatedAt() ?? (new \DateTime())->format('Y-m-d'),
-            'country_code' => $eventDTO->getCountryCode(),
+            'country_code' => strtoupper($this->getCountryCode($eventDTO)),
         ]);
 
         $saved = $event->save();
@@ -48,5 +57,27 @@ class EventCreator
         }
         
         return $event;
+    }
+
+    private function getCountryCode(EventDTO $eventDTO): string
+    {
+        if (!empty($eventDTO->getCountryCode())) {
+            return '';
+        }
+
+        $ipInfo = $this->ipInfoWithCacheRepository->get($eventDTO->getIp());
+        return $ipInfo->getCountryCode();
+    }
+
+    private function getMetadata(EventDTO $eventDTO):  array
+    {
+        $meta = $eventDTO->getMeta();
+        $ipInfo = $this->ipInfoWithCacheRepository->get($eventDTO->getIp());
+        if (!isset($meta['geo'])) {
+            $meta['city'] = $ipInfo->getCity();
+            $meta['country_name'] = $ipInfo->getCountryName();
+        }
+
+        return $meta;
     }
 }

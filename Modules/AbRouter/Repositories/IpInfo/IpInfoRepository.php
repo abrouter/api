@@ -27,7 +27,7 @@ class IpInfoRepository
         $this->ipStackTransformer = $ipStackTransformer;
     }
 
-    public function getInfoByIp(string $ip): ?IpInfoEntity
+    public function get(string $ip): ?IpInfoEntity
     {
         return $this->ipStackTransformer->transform($this->infoRequesterService->getInfoByIp($ip));
     }

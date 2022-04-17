@@ -29,6 +29,10 @@ consul: check ./docker-compose.env
 route-cache: check ./docker-compose.env
 	docker exec $(APP) php /app/artisan route:cache
 
+.PHONY: sync-vendor
+sync-vendor: check ./docker-compose.env
+	sudo docker cp  abr-app-api:/app/vendor/ ./vendor
+
 .PHONY: test-run
 test-run:
 	docker exec $(APP) php artisan abrouter:create-database abr_test
