@@ -61,11 +61,11 @@ class EventCreator
 
     private function getCountryCode(EventDTO $eventDTO): string
     {
-        if (!empty($eventDTO->getCountryCode())) {
+        $ipInfo = $this->ipInfoWithCacheRepository->get($eventDTO->getIp());
+        if (!empty($eventDTO->getCountryCode()) || $ipInfo === null) {
             return '';
         }
 
-        $ipInfo = $this->ipInfoWithCacheRepository->get($eventDTO->getIp());
         return $ipInfo->getCountryCode();
     }
 
