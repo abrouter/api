@@ -6,6 +6,7 @@ namespace Modules\AbRouter\Repositories\IpInfo;
 use \Illuminate\Contracts\Cache\Factory as CacheFactory;
 use Modules\AbRouter\Entities\IpInfoEntity;
 use Modules\AbRouter\Transformers\IpInfo\IpInfoCacheKeyTransformer;
+use Throwable;
 
 class IpInfoCacheRepository
 {
@@ -29,7 +30,12 @@ class IpInfoCacheRepository
 
     public function get(string $ip): ?IpInfoEntity
     {
-        $info = $this->cacheStorage->get($this->ipInfoCacheKeyTransformer->format($ip));
+        try {
+            $info = $this->cacheStorage->get($this->ipInfoCacheKeyTransformer->format($ip));
+        } catch (Throwable $e) {
+            return null;
+        }
+
         if ($info === null) {
             return null;
         }

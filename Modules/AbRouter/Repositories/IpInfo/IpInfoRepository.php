@@ -6,6 +6,7 @@ namespace Modules\AbRouter\Repositories\IpInfo;
 use Modules\AbRouter\Entities\IpInfoEntity;
 use Modules\AbRouter\Services\IpInfo\IpInfoRequesterService;
 use Modules\AbRouter\Transformers\IpInfo\IpStackTransformer;
+use Throwable;
 
 class IpInfoRepository
 {
@@ -29,6 +30,10 @@ class IpInfoRepository
 
     public function get(string $ip): ?IpInfoEntity
     {
-        return $this->ipStackTransformer->transform($this->infoRequesterService->getInfoByIp($ip));
+        try {
+            return $this->ipStackTransformer->transform($this->infoRequesterService->getInfoByIp($ip));
+        } catch (Throwable $e) {
+            return null;
+        }
     }
 }
