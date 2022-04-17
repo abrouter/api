@@ -37,7 +37,7 @@ sync-vendor: check ./docker-compose.env
 
 
 .PHONY: sync-composer-docker
-sync-docker: check ./docker-compose.env
+sync-composer-docker: check ./docker-compose.env
 	sudo docker cp ./composer.json abr-app-api:/app/composer.json
 	sudo docker cp ./composer.lock abr-app-api:/app/composer.lock
 
