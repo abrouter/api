@@ -63,7 +63,7 @@ class EventCreator
     {
         $ipInfo = $this->ipInfoWithCacheRepository->get($eventDTO->getIp());
         if (!empty($eventDTO->getCountryCode()) || $ipInfo === null) {
-            return '';
+            return $eventDTO->getCountryCode();
         }
 
         return $ipInfo->getCountryCode();
