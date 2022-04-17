@@ -29,11 +29,18 @@ consul: check ./docker-compose.env
 route-cache: check ./docker-compose.env
 	docker exec $(APP) php /app/artisan route:cache
 
-.PHONY: sync-vendor
+.PHONY: sync-vendor-local
 sync-vendor: check ./docker-compose.env
 	sudo docker cp  abr-app-api:/app/vendor/ ./vendor
 	sudo docker cp  abr-app-api:/app/composer.json ./composer.json
 	sudo docker cp  abr-app-api:/app/composer.lock ./composer.lock
+
+
+.PHONY: sync-composer-docker
+sync-docker: check ./docker-compose.env
+	sudo docker cp ./composer.json abr-app-api:/app/composer.json
+	sudo docker cp ./composer.lock abr-app-api:/app/composer.lock
+
 
 .PHONY: test-run
 test-run:
