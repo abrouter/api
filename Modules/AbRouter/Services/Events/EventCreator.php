@@ -73,7 +73,7 @@ class EventCreator
     {
         $meta = $eventDTO->getMeta();
         $ipInfo = $this->ipInfoWithCacheRepository->get($eventDTO->getIp());
-        if (!isset($meta['geo'])) {
+        if (!isset($meta['geo']) && $ipInfo !== null) {
             $meta['city'] = $ipInfo->getCity();
             $meta['country_name'] = $ipInfo->getCountryName();
         }
