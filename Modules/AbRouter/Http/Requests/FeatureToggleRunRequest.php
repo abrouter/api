@@ -18,7 +18,7 @@ class FeatureToggleRunRequest extends FormRequest
         return [
             'data.type' => [
                 'required',
-                Rule::in('feature-toggles')
+                Rule::in('feature-toggles-run')
             ],
             'data.relationships.feature-toggle.data.id' => 'required|string',
             'data.relationships.feature-toggle.data.type' => 'required|in:feature-toggles',
