@@ -46,7 +46,7 @@ class FeatureToggleCest
                 ]
             ],
             'included' => [
-                [ 
+                [
                     'id' => null,
                     'type' => 'experiment_branches',
                     'attributes' => [
@@ -70,7 +70,7 @@ class FeatureToggleCest
                         ]
                     ]
                 ],
-                [ 
+                [
                     'id' => null,
                     'type' => 'experiment_branches',
                     'attributes' => [
@@ -146,7 +146,7 @@ class FeatureToggleCest
         $branches = [$branchNameFirst, $branchNameSecond];
         $percents = [$percentFirst, $percentSecond];
         
-        for ($n = 0; $n < count($branches); $n++) { 
+        for ($n = 0; $n < count($branches); $n++) {
             $recordBranch = ['experiment_id' => $featureToggleId,'name' => $branches[$n], 'uid' => $branches[$n], 'percent' => $percents[$n]];
             $I->seeRecord('experiment_branches', $recordBranch);
         }
@@ -176,7 +176,7 @@ class FeatureToggleCest
                         ]
                     ]
                 ]
-            ]                
+            ],
         ]);
 
         $response = json_decode($I->grabResponse(), true);
@@ -226,7 +226,7 @@ class FeatureToggleCest
                             'data' => [
                                 'type' => 'users',
                                 'id' => $response['included'][0]['relationships']['experiment']['data']['id']
-                            ]       
+                            ]
                         ]
                     ]
                 ]
@@ -281,7 +281,7 @@ class FeatureToggleCest
                 ]
             ],
             'included' => [
-                [ 
+                [
                     'id' => null,
                     'type' => 'experiment_branches',
                     'attributes' => [
@@ -305,7 +305,7 @@ class FeatureToggleCest
                         ]
                     ]
                 ],
-                [ 
+                [
                     'id' => null,
                     'type' => 'experiment_branches',
                     'attributes' => [
@@ -335,7 +335,7 @@ class FeatureToggleCest
         $response = json_decode($I->grabResponse(), true);
 
         $I->seeResponseCodeIs(422);
-    }    
+    }
 
     public function createIncorectFeatureToggleWithTwoBranchesHundredPercent(ApiTester $I)
     {
@@ -375,7 +375,7 @@ class FeatureToggleCest
                 ]
             ],
             'included' => [
-                [ 
+                [
                     'id' => null,
                     'type' => 'experiment_branches',
                     'attributes' => [
@@ -399,7 +399,7 @@ class FeatureToggleCest
                         ]
                     ]
                 ],
-                [ 
+                [
                     'id' => null,
                     'type' => 'experiment_branches',
                     'attributes' => [
@@ -478,7 +478,7 @@ class FeatureToggleCest
 
         $I->dontSeeRecord('experiments', $recordExperiment);
         
-        for ($n = 0; $n < count($featureToggle['idBranch']); $n++) { 
+        for ($n = 0; $n < count($featureToggle['idBranch']); $n++) {
             $recordBranch = ['experiment_id' => $featureToggle['experimentId']];
             $I->dontSeeRecord('experiment_branches', $recordBranch);
         }
