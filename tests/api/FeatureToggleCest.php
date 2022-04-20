@@ -164,7 +164,7 @@ class FeatureToggleCest
 
         $I->sendPost('/feature-toggles/run', [
             'data' => [
-                'type' => 'feature-toggles',
+                'type' => 'feature-toggles-run',
                 'attributes' => [
                     'userSignature' => $userSignature
                 ],
