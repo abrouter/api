@@ -19,6 +19,10 @@ consul-check: check ./docker-compose.env
 migrate: check ./docker-compose.env
 	docker exec $(APP) php artisan migrate
 
+.PHONY: bash
+bash:
+	docker exec -it $(APP) bash
+
 
 .PHONY: consul
 consul: check ./docker-compose.env

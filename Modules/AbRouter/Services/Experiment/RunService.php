@@ -3,13 +3,12 @@ declare(strict_types=1);
 
 namespace Modules\AbRouter\Services\Experiment;
 
-use Modules\AbRouter\Models\Experiments\Experiment;
+use Modules\AbRouter\Managers\UniqueUsersCountManager;
 use Modules\AbRouter\Models\Experiments\ExperimentBranches;
 use Modules\AbRouter\Models\Experiments\ExperimentBranchUser;
 use Modules\AbRouter\Models\Experiments\ExperimentUsers;
 use Modules\AbRouter\Repositories\Experiments\ExperimentsRepository;
 use Modules\AbRouter\Services\Experiment\DTO\RunExperimentDTO;
-use Modules\Core\EntityId\Encoder;
 
 class RunService
 {
@@ -23,21 +22,39 @@ class RunService
      */
     private $experimentsRepository;
 
+    /**
+     * @var UniqueUsersCountManager
+     */
+    private $uniqueUsersCountManager;
+
     public function __construct(
-        DiceService $diceService, 
-        ExperimentsRepository $experimentsRepository
+        DiceService $diceService,
+        ExperimentsRepository $experimentsRepository,
+        UniqueUsersCountManager $uniqueUsersCountManager
     ) {
         $this->diceService = $diceService;
         $this->experimentsRepository = $experimentsRepository;
+        $this->uniqueUsersCountManager = $uniqueUsersCountManager;
     }
 
     public function run(RunExperimentDTO $runExperimentDTO): ExperimentBranchUser
     {
-        $checkId = preg_match('/^([A-Z0-9]{8})(-){1}([A-Z0-9]{4})(-){1}([A-Z0-9]{4})(-){1}([A-Z0-9]{8})$/', $runExperimentDTO->getExperimentId());
+        $isExperimentId = preg_match(
+            '/^([A-Z0-9]{8})(-){1}([A-Z0-9]{4})(-){1}([A-Z0-9]{4})(-){1}([A-Z0-9]{8})$/',
+            $runExperimentDTO->getExperimentId()
+        );
 
-        if ($checkId) {
-            $experiment = $this->experimentsRepository->getExperimentsById($runExperimentDTO->getExperimentId(), $runExperimentDTO->getOwnerId());
-        } else $experiment = $this->experimentsRepository->getExperimentsByAlias($runExperimentDTO->getExperimentId(), $runExperimentDTO->getOwnerId());
+        if ($isExperimentId) {
+            $experiment = $this->experimentsRepository->getExperimentsById(
+                $runExperimentDTO->getExperimentId(),
+                $runExperimentDTO->getOwnerId()
+            );
+        } else {
+            $experiment = $this->experimentsRepository->getExperimentsByAlias(
+                $runExperimentDTO->getExperimentId(),
+                $runExperimentDTO->getOwnerId()
+            );
+        }
 
         $user = (new ExperimentUsers())
             ->newQuery()
@@ -46,6 +63,8 @@ class RunService
             ->first();
 
         if (empty($user)) {
+            //usage statistics
+            $this->uniqueUsersCountManager->increment($runExperimentDTO->getOwnerId());
             $user = new ExperimentUsers([
                 'owner_id' => $runExperimentDTO->getOwnerId(),
                 'config' => '{}',

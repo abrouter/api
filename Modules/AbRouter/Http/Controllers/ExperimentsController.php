@@ -39,9 +39,9 @@ class ExperimentsController extends Controller
     }
 
     /**
+     * @param ExperimentRequest $request
      * @param ExperimentTransformer $experimentTransformer
      * @param ExperimentService $experimentService
-     * @param Request $request
      * @return ExperimentResource
      */
     public function createOrUpdate(
@@ -54,16 +54,17 @@ class ExperimentsController extends Controller
     }
 
     /**
-     * @param ExperimentDeleteTransformer $experimentTransformer
-     * @param ExperimentDeleteService $experimentService
+     * @param ExperimentDeleteTransformer $experimentDeleteTransformer
+     * @param ExperimentDeleteService $experimentDeleteService
      * @param Request $request
+     * @return \Illuminate\Http\Response
      */
     public function delete(
         ExperimentDeleteTransformer $experimentDeleteTransformer,
         ExperimentDeleteService $experimentDeleteService,
         Request $request
     ) {
-        $experiment = $experimentDeleteService->delete($experimentDeleteTransformer->transform($request));
+        $experimentDeleteService->delete($experimentDeleteTransformer->transform($request));
         return response()->noContent();
     }
 
