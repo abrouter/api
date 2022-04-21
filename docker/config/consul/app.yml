@@ -23,3 +23,5 @@ $SERVICE_REGION$/apps/$SERVICE_NAME$/google/client_id: 575253665892-8dg5mkdn6rdm
 
 $SERVICE_REGION$/apps/$SERVICE_NAME$/api/host: http://localhost:933
 $SERVICE_REGION$/apps/$SERVICE_NAME$/api/host_internal: http://abr-app-api
+
+$SERVICE_REGION$/apps/$SERVICE_NAME$/front/url: http://localhost:930
