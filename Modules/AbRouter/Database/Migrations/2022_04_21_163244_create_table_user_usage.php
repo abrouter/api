@@ -16,7 +16,7 @@ class CreateTableUserUsage extends Migration
         Schema::create('user_usage', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('user_id')->unique();
-            $table->bigInteger('unique_users_count');
+            $table->bigInteger('unique_users_count')->default(0);
             $table->timestamps();
         });
     }
