@@ -13,7 +13,7 @@ class CreateTableUserUsage extends Migration
      */
     public function up()
     {
-        Schema::create('table_user_usage', function (Blueprint $table) {
+        Schema::create('user_usage', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('user_id')->unique();
             $table->bigInteger('unique_users_count');

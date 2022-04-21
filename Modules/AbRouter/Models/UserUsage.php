@@ -12,6 +12,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class UserUsage extends Model
 {
+    protected $table = 'user_usage';
+
     protected $casts = [
         'id' => 'int',
         'user_id' => 'int',
