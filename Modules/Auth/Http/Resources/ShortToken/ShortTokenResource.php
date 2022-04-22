@@ -1,24 +1,24 @@
 <?php
 declare(strict_types=1);
 
-namespace Modules\Auth\Http\Resources\AccessToken;
+namespace Modules\Auth\Http\Resources\ShortToken;
 
 use JsonApi\JsonApi\Elements\JsonApi;
 use JsonApi\JsonApi\Factories\ObjectFactory;
 use JsonApi\JsonApi\Responses\JsonResource;
-use Modules\Auth\Entities\User\UserWithAccessToken;
+use Laravel\Passport\Token;
 
 /**
  * Class AccessTokenResource
  * @package Modules\Auth\Http\Resources\AccessToken
- * @property UserWithAccessToken $accessToken
+ * @property Token $resource
  */
-class AccessTokenResource extends JsonResource
+class ShortTokenResource extends JsonResource
 {
     public function jsonApiRoot(): JsonApi
     {
         return new JsonApi(
-            (new ObjectFactory())->get(AccessTokenObject::class, $this->resource)
+            (new ObjectFactory())->get(ShortTokenObject::class, $this->resource)
         );
     }
 }

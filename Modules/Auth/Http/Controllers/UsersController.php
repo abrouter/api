@@ -10,6 +10,8 @@ use Modules\Auth\Http\Resources\User\UserResource;
 use Modules\Auth\Http\Transformers\Users\UserTransformer;
 use Modules\Auth\Services\Auth\ShortTokenHandlerService;
 use Modules\Auth\Services\Users\Creator;
+use Modules\Auth\Repositories\Auth\TokenRepository;
+use Modules\Auth\Http\Resources\ShortToken\ShortTokenResource;
 use Throwable;
 
 class UsersController extends Controller
@@ -39,5 +41,14 @@ class UsersController extends Controller
     {
         $user = $authDecorator->get()->model();
         return new UserResource($user);
+    }
+
+    public function getShortToken(
+        AuthDecorator $authDecorator,
+        TokenRepository $tokenRepository
+    )
+    {
+        $token = $tokenRepository->forUser($authDecorator->get()->getId())->last();
+        return new ShortTokenResource($token);
     }
 }

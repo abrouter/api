@@ -5,7 +5,7 @@ use Modules\Auth\Http\Middleware\AuthenticatedMiddleware;
 
 Route::post('/v1/users', 'UsersController@create');
 Route::get('/v1/users/me', 'UsersController@me')->middleware(AuthenticatedMiddleware::class);
-
+Route::get('/v1/users/token', 'UsersController@getShortToken')->middleware(AuthenticatedMiddleware::class);
 Route::post('/v1/users/forgotpassword', 'ForgotPasswordController@restore');
 Route::post('/v1/users/resetpassword', 'ResetPasswordController@reset');
 

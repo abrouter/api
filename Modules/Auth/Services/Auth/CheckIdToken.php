@@ -24,7 +24,7 @@ class CheckIdToken
         try {
             $payload = $this->googleClient->verifyIdToken($googleRequest->getIdToken());
         } catch (\Throwable $e) {
-            throw new AuthWithGoogleRequestDTO('Invalid google token');
+            throw new AuthorizationException('Invalid google token');
         }
 
         return $payload;

@@ -10,7 +10,7 @@ use JsonApi\JsonApi\Elements\RelationshipsCollection;
 use JsonApi\JsonApi\Elements\ResourceIdentifier;
 use JsonApi\JsonApi\Elements\ResourceLinkage;
 use JsonApi\JsonApi\Elements\ResourceObject;
-use Modules\Auth\Entities\AccessToken\UserWithAccessToken;
+use Modules\Auth\Entities\User\UserWithAccessToken;
 
 /**
  * Class UserObject
