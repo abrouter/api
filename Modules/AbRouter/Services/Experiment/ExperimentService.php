@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Modules\AbRouter\Services\Experiment;
 
+use Carbon\Carbon;
 use Modules\AbRouter\Models\Experiments\Experiment;
 use Modules\AbRouter\Models\Experiments\ExperimentBranches;
 use Modules\AbRouter\Services\Experiment\DTO\BranchDTO;
@@ -41,9 +42,14 @@ class ExperimentService
             ->where('id', $experimentId)
             ->where('owner_id', $this->authDecorator->get()->getId())
             ->first();
+
         if (empty($experiment)) {
             $experiment = new Experiment();
+            $experiment->fill([
+                'start_experiment_day' => Carbon::now()
+            ]);
         }
+
         $experiment->fill([
             'owner_id' => $this->authDecorator->get()->getId(),
             'name' => $experimentDTO->getName(),
@@ -53,7 +59,15 @@ class ExperimentService
             'is_feature_toggle' => $experimentDTO->getIsFeatureToggle(),
             'uid' => $experimentDTO->getName(),
         ]);
+
         $experiment->save();
+
+        if ($experiment->wasChanged('is_enabled')) {
+            $experiment->is_enabled === true
+                ? $experiment->fill(['start_experiment_day' => Carbon::now()])->save()
+                : $experiment->fill(['start_experiment_day' => null])->save();
+        }
+
         $experiment->refresh();
 
         $this->deleteBranches($experimentDTO, $experiment);

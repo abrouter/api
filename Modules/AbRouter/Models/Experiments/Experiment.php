@@ -38,6 +38,7 @@ class Experiment extends Model
         'config' => 'string',
         'is_enabled' => 'bool',
         'is_feature_toggle' => 'bool',
+        'start_experiment_day' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
@@ -51,11 +52,12 @@ class Experiment extends Model
         'is_feature_toggle',
         'uid',
         'owner_id',
+        'start_experiment_day',
     ];
-    /**
-     * @var int|mixed|void
-     */
 
+    /**
+     * @return string
+     */
     public static function getType(): string
     {
         return 'experiments';

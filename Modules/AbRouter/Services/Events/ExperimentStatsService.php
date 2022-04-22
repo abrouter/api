@@ -3,6 +3,7 @@ declare(strict_types =1);
 
 namespace Modules\AbRouter\Services\Events;
 
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Modules\AbRouter\Repositories\Events\EventsRepository;
 use Modules\AbRouter\Repositories\Events\UserEventsRepository;
@@ -118,9 +119,13 @@ class ExperimentStatsService extends SimpleStatsService
         }
 
         $interval = (new \DateTime())
-            ->diff($experiment->updated_at);
+            ->diff(
+                $experiment->start_experiment_day
+                ?? $experiment->updated_at
+            )
+            ->days;
 
-        $experiment->days_running = $interval->d;
+        $experiment->days_running = $interval;
         $experiment->total_users = $totalUsers;
 
         return new StatsResultsDTO(
