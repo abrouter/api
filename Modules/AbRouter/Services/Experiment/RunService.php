@@ -9,6 +9,7 @@ use Modules\AbRouter\Models\Experiments\ExperimentBranchUser;
 use Modules\AbRouter\Models\Experiments\ExperimentUsers;
 use Modules\AbRouter\Repositories\Experiments\ExperimentsRepository;
 use Modules\AbRouter\Services\Experiment\DTO\RunExperimentDTO;
+use Modules\AbRouter\Services\Marketing\PaywallService;
 
 class RunService
 {
@@ -27,14 +28,21 @@ class RunService
      */
     private $uniqueUsersCountManager;
 
+    /**
+     * @var PaywallService
+     */
+    private $paywallService;
+
     public function __construct(
         DiceService $diceService,
         ExperimentsRepository $experimentsRepository,
-        UniqueUsersCountManager $uniqueUsersCountManager
+        UniqueUsersCountManager $uniqueUsersCountManager,
+        PaywallService $paywallService
     ) {
         $this->diceService = $diceService;
         $this->experimentsRepository = $experimentsRepository;
         $this->uniqueUsersCountManager = $uniqueUsersCountManager;
+        $this->paywallService = $paywallService;
     }
 
     public function run(RunExperimentDTO $runExperimentDTO): ExperimentBranchUser
@@ -90,10 +98,12 @@ class RunService
             $this->diceService->addSide((string) $experimentBranches->id, $experimentBranches->percent);
         });
 
+        $isRunningAllowed = $this->paywallService->isExperimentRunAllowed($runExperimentDTO->getOwnerId());
+        $roll = $isRunningAllowed ? $this->diceService->roll() : $this->diceService->rollFirst();
         $experimentBranchUser = new ExperimentBranchUser([
             'experiment_user_id' => $user->id,
             'experiment_id' => $experiment->id,
-            'experiment_branch_id' => $this->diceService->roll(),
+            'experiment_branch_id' => $roll,
         ]);
         $experimentBranchUser->save();
 

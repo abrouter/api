@@ -25,3 +25,7 @@ $SERVICE_REGION$/apps/$SERVICE_NAME$/api/host: http://localhost:933
 $SERVICE_REGION$/apps/$SERVICE_NAME$/api/host_internal: http://abr-app-api
 
 $SERVICE_REGION$/apps/$SERVICE_NAME$/front/url: http://localhost:930
+
+$SERVICE_REGION$/apps/$SERVICE_NAME$/marketing-api/url: http://abrouter-marketing
+
+$SERVICE_REGION$/apps/$SERVICE_NAME$/api/app/is_paywall_enabled: disabled

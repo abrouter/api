@@ -11,6 +11,12 @@ class DiceService
         $this->variants[$name] = $percent;
     }
 
+    public function rollFirst(): string
+    {
+        $firstKey = array_keys($this->variants)[0];
+        return $this->variants[$firstKey];
+    }
+
     public function roll(): string
     {
         $rand = mt_rand(1, 100);
