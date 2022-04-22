@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Modules\AbRouter\Repositories\RelatedUser;
 
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Modules\AbRouter\Models\RelatedUsers\RelatedUser;
 use Modules\Core\Repositories\BaseRepository;
 use Illuminate\Support\Collection;
@@ -11,8 +10,8 @@ use Illuminate\Support\Collection;
 class RelatedUserRepository extends BaseRepository
 {
     /**
-     * @param int        $ownerId
-     * @param Collection $events
+     * @param int $ownerId
+     * @param Collection|null $events
      *
      * @return Collection
      */
@@ -25,8 +24,20 @@ class RelatedUserRepository extends BaseRepository
         
         return $query->get();
     }
-    
-    protected function getModel()
+
+    public function getAllWithOwnersByUserId(int $ownerId, string $userId): Collection
+    {
+        return $this
+            ->query()
+            ->where([
+                ['owner_id', $ownerId],
+                ['user_id', $userId]
+            ])
+            ->distinct()
+            ->pluck('related_user_id');
+    }
+
+    protected function getModel(): RelatedUser
     {
         return new RelatedUser();
     }

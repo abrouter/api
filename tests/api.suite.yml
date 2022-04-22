@@ -17,3 +17,5 @@ modules:
             depends: ["Laravel"]
         - Tests\Module\Fixture\ExperimentEvents:
             depends: ["Laravel"]
+        - Tests\Module\Fixture\RelatedUser:
+            depends: ["Laravel"]

@@ -28,9 +28,7 @@ class FeatureToggle extends Module implements DependsOnModule
     public function haveFeatureToggle(int $owner)
     {
         $experimentAlias = (new CreateAliasExperiments())->create('feature-toggle-experiment');
-        $branchName = 'branch_' . uniqid();
         $config = '[]';
-        $percent = random_int(1, 100);
         $date = (new \DateTime())->format('Y-m-d');
         $recordExperiment = [
             'owner_id' => $owner,

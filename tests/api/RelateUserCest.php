@@ -69,4 +69,32 @@ class RelateUserCest
             ]);
         }
     }
+
+    public function getAllRelatedUsersIdsByUserId(ApiTester $I)
+    {
+        $user = $I->haveUser($I);
+        $userId = $I->haveRelatedUserIdWithUserId($user['id']);
+
+        $I->haveHttpHeader('Accept', 'application/json');
+        $I->amBearerAuthenticated($user['token']);
+
+        $I->sendGet('/all-related-users/'. $userId);
+
+        $response = json_decode($I->grabResponse(), true);
+
+        $I->seeResponseCodeIsSuccessful(200);
+
+        for ($n = 0; $n < 5; $n++) {
+            $I->seeResponseContainsJson([
+                'data' => [
+                    [
+                        'type' => 'related_users',
+                        'attributes' => [
+                            'related_user_id' => $response['data'][$n]['attributes']['related_user_id'],
+                        ]
+                    ],
+                ],
+            ]);
+        }
+    }
 }
