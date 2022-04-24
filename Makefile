@@ -34,7 +34,7 @@ route-cache: check ./docker-compose.env
 	docker exec $(APP) php /app/artisan route:cache
 
 .PHONY: sync-vendor-local
-sync-vendor: check ./docker-compose.env
+sync-vendor-local: check ./docker-compose.env
 	sudo docker cp  abr-app-api:/app/vendor/ ./vendor
 	sudo docker cp  abr-app-api:/app/composer.json ./composer.json
 	sudo docker cp  abr-app-api:/app/composer.lock ./composer.lock
