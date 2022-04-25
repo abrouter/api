@@ -33,18 +33,18 @@ consul: check ./docker-compose.env
 route-cache: check ./docker-compose.env
 	docker exec $(APP) php /app/artisan route:cache
 
-.PHONY: sync-vendor-local
-sync-vendor-local: check ./docker-compose.env
-	sudo docker cp  abr-app-api:/app/vendor/ ./vendor
-	sudo docker cp  abr-app-api:/app/composer.json ./composer.json
-	sudo docker cp  abr-app-api:/app/composer.lock ./composer.lock
+.PHONY: sync-container-to-local
+sync-container-to-local: check ./docker-compose.env
+	sudo docker cp  $(APP):/app/vendor/ ./vendor
+	sudo docker cp  $(APP):/app/composer.json ./composer.json
+	sudo docker cp  $(APP):/app/composer.lock ./composer.lock
+	sudo docker cp  $(APP):/app/.env ./.env
 
-
-.PHONY: sync-composer-docker
-sync-composer-docker: check ./docker-compose.env
-	sudo docker cp ./composer.json abr-app-api:/app/composer.json
-	sudo docker cp ./composer.lock abr-app-api:/app/composer.lock
-
+.PHONY: sync-local-to-container
+sync-local-to-container: check ./docker-compose.env
+	sudo docker cp ./composer.json $(APP):/app/composer.json
+	sudo docker cp ./composer.lock $(APP):/app/composer.lock
+	sudo docker cp ./modules_statuses.json $(APP):/app/modules_statuses.json
 
 .PHONY: test-run
 test-run:
