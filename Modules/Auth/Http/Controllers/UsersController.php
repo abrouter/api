@@ -46,8 +46,7 @@ class UsersController extends Controller
     public function getShortToken(
         AuthDecorator $authDecorator,
         TokenRepository $tokenRepository
-    )
-    {
+    ) {
         $token = $tokenRepository->forUser($authDecorator->get()->getId())->last();
         return new ShortTokenResource($token);
     }
