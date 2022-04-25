@@ -26,6 +26,6 @@ $SERVICE_REGION$/apps/$SERVICE_NAME$/api/host_internal: http://traefik-abr
 
 $SERVICE_REGION$/apps/$SERVICE_NAME$/front/url: http://localhost:930
 
-$SERVICE_REGION$/apps/$SERVICE_NAME$/api/marketing-api/url: http://abrouter-marketing
+$SERVICE_REGION$/apps/$SERVICE_NAME$/api/marketing-api/url: http://traefik-abr
 
 $SERVICE_REGION$/apps/$SERVICE_NAME$/api/app/is_paywall_enabled: disabled
