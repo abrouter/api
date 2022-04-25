@@ -3,6 +3,7 @@
 namespace Modules\Auth\Http\Controllers;
 
 use Illuminate\Routing\Controller;
+use JsonApi\JsonApi\Elements\MetaObject;
 use Modules\Auth\Exposable\AuthDecorator;
 use Modules\Auth\Http\Requests\User\UserCreateRequest;
 use Modules\Auth\Http\Resources\AccessToken\AccessTokenResource;
@@ -37,10 +38,21 @@ class UsersController extends Controller
         return new AccessTokenResource($userWithAccessToken);
     }
 
-    public function me(AuthDecorator $authDecorator)
-    {
+    public function me(
+        AuthDecorator $authDecorator,
+        TokenRepository $tokenRepository
+    ) {
         $user = $authDecorator->get()->model();
-        return new UserResource($user);
+        $token = $tokenRepository->forUser($authDecorator->get()->getId())->last();
+        $token = empty($token) ? '' : $token->id;
+
+        $json = (new UserResource($user));
+        $json = $json->jsonApiRoot()->withMeta(
+            new MetaObject([
+                'short_token' => $token,
+            ])
+        );
+        return $json;
     }
 
     public function getShortToken(

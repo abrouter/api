@@ -68,6 +68,9 @@ class UserCest
                     'updated_at' => $response['data']['attributes']['updated_at'],
                 ],
             ],
+            'meta' => [
+                'short_token' => $response['meta']['short_token'],
+            ]
         ]);
 
         $I->seeRecord('users', ['username' => $username]);
