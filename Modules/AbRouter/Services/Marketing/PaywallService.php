@@ -26,7 +26,7 @@ class PaywallService
         try {
             $json = $this->guzzle->request(
                 'GET',
-                $this->buildUrl('/paywallCheck?userId=' . $userId)
+                $this->buildUrl('/api/v1/paywallCheck?userId=' . $userId)
             )->getBody()->getContents();
             $json = json_decode($json, true);
             return $json['runningExperiments'] === 'allowed';
