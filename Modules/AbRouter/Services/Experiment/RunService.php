@@ -10,6 +10,7 @@ use Modules\AbRouter\Models\Experiments\ExperimentUsers;
 use Modules\AbRouter\Repositories\Experiments\ExperimentsRepository;
 use Modules\AbRouter\Services\Experiment\DTO\RunExperimentDTO;
 use Modules\AbRouter\Services\Marketing\PaywallService;
+use Modules\AbRouter\Services\Experiment\ExperimentIdResolver;
 
 class RunService
 {
@@ -33,36 +34,33 @@ class RunService
      */
     private $paywallService;
 
+    /**
+     * @var ExperimentIdResolver
+     */
+    private $idResolver;
+
     public function __construct(
         DiceService $diceService,
         ExperimentsRepository $experimentsRepository,
         UniqueUsersCountManager $uniqueUsersCountManager,
-        PaywallService $paywallService
+        PaywallService $paywallService,
+        ExperimentIdResolver $idResolver
     ) {
         $this->diceService = $diceService;
         $this->experimentsRepository = $experimentsRepository;
         $this->uniqueUsersCountManager = $uniqueUsersCountManager;
         $this->paywallService = $paywallService;
+        $this->idResolver = $idResolver;
     }
 
     public function run(RunExperimentDTO $runExperimentDTO): ExperimentBranchUser
     {
-        $isExperimentId = preg_match(
-            '/^([A-Z0-9]{8})(-){1}([A-Z0-9]{4})(-){1}([A-Z0-9]{4})(-){1}([A-Z0-9]{8})$/',
-            $runExperimentDTO->getExperimentId()
-        );
-
-        if ($isExperimentId) {
-            $experiment = $this->experimentsRepository->getExperimentsById(
+        $experiment = $this
+            ->idResolver
+            ->getExperimentsByResolvedId(
                 $runExperimentDTO->getExperimentId(),
                 $runExperimentDTO->getOwnerId()
             );
-        } else {
-            $experiment = $this->experimentsRepository->getExperimentsByAlias(
-                $runExperimentDTO->getExperimentId(),
-                $runExperimentDTO->getOwnerId()
-            );
-        }
 
         $user = (new ExperimentUsers())
             ->newQuery()

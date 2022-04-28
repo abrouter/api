@@ -6,6 +6,7 @@ namespace Modules\AbRouter\Models\Experiments;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 use Modules\Auth\Models\User\User;
 use Modules\Core\EntityId\EntityIdTrait;
@@ -71,8 +72,19 @@ class Experiment extends Model
         return $this->hasOne(User::class, 'id', 'owner_id');
     }
 
-    public function branches()
+    /**
+     * @return HasMany
+     */
+    public function branches(): HasMany
     {
         return $this->hasMany(ExperimentBranches::class, 'experiment_id', 'id');
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function experimentUsers(): HasMany
+    {
+        return $this->hasMany(ExperimentBranchUser::class, 'experiment_id', 'id');
     }
 }

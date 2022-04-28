@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Modules\AbRouter\Repositories\Experiments;
 
+use Illuminate\Support\Collection;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Modules\AbRouter\Models\Experiments\Experiment;
 use Modules\Core\Repositories\BaseRepository;
 use Modules\Core\EntityId\Encoder;
@@ -45,6 +45,21 @@ class ExperimentsRepository extends BaseRepository
         }
         
         return $model;
+    }
+
+    public function getExperimentsWhichHaveUser (int $owner, string $id): Collection
+    {
+        /**
+         * @var Collection $collection
+         */
+
+        return $this
+            ->query()
+            ->where('owner_id', $owner)
+            ->whereHas('experimentUsers.experimentUser', function ($query) use($id) {
+                $query->where('user_signature', $id);
+            })
+            ->get();
     }
 
     protected function getModel()

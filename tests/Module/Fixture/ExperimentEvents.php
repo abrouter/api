@@ -13,6 +13,8 @@ class ExperimentEvents extends Module implements DependsOnModule
 {   
     public const TABLE_EXPERIMENTS = 'experiments';
     public const TABLE_EXPERIMENT_BRANCHES = 'experiment_branches';
+    public const TABLE_EXPERIMENT_USER_BRANCHES = 'experiment_user_branches';
+    public const TABLE_EXPERIMENT_USERS = 'experiment_users';
 
     /**
      * @var Laravel
@@ -155,6 +157,55 @@ class ExperimentEvents extends Module implements DependsOnModule
         }
 
         return $branchesId;
+    }
+
+    public function experimentsHaveUsers(
+        string $userSignature,
+        int $ownerId,
+        int $experimentId,
+        int $branchId
+    ) {
+        $date = (new \DateTime())->format('Y-m-d');
+
+        $recordExperimentUsers = [
+            'owner_id' => $ownerId,
+            'user_signature' => $userSignature,
+            'config' => '{}',
+            'created_at' => $date,
+            'updated_at' => $date
+        ];
+
+        $userId = $this
+            ->laravel
+            ->haveRecord(
+                self::TABLE_EXPERIMENT_USERS,
+                $recordExperimentUsers
+            );
+
+        $recordExperimentBranchUser = [
+            'experiment_user_id' => $userId,
+            'experiment_id' => $experimentId,
+            'experiment_branch_id' => $branchId,
+            'created_at' => $date,
+            'updated_at' => $date
+        ];
+
+        $experimentBranchUserId = $this
+            ->laravel
+            ->haveRecord(
+                self::TABLE_EXPERIMENT_USER_BRANCHES,
+                $recordExperimentBranchUser
+            );
+
+        $this->laravel->seeRecord(
+            self::TABLE_EXPERIMENT_USERS,
+            $recordExperimentUsers
+        );
+
+        $this->laravel->seeRecord(
+            self::TABLE_EXPERIMENT_USER_BRANCHES,
+            $recordExperimentBranchUser
+        );
     }
     
     /**

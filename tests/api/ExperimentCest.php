@@ -433,4 +433,105 @@ class ExperimentCest
         $I->dontSeeRecord('experiments', $recordExperiment);
         $I->dontSeeRecord('experiment_branches', $recordBranch);
     }
+
+    public function getExperimentsHaveUser(ApiTester $I)
+    {
+        $user = $I->haveUser($I);
+        $experiment = $I->haveExperiment($user['id']);
+        $userSignature = uniqid();
+        $I->experimentsHaveUsers(
+            $userSignature,
+            $user['id'],
+            $experiment['experimentId'],
+            $experiment['decodeBranchId']
+        );
+
+        $I->haveHttpHeader('Accept', 'application/json');
+        $I->amBearerAuthenticated($user['token']);
+        $I->sendGet('experiments/have-user/' . $userSignature);
+
+        $response = json_decode($I->grabResponse(), true);
+
+        $entry = $response['data'][0];
+
+        $I->seeResponseCodeIsSuccessful(200);
+
+        $I->seeResponseContainsJson([
+            'data' => [
+                [
+                    'type' => 'experiments',
+                    'id' => $entry['id'],
+                    'attributes' => [
+                        'name' => $entry['attributes']['name'],
+                        'alias' => $entry['attributes']['alias'],
+                        'config' => $entry['attributes']['config'],
+                        'is_enabled' => true,
+                        'is_feature_toggle' => true
+                    ],
+                    'relationships' => [
+                        'owner' => [
+                            'data' => [
+                                'type' => $entry['relationships']['owner']['data']['type'],
+                                'id' => $entry['relationships']['owner']['data']['id']
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+    }
+
+    public function addUserToExperiment(ApiTester $I)
+    {
+        $user = $I->haveUser($I);
+        $experiment = $I->haveExperiment($user['id']);
+        $userSignature = uniqid();
+        $I->experimentsHaveUsers(
+            $userSignature,
+            $user['id'],
+            $experiment['experimentId'],
+            $experiment['decodeBranchId']
+        );
+
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->haveHttpHeader('Accept', 'application/json');
+        $I->amBearerAuthenticated($user['token']);
+
+        $I->sendPost('experiments/add-user', [
+            'data' => [
+                'type' => 'experiment_users',
+                'attributes' => [
+                    'user_signature' => $userSignature,
+                ],
+                'relationships' => [
+                    'experiments' => [
+                        'data' => [
+                            'id' => $experiment['encodeExperimentId'],
+                            'type' => 'experiments'
+                        ]
+                    ],
+                    'branches' => [
+                        'data' => [
+                            'id' => $experiment['idBranch'],
+                            'type' => 'experiment_branches'
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+
+        $response = json_decode($I->grabResponse(), true);
+
+        $I->seeResponseCodeIsSuccessful(200);
+
+        $I->seeResponseContainsJson([
+            'data' => [
+                'type' => 'experiment_branch_users',
+                'id' => $response['data']['id'],
+                'attributes' => [
+                    'user_added' => $response['data']['attributes']['user_added']
+                ]
+            ]
+        ]);
+    }
 }

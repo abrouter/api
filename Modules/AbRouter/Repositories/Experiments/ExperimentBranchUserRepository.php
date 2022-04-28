@@ -29,6 +29,20 @@ class ExperimentBranchUserRepository extends BaseRepository
             ->get();
     }
 
+    public function getExperimentBranchUserByExperimentIdAndExperimentUserId(int $experimentId, int $experimentUserId)
+    {
+        /**
+         * @var ExperimentBranchUser
+         */
+        return $this
+            ->query()
+            ->where(function ($query) use ($experimentId, $experimentUserId) {
+                $query->where('experiment_id', $experimentId)
+                    ->where('experiment_user_id', $experimentUserId);
+            })
+            ->first();
+    }
+
     protected function getModel(): ExperimentBranchUser
     {
         return new ExperimentBranchUser();
