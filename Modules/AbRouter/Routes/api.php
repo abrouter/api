@@ -19,6 +19,7 @@ Route::middleware(['api', 'auth:api'])->group(function () {
     Route::post('/v1/feature-toggles/run', 'FeatureTogglesController@run');
     Route::get('/v1/experiments/branch-stats', 'StatisticsController@showStatsByExperimentBranch');
     Route::get('/v1/experiments/stats', 'StatisticsController@showStatsByExperiment');
+    Route::get('/v1/statistics/user/{id}', 'StatisticsController@getAllStatisticsEventsByUserId');
 
     Route::post('/v1/event', 'StatisticsController@create');
     Route::post('/v1/event/funnel', 'StatisticsController@showStats');

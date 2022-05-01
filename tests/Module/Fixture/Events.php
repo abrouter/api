@@ -124,6 +124,8 @@ class Events extends Module implements DependsOnModule
             $this->laravel->haveRecord(self::TABLE_RELATED_USERS, $recordRelatedUsers);
             $this->laravel->seeRecord(self::TABLE_RELATED_USERS, $recordRelatedUsers);
         }
+
+        return $users;
     }
 
     public function createEventsWithTemporaryUserId(int $owner, array $events)
@@ -182,6 +184,8 @@ class Events extends Module implements DependsOnModule
             $this->laravel->haveRecord(self::TABLE_RELATED_USERS, $recordRelatedUsers);
             $this->laravel->seeRecord(self::TABLE_RELATED_USERS, $recordRelatedUsers);
         }
+
+        return $temporaryUsers;
     }
 
     public function createEventsWithTemporaryUserAndUser(int $owner, array $events)

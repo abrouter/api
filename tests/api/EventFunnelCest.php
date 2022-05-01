@@ -177,4 +177,81 @@ class EventFunnelCest
             ]
         ]);
     }
+
+    public function getAllEventsWithOwnerByRelatedId(ApiTester $I)
+    {
+        $user = $I->haveUser($I);
+        $events = $I->haveUserEvents();
+        $saveEvents = $I->saveUserEvents($user['id'], $events);
+
+        $temporaryUsersIds = $I->createEventsWithTemporaryUserId($user['id'], $events);
+
+        $I->amBearerAuthenticated($user['token']);
+
+        $I->sendGet('/statistics/user/' . $temporaryUsersIds[mt_rand(0,9)]);
+
+        $response = json_decode($I->grabResponse(), true);
+        $entry = $response['data'];
+
+        $I->seeResponseCodeIsSuccessful(200);
+
+        for ($i = 0; $i < count($response); $i++) {
+            $I->seeResponseContainsJson([
+                'data' => [
+                    [
+                        'type' => 'events',
+                        'attributes' => [
+                            'event' => $entry[$i]['attributes']['event']
+                        ]
+                    ]
+                ]
+            ]);
+        }
+    }
+
+    public function getAllEventsWithOwnerByUserId(ApiTester $I)
+    {
+        $user = $I->haveUser($I);
+        $events = $I->haveUserEvents();
+        $saveEvents = $I->saveUserEvents($user['id'], $events);
+
+        $usersIds = $I->createEventsWithUserId($user['id'], $events);
+
+        $I->amBearerAuthenticated($user['token']);
+
+        $I->sendGet('/statistics/user/' . $usersIds[mt_rand(0,19)]);
+
+        $response = json_decode($I->grabResponse(), true);
+        $entry = $response['data'];
+
+        $I->seeResponseCodeIsSuccessful(200);
+
+        for ($i = 0; $i < count($response); $i++) {
+            $I->seeResponseContainsJson([
+                'data' => [
+                    [
+                        'id' => $entry[$i]['id'],
+                        'type' => 'events',
+                        'attributes' => [
+                            'user_id' => $entry[$i]['attributes']['user_id'],
+                            'event' => $entry[$i]['attributes']['event'],
+                            'tag' => $entry[$i]['attributes']['tag'],
+                            'referrer' => $entry[$i]['attributes']['referrer'],
+                            'ip' => $entry[$i]['attributes']['ip'],
+                            'meta' => $entry[$i]['attributes']['meta'],
+                            'created_at' => $entry[$i]['attributes']['created_at']
+                        ],
+                        'relationships' => [
+                            'owner' => [
+                                'data' => [
+                                    'id' => $entry[$i]['relationships']['owner']['data']['id'],
+                                    'type' => 'users'
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]);
+        }
+    }
 }

@@ -35,7 +35,6 @@ class EventObject extends BaseObject
             'created_at' => $this->model->created_at
         ]);
 
-
         $relationships = new RelationshipsCollection([
             'owner' => new Relationship(new ResourceLinkage(new ResourceIdentifier(
                 $this->model->owner->getEntityId(),

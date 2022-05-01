@@ -17,6 +17,9 @@ class RelatedUserRepository extends BaseRepository
      */
     public function getAllWithOwnerByEvents(int $ownerId, ?Collection $events = null): Collection
     {
+        /**
+         * @var Collection $collection
+         */
         $query = $this->query()->where('owner_id', $ownerId);
         if ($events !== null) {
             $query = $query->whereIn('event_id', $events->pluck('id')->toArray());
@@ -25,9 +28,18 @@ class RelatedUserRepository extends BaseRepository
         return $query->get();
     }
 
+    /**
+     * @param int $ownerId
+     * @param string $userId
+     *
+     * @return Collection
+     */
     public function getAllWithOwnersByUserId(int $ownerId, string $userId): Collection
     {
-        return $this
+        /**
+         * @var Collection $collection
+         */
+        $collection = $this
             ->query()
             ->where([
                 ['owner_id', $ownerId],
@@ -35,6 +47,31 @@ class RelatedUserRepository extends BaseRepository
             ])
             ->distinct()
             ->pluck('related_user_id');
+
+        return $collection;
+    }
+
+    /**
+     * @param int $owner
+     * @param string $id
+     *
+     * @return Collection
+     */
+    public function getAllEventsIdWithOwnersByRelatedIdOrUserId(int $owner, string $id): Collection
+    {
+        /**
+         * @var Collection $collection
+         */
+        $collection = $this
+            ->query()
+            ->where('owner_id', $owner)
+            ->where(function ($query) use ($id) {
+                $query->where('user_id', $id)
+                    ->orWhere('related_user_id', $id);
+            })
+            ->get();
+
+        return $collection;
     }
 
     protected function getModel(): RelatedUser
