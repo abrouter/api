@@ -21,7 +21,7 @@ class IpInfoController
 
     public function __invoke(string $ip): IpInfoResource
     {
-        $ipInfo = $this->ipInfoRepository->getInfoByIp($ip);
+        $ipInfo = $this->ipInfoRepository->get($ip);
         if (empty($ipInfo)) {
             throw new UnprocessableEntityHttpException();
         }
