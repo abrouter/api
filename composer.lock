@@ -4,8 +4,51 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d0bf6706bd358c47959d1657a33a002b",
+    "content-hash": "bbab8769ca3c1acdfac355533b4bf9e4",
     "packages": [
+        {
+            "name": "abrouter/laravel-json-api-formatter",
+            "version": "0.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/abrouter/laravel-json-api-formatter.git",
+                "reference": "1db1c87cd9199a7b16e4d42d9375a985e4b7d39f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/abrouter/laravel-json-api-formatter/zipball/1db1c87cd9199a7b16e4d42d9375a985e4b7d39f",
+                "reference": "1db1c87cd9199a7b16e4d42d9375a985e4b7d39f",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/auth": "^5.6|^6.0|^7.0|^8.0",
+                "illuminate/contracts": "^5.6|^6.0|^7.0|^8.0",
+                "illuminate/database": "^5.6|^6.0|^7.0|^8.0",
+                "illuminate/http": "^5.6|^6.0|^7.0|^8.0",
+                "illuminate/pagination": "^5.6|^6.0|^7.0|^8.0",
+                "illuminate/validation": "^5.6|^6.0|^7.0|^8.0",
+                "php": ">=7.4"
+            },
+            "require-dev": {
+                "squizlabs/php_codesniffer": "^3.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "AbRouter\\JsonApiFormatter\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-3.0-or-later"
+            ],
+            "description": "Laravel json api formatter",
+            "support": {
+                "issues": "https://github.com/abrouter/laravel-json-api-formatter/issues",
+                "source": "https://github.com/abrouter/laravel-json-api-formatter/tree/0.0.3"
+            },
+            "time": "2022-05-05T10:08:01+00:00"
+        },
         {
             "name": "defuse/php-encryption",
             "version": "v2.3.1",
@@ -9005,9 +9048,9 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^7.2",
+        "php": "^7.4",
         "ext-json": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.3.0"
 }
