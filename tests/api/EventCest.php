@@ -16,7 +16,7 @@ class EventCest
         $I->haveHttpHeader('Accept', 'application/json');
         $I->amBearerAuthenticated($user['token']);
 
-        for($i = 0; $i < 100; $i++) {
+        for($i = 0; $i < 20; $i++) {
             $temporaryUserId = substr(md5('user_' . uniqid()), 0, 13);
             $userId = (new Encoder())->encode(random_int(1, 1000), 'users');
             $event = 'event_' . uniqid();
