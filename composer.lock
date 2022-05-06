@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d2f1eb0270be770dafe829a8f273f3ea",
+    "content-hash": "c8e3d960804ebb63c50aae46c61a9aec",
     "packages": [
         {
             "name": "abrouter/laravel-json-api-formatter",
@@ -908,6 +908,44 @@
                 "source": "https://github.com/guzzle/psr7/tree/1.8.2"
             },
             "time": "2021-04-26T09:17:50+00:00"
+        },
+        {
+            "name": "jsonapi/laravel-json-api-sdk",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:abrouter/laravel-json-api.git",
+                "reference": "990239d8b7ebb8050d3d711bc49c11db5fda2c76"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/abrouter/laravel-json-api/zipball/990239d8b7ebb8050d3d711bc49c11db5fda2c76",
+                "reference": "990239d8b7ebb8050d3d711bc49c11db5fda2c76",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/auth": "^5.6|^6.0",
+                "illuminate/contracts": "^5.6|^6.0",
+                "illuminate/database": "^5.6|^6.0",
+                "illuminate/http": "^5.6|^6.0",
+                "illuminate/pagination": "^5.6|^6.0",
+                "illuminate/validation": "^5.6|^6.0",
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "squizlabs/php_codesniffer": "^3.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "JsonApi\\JsonApi\\": "src"
+                }
+            },
+            "description": "Laravel json api response helper",
+            "support": {
+                "source": "https://github.com/abrouter/laravel-json-api/tree/v1.0.0"
+            },
+            "time": "2020-03-07T09:27:41+00:00"
         },
         {
             "name": "laminas/laminas-diactoros",
