@@ -189,24 +189,25 @@ class FeatureToggleCest
                 'attributes' => [
                     'run-uid' => 'feature-toggle-experiment-ON' ?? 'feature-toggle-experiment-OFF',
                     'branch-uid' => 'ON' ?? 'OFF',
-                    'experiment-uid' => 'feature-toggle-experiment'
+                    'experiment-uid' => 'feature-toggle-experiment',
+                    'is_enabled' => true,
                 ],
                 'relationships' => [
                     'experiment_user' => [
                         'data' => [
-                            'type' => 'experiment_user',
+                            'type' => 'experiment_users',
                             'id' => $response['data']['relationships']['experiment_user']['data']['id']
                         ]
                     ],
                     'experiment_id' => [
                         'data' => [
-                            'type' => 'users',
+                            'type' => 'experiments',
                             'id' => $response['data']['relationships']['experiment_id']['data']['id']
                         ]
                     ],
                     'experiment_branch_id' => [
                         'data' => [
-                            'type' => 'users',
+                            'type' => 'experiment_branches',
                             'id' => $experiment['idBranch'][0] ?? $experiment['idBranch'][1]
                         ]
                     ]

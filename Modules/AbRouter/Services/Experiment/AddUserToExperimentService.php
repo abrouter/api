@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Modules\AbRouter\Services\Experiment;
 
 use Modules\AbRouter\Models\Experiments\ExperimentBranches;
+use Modules\AbRouter\Models\Experiments\ExperimentBranchUser;
 use Modules\AbRouter\Repositories\Experiments\ExperimentBranchUserRepository;
 use Modules\AbRouter\Repositories\Experiments\ExperimentUsersRepository;
 use Modules\AbRouter\Managers\Experiments\ExperimentBranchUserManager;
@@ -44,7 +45,12 @@ class AddUserToExperimentService
         $this->idResolver = $idResolver;
     }
 
-    public function addUserToExperiment(AddUserToExperimentDTO $addUserToExperimentDTO)
+    /**
+     * @param AddUserToExperimentDTO $addUserToExperimentDTO
+     * @return ExperimentBranchUser
+     * @throws \Exception
+     */
+    public function addUserToExperiment(AddUserToExperimentDTO $addUserToExperimentDTO): ExperimentBranchUser
     {
         $experiment = $this
             ->idResolver

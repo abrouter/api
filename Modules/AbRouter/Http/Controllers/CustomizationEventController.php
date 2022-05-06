@@ -2,18 +2,18 @@
 
 namespace Modules\AbRouter\Http\Controllers;
 
+use AbRouter\JsonApiFormatter\DataSource\DataProviders\SimpleDataProvider;
 use Illuminate\Routing\Controller;
 use Modules\AbRouter\Http\Requests\CustomizationEventRequests;
 use Modules\AbRouter\Http\Requests\CustomizationEventUpdateRequests;
+use Modules\AbRouter\Http\Resources2\CustomizationEvent\CustomizationEventSchema;
+use Modules\AbRouter\Http\Resources2\DisplayUserEvent\DisplayUserEventSchema;
 use Modules\Auth\Exposable\AuthDecorator;
 use Modules\AbRouter\Http\Transformers\CustomizationEvents\CustomizationEventTransformer;
 use Modules\AbRouter\Http\Transformers\CustomizationEvents\CustomizationEventUpdateTransformer;
 use Modules\AbRouter\Services\CustomizationEvent\CustomizationEventCreator;
 use Modules\AbRouter\Services\CustomizationEvent\CustomizationEventUpdater;
 use Modules\AbRouter\Services\CustomizationEvent\CustomizationEventDeleterService;
-use Modules\AbRouter\Http\Resources\CustomizationEvent\CustomizationEventResource;
-use Modules\AbRouter\Http\Resources\CustomizationEvent\CustomizationEventDeleteResource;
-use Modules\AbRouter\Http\Resources\DisplayUserEvent\DisplayUserEventCollection;
 use Modules\AbRouter\Models\CustomizationEvent\DisplayUserEvent;
 
 class CustomizationEventController extends Controller
@@ -21,15 +21,19 @@ class CustomizationEventController extends Controller
     /**
      * @param AuthDecorator $authDecorator
      * @param DisplayUserEvent $displayUserEvent
-     * @return DisplayUserEventCollection 
+     * @return DisplayUserEventSchema
      */
-
     public function index(AuthDecorator $authDecorator, DisplayUserEvent $displayUserEvent)
     {
         $userId = $authDecorator->get()->getId();
 
-        return (new DisplayUserEventCollection(
-            $displayUserEvent->newQuery()->where('user_id', $userId)->get()->all()
+        return (new DisplayUserEventSchema(
+            new SimpleDataProvider($displayUserEvent
+                ->newQuery()
+                ->where('user_id', $userId)
+                ->get()
+                ->all()
+            )
         ));
     }
 
@@ -37,7 +41,7 @@ class CustomizationEventController extends Controller
      * @param CustomizationEventRequests $request
      * @param CustomizationEventTransformer $transformer
      * @param CustomizationEventCreator $customizationEventCreator
-     * @return CustomizationEventResource
+     * @return CustomizationEventSchema
      */
     public function create(
         CustomizationEventRequests $request,
@@ -47,7 +51,7 @@ class CustomizationEventController extends Controller
         $customizationEventDTO = $transformer->transform($request);
         $createCustomEvent = $customizationEventCreator->create($customizationEventDTO);
         
-        return new CustomizationEventResource($createCustomEvent);
+        return new CustomizationEventSchema(new SimpleDataProvider($createCustomEvent));
     }
 
     /**
@@ -55,7 +59,7 @@ class CustomizationEventController extends Controller
      * @param CustomizationEventUpdateRequests $request
      * @param CustomizationEventUpdateTransformer $transformer
      * @param CustomizationEventUpdater $customizationEventUpdater
-     * @return CustomizationEventResource
+     * @return CustomizationEventSchema
      */
     public function update(
         CustomizationEventUpdateRequests $request,
@@ -65,7 +69,7 @@ class CustomizationEventController extends Controller
         $customizationEventUpdateDTO = $transformer->transform($request);
         $updateCustomEvent = $customizationEventUpdater->update($customizationEventUpdateDTO);
         
-        return new CustomizationEventResource($updateCustomEvent);
+        return new CustomizationEventSchema(new SimpleDataProvider($updateCustomEvent));
     }
 
     /**

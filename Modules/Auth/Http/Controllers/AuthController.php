@@ -2,11 +2,10 @@
 
 namespace Modules\Auth\Http\Controllers;
 
+use AbRouter\JsonApiFormatter\DataSource\DataProviders\SimpleDataProvider;
 use Exception;
-use Google\Client;
-use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Modules\Auth\Http\Resources\AccessToken\AccessTokenResource;
+use Modules\Auth\Http\Resources2\AccessTokenScheme;
 use Modules\Auth\Http\Transformers\Auth\AuthTransformer;
 use Modules\Auth\Http\Transformers\Auth\AuthWithGoogleTransformer;
 use Modules\Auth\Http\Transformers\Auth\GooglePayloadTransformer;
@@ -24,7 +23,7 @@ class AuthController extends Controller
      * @param AuthTransformer $transformer
      * @param Authenticator $authenticator
      * @param ShortTokenHandlerService $shortTokenHandler
-     * @return AccessTokenResource
+     * @return AccessTokenScheme
      * @throws Exception
      */
     public function auth(
@@ -37,7 +36,7 @@ class AuthController extends Controller
         $userWithAccessToken = $authenticator->auth($userAuthDTO);
         $shortTokenHandler->handle($userWithAccessToken);
 
-        return new AccessTokenResource($userWithAccessToken);
+        return new AccessTokenScheme(new SimpleDataProvider($userWithAccessToken));
     }
 
     /**
@@ -47,7 +46,7 @@ class AuthController extends Controller
      * @param CheckIdToken $checkId
      * @param AuthenticatorWithGoogle $authenticator
      * @param ShortTokenHandlerService $shortTokenHandler
-     * @return AccessTokenResource
+     * @return AccessTokenScheme
      * @throws Exception
      */
     public function authWithGoogle (
@@ -64,6 +63,6 @@ class AuthController extends Controller
         $userWithAccessToken = $authenticator->authOrCreate($googlePayloadDTO);
         $shortTokenHandler->handle($userWithAccessToken);
 
-        return new AccessTokenResource($userWithAccessToken);
+        return new AccessTokenScheme(new SimpleDataProvider($userWithAccessToken));
     }
 }

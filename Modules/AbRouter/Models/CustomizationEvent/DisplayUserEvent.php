@@ -19,6 +19,7 @@ use Modules\Core\EntityId\EntityIdTrait;
  * @property string order
  * @property Carbon created_at
  * @property Carbon updated_at
+ * @property User user
  */
 class DisplayUserEvent extends Model
 {
@@ -47,7 +48,7 @@ class DisplayUserEvent extends Model
     /**
      * @return HasOne
      */
-    public function userId(): HasOne
+    public function user(): HasOne
     {
         return $this->hasOne(User::class, 'id', 'user_id');
     }

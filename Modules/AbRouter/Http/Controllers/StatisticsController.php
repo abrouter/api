@@ -3,10 +3,10 @@ declare(strict_types = 1);
 
 namespace Modules\AbRouter\Http\Controllers;
 
+use AbRouter\JsonApiFormatter\DataSource\DataProviders\SimpleDataProvider;
 use Illuminate\Http\Request;
-use Modules\AbRouter\Http\Resources\Event\EventResource;
-use Modules\AbRouter\Http\Resources\Tag\TagCollection;
-use Modules\AbRouter\Http\Resources\Event\EventsCollection;
+use Modules\AbRouter\Http\Resources2\Event\EventSchema;
+use Modules\AbRouter\Http\Resources2\Tag\TagScheme;
 use Modules\AbRouter\Http\Transformers\Events\EventTransformer;
 use Modules\AbRouter\Http\Transformers\Experiments\ExperimentStatsTransformer;
 use Modules\AbRouter\Http\Transformers\Experiments\ExperimentBranchStatsTransformer;
@@ -52,7 +52,7 @@ class StatisticsController
         $eventDTO = $this->eventTransformer->transform($request);
         $event = $this->eventCreator->create($eventDTO);
 
-        return new EventResource($event);
+        return new EventSchema(new SimpleDataProvider($event));
     }
     
     public function showStats(
@@ -113,8 +113,15 @@ class StatisticsController
     {
         $owner = $this->authDecorator->get()->getId();
 
-        return new TagCollection(
-            $event->newQuery()->select('tag')->where('owner_id', $owner)->distinct()->get()
+        return new TagScheme(
+            new SimpleDataProvider(
+                $event
+                    ->newQuery()
+                    ->select('tag')
+                    ->where('owner_id', $owner)
+                    ->distinct()
+                    ->get()
+            )
         );
     }
 
@@ -127,6 +134,6 @@ class StatisticsController
         $allEventsDTO = $transformer->transform($owner, $userId);
         $allEvents = $allEventsServices->getAllEventsWithOwnerByRelatedIdOrUserId($allEventsDTO);
 
-        return new EventsCollection($allEvents);
+        return new EventSchema(new SimpleDataProvider($allEvents));
     }
 }

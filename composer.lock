@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bbab8769ca3c1acdfac355533b4bf9e4",
+    "content-hash": "c8e3d960804ebb63c50aae46c61a9aec",
     "packages": [
         {
             "name": "abrouter/laravel-json-api-formatter",
-            "version": "0.0.3",
+            "version": "0.0.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/abrouter/laravel-json-api-formatter.git",
-                "reference": "1db1c87cd9199a7b16e4d42d9375a985e4b7d39f"
+                "reference": "8a1e56e9f9c33b268768596efef6f909fb22276a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/abrouter/laravel-json-api-formatter/zipball/1db1c87cd9199a7b16e4d42d9375a985e4b7d39f",
-                "reference": "1db1c87cd9199a7b16e4d42d9375a985e4b7d39f",
+                "url": "https://api.github.com/repos/abrouter/laravel-json-api-formatter/zipball/8a1e56e9f9c33b268768596efef6f909fb22276a",
+                "reference": "8a1e56e9f9c33b268768596efef6f909fb22276a",
                 "shasum": ""
             },
             "require": {
@@ -45,9 +45,9 @@
             "description": "Laravel json api formatter",
             "support": {
                 "issues": "https://github.com/abrouter/laravel-json-api-formatter/issues",
-                "source": "https://github.com/abrouter/laravel-json-api-formatter/tree/0.0.3"
+                "source": "https://github.com/abrouter/laravel-json-api-formatter/tree/0.0.12"
             },
-            "time": "2022-05-05T10:08:01+00:00"
+            "time": "2022-05-06T11:51:06+00:00"
         },
         {
             "name": "defuse/php-encryption",

@@ -2,18 +2,18 @@
 
 namespace Modules\Auth\Http\Controllers;
 
+use AbRouter\JsonApiFormatter\DataSource\DataProviders\SimpleDataProvider;
 use Illuminate\Routing\Controller;
-use JsonApi\JsonApi\Elements\MetaObject;
 use Modules\Auth\Exposable\AuthDecorator;
 use Modules\Auth\Http\Requests\User\UserCreateRequest;
-use Modules\Auth\Http\Resources\AccessToken\AccessTokenResource;
-use Modules\Auth\Http\Resources\User\UserResource;
+use Modules\Auth\Http\Resources2\AccessTokenScheme;
+use Modules\Auth\Http\Resources2\ShortTokenScheme;
 use Modules\Auth\Http\Transformers\Users\UserTransformer;
 use Modules\Auth\Services\Auth\ShortTokenHandlerService;
 use Modules\Auth\Services\Users\Creator;
 use Modules\Auth\Repositories\Auth\TokenRepository;
-use Modules\Auth\Http\Resources\ShortToken\ShortTokenResource;
 use Throwable;
+use Modules\Auth\Http\Resources2\UserScheme;
 
 class UsersController extends Controller
 {
@@ -22,7 +22,7 @@ class UsersController extends Controller
      * @param UserTransformer $transformer
      * @param Creator $creator
      * @param ShortTokenHandlerService $shortTokenHandlerService
-     * @return AccessTokenResource
+     * @return AccessTokenScheme
      * @throws Throwable
      */
     public function create(
@@ -35,7 +35,7 @@ class UsersController extends Controller
         $userWithAccessToken = $creator->create($userCreateDTO);
         $shortTokenHandlerService->handle($userWithAccessToken);
 
-        return new AccessTokenResource($userWithAccessToken);
+        return new AccessTokenScheme(new SimpleDataProvider($userWithAccessToken));
     }
 
     public function me(
@@ -46,13 +46,10 @@ class UsersController extends Controller
         $token = $tokenRepository->forUser($authDecorator->get()->getId())->last();
         $token = empty($token) ? '' : $token->id;
 
-        $json = (new UserResource($user));
-        $json = $json->jsonApiRoot()->withMeta(
-            new MetaObject([
-                'short_token' => $token,
-            ])
-        );
-        return $json;
+
+        return (new UserScheme(new SimpleDataProvider($user)))->addMeta([
+            'short_token' => $token,
+        ]);
     }
 
     public function getShortToken(
@@ -60,6 +57,6 @@ class UsersController extends Controller
         TokenRepository $tokenRepository
     ) {
         $token = $tokenRepository->forUser($authDecorator->get()->getId())->last();
-        return new ShortTokenResource($token);
+        return new ShortTokenScheme(new SimpleDataProvider($token));
     }
 }

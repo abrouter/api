@@ -21,6 +21,7 @@ use Modules\Core\EntityId\EntityIdTrait;
  * @property string user_id
  * @property string event
  * @property string tag
+ * @property string ip
  * @property string referrer
  * @property string meta
  * @property Carbon created_at

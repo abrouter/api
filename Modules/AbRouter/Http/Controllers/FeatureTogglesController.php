@@ -2,16 +2,17 @@
 
 namespace Modules\AbRouter\Http\Controllers;
 
+use AbRouter\JsonApiFormatter\DataSource\DataProviders\SimpleDataProvider;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Modules\AbRouter\Http\Requests\FeatureToggleRunRequest;
 use Modules\AbRouter\Http\Requests\FeatureToggleCreateRequest;
+use Modules\AbRouter\Http\Resources2\Experiment\ExperimentScheme;
+use Modules\AbRouter\Http\Resources2\FeatureToggle\FeatureToggleScheme;
 use Modules\AbRouter\Http\Transformers\FeatureToggles\RunFeatureToggleTransformer;
 use Modules\AbRouter\Http\Transformers\FeatureToggles\FeatureToggleCreateTransformer;
 use Modules\AbRouter\Http\Transformers\Experiments\ExperimentDeleteTransformer;
-use Modules\AbRouter\Http\Resources\FeatureToggle\FeatureToggleResource;
-use Modules\AbRouter\Http\Resources\Experiment\ExperimentResource;
 use Modules\AbRouter\Services\Experiment\RunService;
 use Modules\AbRouter\Services\Experiment\ExperimentService;
 use Modules\AbRouter\Services\Experiment\ExperimentDeleteService;
@@ -22,7 +23,7 @@ class FeatureTogglesController extends Controller
      * @param FeatureToggleRunRequest $request
      * @param RunFeatureToggleTransformer $runFeatureToggleTransformer
      * @param RunService $runService
-     * @return FeatureToggleResource
+     * @return FeatureToggleScheme
      */
     public function run(
         FeatureToggleRunRequest $request,
@@ -31,7 +32,8 @@ class FeatureTogglesController extends Controller
     ) {
         $run = $runService->run($runFeatureToggleTransformer->transform($request));
 
-        return new FeatureToggleResource($run);
+        return (new FeatureToggleScheme(new SimpleDataProvider($run)))
+            ->addInclude('experiment_branches');
     }
 
     public function createOrUpdate(
@@ -41,7 +43,7 @@ class FeatureTogglesController extends Controller
     ) {
         $featureToggle = $experimentService->createOrUpdate($transformer->transform($request));
 
-        return new ExperimentResource($featureToggle);
+        return new ExperimentScheme(new SimpleDataProvider($featureToggle));
     }
 
     public function delete(

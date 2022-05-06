@@ -19,6 +19,7 @@ use Modules\Core\EntityId\EntityIdTrait;
  * @property string name
  * @property string uid
  * @property string config
+ * @property string alias
  * @property boolean is_enabled
  * @property boolean is_feature_toggle
  * @property Carbon created_at

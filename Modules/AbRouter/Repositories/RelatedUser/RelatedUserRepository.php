@@ -45,8 +45,8 @@ class RelatedUserRepository extends BaseRepository
                 ['owner_id', $ownerId],
                 ['user_id', $userId]
             ])
-            ->distinct()
-            ->pluck('related_user_id');
+            ->get()
+            ->unique('related_user_id');
 
         return $collection;
     }

@@ -2,15 +2,15 @@
 
 namespace Modules\AbRouter\Http\Controllers;
 
-use Illuminate\Contracts\Container\BindingResolutionException;
+use AbRouter\JsonApiFormatter\DataSource\DataProviders\SimpleDataProvider;
+use Laravel\Passport\Token;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\AbRouter\Http\Requests\ExperimentRequest;
 use Modules\AbRouter\Http\Requests\ExperimentRunRequest;
 use Modules\AbRouter\Http\Requests\AddUserToExperimentRequest;
-use Modules\AbRouter\Http\Resources\Experiment\ExperimentResource;
-use Modules\AbRouter\Http\Resources\ExperimentBranchUser\ExperimentBranchUserResource;
-use Modules\AbRouter\Http\Resources\AddUserToExperiment\AddUserToExperimentResource;
+use Modules\AbRouter\Http\Resources2\Experiment\ExperimentScheme;
+use Modules\AbRouter\Http\Resources2\ExperimentBranchUser\ExperimentBranchUserScheme;
 use Modules\AbRouter\Http\Transformers\Experiments\ExperimentTransformer;
 use Modules\AbRouter\Http\Transformers\Experiments\ExperimentDeleteTransformer;
 use Modules\AbRouter\Http\Transformers\Experiments\RunExperimentTransformer;
@@ -24,8 +24,6 @@ use Modules\AbRouter\Services\Experiment\RunService;
 use Modules\AbRouter\Services\Experiment\SimpleRunService;
 use Modules\AbRouter\Services\Experiment\AddUserToExperimentService;
 use Modules\Auth\Exposable\AuthDecorator;
-use Modules\AbRouter\Http\Resources\Experiment\ExperimentCollection;
-use Modules\AbRouter\Http\Resources\ExperimentsHaveUsers\ExperimentsHaveUsersCollection;
 
 class ExperimentsController extends Controller
 {
@@ -33,7 +31,7 @@ class ExperimentsController extends Controller
      * @param ExperimentRunRequest $request
      * @param RunExperimentTransformer $runExperimentTransformer
      * @param RunService $runService
-     * @return ExperimentBranchUserResource
+     * @return ExperimentBranchUserScheme
      */
     public function run(
         ExperimentRunRequest $request,
@@ -41,14 +39,14 @@ class ExperimentsController extends Controller
         RunService $runService
     ) {
         $run = $runService->run($runExperimentTransformer->transform($request));
-        return new ExperimentBranchUserResource($run);
+        return (new ExperimentBranchUserScheme(new SimpleDataProvider($run)))->addInclude('experiment_branch_user');
     }
 
     /**
      * @param ExperimentRequest $request
      * @param ExperimentTransformer $experimentTransformer
      * @param ExperimentService $experimentService
-     * @return ExperimentResource
+     * @return ExperimentScheme
      */
     public function createOrUpdate(
         ExperimentRequest $request,
@@ -56,7 +54,7 @@ class ExperimentsController extends Controller
         ExperimentService $experimentService
     ) {
         $experiment = $experimentService->createOrUpdate($experimentTransformer->transform($request));
-        return new ExperimentResource($experiment);
+        return new ExperimentScheme(new SimpleDataProvider($experiment));
     }
 
     /**
@@ -85,23 +83,30 @@ class ExperimentsController extends Controller
     /**
      * @param AuthDecorator $authDecorator
      * @param Experiment $experiment
-     * @return ExperimentCollection
-     * @throws BindingResolutionException
+     * @return ExperimentScheme
      */
     public function index(AuthDecorator $authDecorator, Experiment $experiment)
     {
         $userId = $authDecorator->get()->getId();
-        return (new ExperimentCollection(
-            $experiment->newQuery()->where('owner_id', $userId)->get()->all()
-        ));
+
+        return (new ExperimentScheme(
+            new SimpleDataProvider(
+                $experiment
+                    ->newQuery()
+                    ->where('owner_id', $userId)
+                    ->get()
+                    ->all()
+            )
+        ))->addMeta([
+            'token' => (new Token())->newQuery()->where('user_id', $authDecorator->get()->getId())->first()->id,
+        ]);
     }
 
     /**
      * @param AuthDecorator $authDecorator
      * @param ExperimentsRepository $experimentsRepository
-     * @param $id
-     * @return ExperimentsHaveUsersCollection
-     * @throws BindingResolutionException
+     * @param string $userId
+     * @return ExperimentScheme
      */
     public function getExperimentsHaveUsers(
         AuthDecorator $authDecorator,
@@ -110,8 +115,10 @@ class ExperimentsController extends Controller
     ) {
         $owner = $authDecorator->get()->getId();
 
-        return (new ExperimentsHaveUsersCollection(
-            $experimentsRepository->getExperimentsWhichHaveUser($owner, $userId)
+        return (new ExperimentScheme(
+            new SimpleDataProvider(
+                $experimentsRepository->getExperimentsWhichHaveUser($owner, $userId)
+            )
         ));
     }
 
@@ -119,7 +126,7 @@ class ExperimentsController extends Controller
      * @param AddUserToExperimentRequest $request
      * @param AddUserToExperimentTransformer $addUserToExperimentTransformer
      * @param AddUserToExperimentService $experimentService
-     * @return AddUserToExperimentResource
+     * @return ExperimentBranchUserScheme
      */
     public function addUserToExperiment(
         AddUserToExperimentRequest $request,
@@ -129,6 +136,7 @@ class ExperimentsController extends Controller
         $addUserToExperimentDTO = $addUserToExperimentTransformer->transform($request);
         $experimentUser = $experimentService->addUserToExperiment($addUserToExperimentDTO);
 
-        return new AddUserToExperimentResource($experimentUser);
+        return (new ExperimentBranchUserScheme(new SimpleDataProvider($experimentUser)))
+            ->addInclude('experiment_branch_user');
     }
 }

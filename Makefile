@@ -33,6 +33,17 @@ consul: check ./docker-compose.env
 route-cache: check ./docker-compose.env
 	docker exec $(APP) php /app/artisan route:cache
 
+.PHONY: composer
+composer: check ./docker-compose.env
+	make sync-local-to-container
+	docker exec $(APP) composer ${ARGS}
+	make sync-local-to-container
+
+.PHONY: composer-install-prod
+composer-install-prod: check ./docker-compose.env
+	make sync-local-to-container
+	docker exec $(APP) composer install
+
 .PHONY: sync-container-to-local
 sync-container-to-local: check ./docker-compose.env
 	sudo docker cp  $(APP):/app/vendor/ ./vendor

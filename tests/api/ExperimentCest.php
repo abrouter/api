@@ -529,7 +529,48 @@ class ExperimentCest
                 'type' => 'experiment_branch_users',
                 'id' => $response['data']['id'],
                 'attributes' => [
-                    'user_added' => $response['data']['attributes']['user_added']
+                    'run-uid' => $response['data']['attributes']['run-uid'],
+                    'branch-uid' => $response['data']['attributes']['branch-uid'],
+                    'experiment-uid' => $response['data']['attributes']['experiment-uid']
+                ],
+                'relationships' => [
+                    'experiment_user' => [
+                        'data' => [
+                            'type' => 'experiment_user',
+                            'id' => $response['data']['relationships']['experiment_user']['data']['id']
+                        ]
+                    ],
+                    'experiment_id' => [
+                        'data' => [
+                            'type' => 'users',
+                            'id' => $response['data']['relationships']['experiment_id']['data']['id']
+                        ]
+                    ],
+                    'experiment_branch_id' => [
+                        'data' => [
+                            'type' => 'users',
+                            'id' => $response['data']['relationships']['experiment_branch_id']['data']['id']
+                        ]
+                    ]
+                ]
+            ],
+            'included' => [
+                [
+                    'type' => 'experiment_branches',
+                    'id' => $response['included'][0]['id'],
+                    'attributes' => [
+                        "name" => $response['included'][0]['attributes']['name'],
+                        "uid" => $response['included'][0]['attributes']['uid'],
+                        "percent" => $response['included'][0]['attributes']['percent']
+                    ],
+                    'relationships' => [
+                        'experiment' => [
+                            'data' => [
+                                'type' => 'users',
+                                'id' => $response['included'][0]['relationships']['experiment']['data']['id']
+                            ]
+                        ]
+                    ]
                 ]
             ]
         ]);
