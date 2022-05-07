@@ -6,8 +6,6 @@ namespace Modules\Core\EntityId;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Trait EntityIdTrait
- * @package Modules\Core\EntityId
  * @property int id
  * @mixin Model
  */
