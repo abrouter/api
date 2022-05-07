@@ -8,7 +8,6 @@ services:
       - "33078:3306/tcp"
     command: --max_allowed_packet=104857600 --innodb-buffer-pool-size=256M
     volumes:
-      - ./resources/local-dump.sql:/docker-entrypoint-initdb.d/local-dump.sql:ro
       - mysql:/var/lib/mysql
     environment:
       MYSQL_USER: abrouter
@@ -65,8 +64,6 @@ services:
       - docker-compose.env
 
 volumes:
-#  consul:
-#    driver: local
   mysql:
     driver: local
   redis:

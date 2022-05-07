@@ -4,16 +4,11 @@ ARGS = $(filter-out $@,$(MAKECMDGOALS))
 .PHONY: provision
 provision:
 	docker exec $(APP) rm -f /app/.env
-	docker exec $(APP) php /app/docker/provision/consul.php i
-
+	docker exec $(APP) php /app/docker/build/consul.php i
 
 .PHONY: install
 install:
-	docker exec $(APP) composer install --ignore-platform-reqs
-
-.PHONY: consul-check
-consul-check: check ./docker-compose.env
-	docker exec $(APP) /app/docker/provision/consul.sh --check
+	docker exec $(APP) composer install
 
 .PHONY: migrate
 migrate: check ./docker-compose.env
@@ -23,11 +18,10 @@ migrate: check ./docker-compose.env
 bash:
 	docker exec -it $(APP) bash
 
-
 .PHONY: consul
 consul: check ./docker-compose.env
 	docker exec $(APP) rm -f .env
-	docker exec $(APP) /app/docker/provision/consul.sh
+	docker exec $(APP) /app/docker/build/consul.sh
 
 .PHONY: route-cache
 route-cache: check ./docker-compose.env

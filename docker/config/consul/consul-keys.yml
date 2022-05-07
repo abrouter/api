@@ -1,0 +1,33 @@
+abrouter1/api/service-url: https://127.0.0.1:933
+abrouter1/api/service-key: base64:s0iHLc3j85XeAPiwJVN+5UXuKuq0S3UxD5GGU9pjMlE=
+
+abrouter1/api/db/host: abr-mysql
+abrouter1/api/db/instance: main
+abrouter1/api/db/database: abr
+abrouter1/api/db/username: root
+abrouter1/api/db/password: bestpass
+abrouter1/api/db/port: 3306
+
+abrouter1/api/queue/driver: sync
+
+abrouter1/api/redis/host: abr-redis
+abrouter1/api/redis/instance: abr
+abrouter1/api/redis/db_number: 0
+abrouter1/api/redis/sessions_db: 1
+abrouter1/api/redis/rw_timeout: 60
+abrouter1/api/redis/port: 6379
+
+abrouter1/api/ipstack/api_key: api_key
+
+abrouter1/google/client_id: 575253665892-8dg5mkdn6rdm3a52hi44nhsd3qud9vbh.apps.googleusercontent.com
+
+abrouter1/api/host: http://localhost:930
+abrouter1/api/host_internal: https://abr-traefik
+abrouter1/api/host_for_front: http://abr-app-api
+
+
+abrouter1/front/url: http://localhost:930
+
+abrouter1/api/marketing-api/url: http://abr-traefik:930
+
+abrouter1/api/app/is_paywall_enabled: disabled
