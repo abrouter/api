@@ -1,12 +1,8 @@
 FROM webdevops/php-nginx:7.4 as abr-api
 
-ARG BUILD_ID=1
-ARG VERSION=1.1.1
 ARG CONSUL_TEMPLATE_VERSION=0.19.5
 
-ENV BUILD_ID=1 \
-    APPLICATION_VERSION=${VERSION} \
-    DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
 
 COPY . /app
 
