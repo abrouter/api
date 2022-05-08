@@ -5,7 +5,7 @@ namespace Modules\Core\EntityId;
 
 use Exception;
 
-class EntityEncoder
+class EntityEncoderCopy
 {
     private const SECRET = 'abr-app';
     private const ENTITY_LENGTH = 16;
