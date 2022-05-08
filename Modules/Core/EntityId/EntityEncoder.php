@@ -7,7 +7,13 @@ use Exception;
 
 class EntityEncoder
 {
-    const SALT = 'abr-app';
+    private const SECRET = 'abr-app';
+    private const ENTITY_LENGTH = 16;
+    private const ENTITY_BODY_CHAR = '0';
+    private const ENTITY_SEPARATOR = '-';
+    private const BLOCK_LENGTH = 4;
+    private const NEGATIVE_BLOCK_LENGTH = -4;
+    private const BLOCK_STARTING_POINT = 0;
 
     /**
      * @param int $id
@@ -17,13 +23,13 @@ class EntityEncoder
     public function encode(int $id, string $entityName): string
     {
         $idHex = dechex($id);
-        $idHex = str_pad($idHex, 16, '0', STR_PAD_LEFT);
+        $idHex = str_pad($idHex, self::ENTITY_LENGTH, self::ENTITY_BODY_CHAR, STR_PAD_LEFT);
 
         $entityHash = $this->getEntityHash($entityName);
         $checkSum = $this->getCheckSum($idHex, $entityHash);
 
         $idHex = strrev($idHex);
-        $base = implode('-', str_split($idHex, 4));
+        $base = implode('-', str_split($idHex, self::BLOCK_LENGTH));
 
         return strtoupper($checkSum . $base . $entityHash);
     }
@@ -38,15 +44,15 @@ class EntityEncoder
     {
         $entityId = strtolower($entityId);
 
-        $checkSum = substr($entityId, 0, 4);
-        $entityHash = substr($entityId, -4);
+        $checkSum = substr($entityId, self::BLOCK_STARTING_POINT, self::BLOCK_LENGTH);
+        $entityHash = substr($entityId, self::NEGATIVE_BLOCK_LENGTH);
 
         if ($this->getEntityHash($entityName) !== $entityHash) {
             throw new Exception($entityId);
         }
 
-        $idHex = substr($entityId, 4, -4);
-        $idHex = str_replace('-', '', $idHex);
+        $idHex = substr($entityId, self::BLOCK_LENGTH, self::NEGATIVE_BLOCK_LENGTH);
+        $idHex = str_replace(self::ENTITY_SEPARATOR, '', $idHex);
         $idHex = strrev($idHex);
 
         if ($this->getCheckSum($idHex, $entityHash) !== $checkSum) {
@@ -63,7 +69,7 @@ class EntityEncoder
     private function getEntityHash(string $entityName): string
     {
         $entityHash = md5($entityName);
-        return substr($entityHash, 0, 4);
+        return substr($entityHash, self::BLOCK_STARTING_POINT, self::BLOCK_LENGTH);
     }
 
     /**
@@ -73,7 +79,7 @@ class EntityEncoder
      */
     private function getCheckSum(string $entityIdHex, string $entityHash): string
     {
-        $hash = md5($entityIdHex . '-' . $entityHash . '-' . self::SALT);
+        $hash = md5($entityIdHex . self::ENTITY_SEPARATOR . $entityHash . self::ENTITY_SEPARATOR . self::SECRET);
         return substr($hash, 4, 4);
     }
 }
