@@ -71,7 +71,7 @@ class EntityEncoder
      */
     private function getEntityHash(string $entityName): string
     {
-        return substr(sha1($entityName), self::BLOCK_STARTING_POINT, self::BLOCK_LENGTH);
+        return substr(md5($entityName), self::BLOCK_STARTING_POINT, self::BLOCK_LENGTH);
     }
 
     /**
@@ -81,7 +81,7 @@ class EntityEncoder
      */
     private function getCheckSum(string $entityIdHex, string $entityHash): string
     {
-        $hash = sha1(join(self::ENTITY_SEPARATOR, [$entityIdHex, $entityHash, self::SECRET]));
+        $hash = md5(join(self::ENTITY_SEPARATOR, [$entityIdHex, $entityHash, self::SECRET]));
         return substr($hash, self::BLOCK_LENGTH, self::BLOCK_LENGTH);
     }
 }
