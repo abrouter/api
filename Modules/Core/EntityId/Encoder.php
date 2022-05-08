@@ -5,7 +5,7 @@ namespace Modules\Core\EntityId;
 
 use Exception;
 
-class EntityEncoder
+class Encoder
 {
     const SALT = 'abr-app';
 
