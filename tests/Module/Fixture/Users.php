@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Tests\Module\Fixture;
 
-use Modules\Core\EntityId\Encoder;
+use Modules\Core\EntityId\EntityEncoder;
 use Codeception\Lib\Interfaces\DependsOnModule;
 use Codeception\Module;
 
@@ -52,7 +52,7 @@ class Users extends Module implements DependsOnModule
 
         $token = $response['data']['attributes']['token'];
         $userEncodeId = $response['data']['relationships']['user']['data']['id'];
-        $userId = (new Encoder())->decode($userEncodeId, 'users');
+        $userId = (new EntityEncoder())->decode($userEncodeId, 'users');
         $user = ['id' => $userId, 'encodeId' => $userEncodeId , 'username' => $username, 'password' => $password, 'token' => $token];
 
         return $user;

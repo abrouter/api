@@ -13,6 +13,6 @@ trait EntityIdTrait
 {
     public function getEntityId(): string
     {
-        return (new Encoder())->encode($this->id, $this->getTable());
+        return (new EntityEncoder())->encode($this->id, $this->getTable());
     }
 }

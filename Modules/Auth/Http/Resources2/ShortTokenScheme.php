@@ -6,7 +6,7 @@ namespace Modules\Auth\Http\Resources2;
 use AbRouter\JsonApiFormatter\Document\Schema\DocumentSchema;
 use AbRouter\JsonApiFormatter\Document\Sections\Attributes;
 use AbRouter\JsonApiFormatter\Document\Sections\Identifier;
-use Modules\Core\EntityId\Encoder;
+use Modules\Core\EntityId\EntityEncoder;
 
 /**
  *  @property \Laravel\Passport\Token $activeData
@@ -16,7 +16,7 @@ class ShortTokenScheme extends DocumentSchema
     public function getIdentifier(): Identifier
     {
         return new Identifier(
-            (new Encoder())->encode($this->activeData->user_id, 'users'),
+            (new EntityEncoder())->encode($this->activeData->user_id, 'users'),
             'oauth_access_tokens'
         );
     }

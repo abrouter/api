@@ -5,18 +5,18 @@ namespace Modules\AbRouter\Http\Transformers\CustomizationEvents;
 
 use Illuminate\Http\Request;
 use Modules\AbRouter\Services\CustomizationEvent\DTO\CustomizationEventUpdateDTO;
-use Modules\Core\EntityId\Encoder;
+use Modules\Core\EntityId\EntityEncoder;
 use Modules\Core\EntityId\EntityIdTrait;
 
 class CustomizationEventUpdateTransformer
 {
     /**
-     * @var Encoder $encoder
+     * @var EntityEncoder $encoder
      */
     private $encoder;
     
     public function __construct(
-        Encoder $encoder
+        EntityEncoder $encoder
     )   {
         $this->encoder = $encoder;
     }

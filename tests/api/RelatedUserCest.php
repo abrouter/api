@@ -1,6 +1,6 @@
 <?php
 
-use Modules\Core\EntityId\Encoder;
+use Modules\Core\EntityId\EntityEncoder;
 
 class RelatedUserCest
 {
@@ -19,7 +19,7 @@ class RelatedUserCest
 
         for($i = 0; $i < 5; $i++) {
             $existUserId = substr(md5('user_' . uniqid()), 0, 13);
-            $userId = (new Encoder())->encode(random_int(1, 1000), 'users');
+            $userId = (new EntityEncoder())->encode(random_int(1, 1000), 'users');
 
             $I->sendPost('/related-users', [
                 'data' => [

@@ -6,7 +6,7 @@ namespace Tests\Module\Fixture;
 use Codeception\Lib\Interfaces\DependsOnModule;
 use Codeception\Module;
 use Codeception\Module\Laravel;
-use Modules\Core\EntityId\Encoder;
+use Modules\Core\EntityId\EntityEncoder;
 
 class Events extends Module implements DependsOnModule
 {
@@ -37,7 +37,7 @@ class Events extends Module implements DependsOnModule
 
         for ($i = 0; $i < 10; $i++) { 
             $temporaryUserId = substr(md5('user_' . uniqid()), 0, 13);
-            $userId = (new Encoder())->encode(random_int(1, 1000), 'users');
+            $userId = (new EntityEncoder())->encode(random_int(1, 1000), 'users');
             $event = 'event_' . uniqid();
             $tag = $tags[random_int(0,4)];
             $referrer = '';
@@ -73,7 +73,7 @@ class Events extends Module implements DependsOnModule
         $users = [];
 
         for ($i = 0; $i < 20; $i++) { 
-            $userId = (new Encoder())->encode($i, 'users');
+            $userId = (new EntityEncoder())->encode($i, 'users');
             $users[] = $userId;
         }
 
@@ -204,7 +204,7 @@ class Events extends Module implements DependsOnModule
             }
 
             if($m % 2 === 0) {
-                $userId = (new Encoder())->encode($m, 'users');
+                $userId = (new EntityEncoder())->encode($m, 'users');
             } else $temporaryUserId = substr(md5('user_' . $m), 0, 13);
             
             $tag = 'test';
@@ -262,7 +262,7 @@ class Events extends Module implements DependsOnModule
             }
 
             if($m % 3 === 0) {
-                $userId = (new Encoder())->encode($m, 'users');
+                $userId = (new EntityEncoder())->encode($m, 'users');
             } else $temporaryUserId = substr(md5('user_' . $m), 0, 13);
             
             
@@ -326,7 +326,7 @@ class Events extends Module implements DependsOnModule
             }
 
             if($m % 3 === 0) {
-                $userId = (new Encoder())->encode($m, 'users');
+                $userId = (new EntityEncoder())->encode($m, 'users');
             } else $temporaryUserId = substr(md5('user_' . $m), 0, 13);
             
             

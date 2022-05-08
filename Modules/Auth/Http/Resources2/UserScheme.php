@@ -8,7 +8,7 @@ use AbRouter\JsonApiFormatter\Document\Sections\Attributes;
 use AbRouter\JsonApiFormatter\Document\Sections\Identifier;
 use AbRouter\JsonApiFormatter\Document\Sections\Meta;
 use Modules\Auth\Models\User\User;
-use Modules\Core\EntityId\Encoder;
+use Modules\Core\EntityId\EntityEncoder;
 
 /**
  *  @property User $activeData
@@ -20,7 +20,7 @@ class UserScheme extends DocumentSchema
     public function getIdentifier(): Identifier
     {
         return new Identifier(
-            (new Encoder())->encode($this->activeData->id, $this->activeData->getTable()),
+            (new EntityEncoder())->encode($this->activeData->id, $this->activeData->getTable()),
             $this->activeData->getTable()
         );
     }

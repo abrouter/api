@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Tests\Module\Fixture;
 
 use Codeception\Module\Laravel;
-use Modules\Core\EntityId\Encoder;
+use Modules\Core\EntityId\EntityEncoder;
 use Modules\AbRouter\Services\Experiment\CreateAliasExperiments;
 use Codeception\Lib\Interfaces\DependsOnModule;
 use Codeception\Module;
@@ -45,7 +45,7 @@ class FeatureToggle extends Module implements DependsOnModule
         $experimentId = $this->laravel->haveRecord(self::TABLE_EXPERIMENTS, $recordExperiment);
         $this->laravel->seeRecord(self::TABLE_EXPERIMENTS, $recordExperiment);
         
-        $encodeExperimentId = (new Encoder())->encode($experimentId, 'experiments');
+        $encodeExperimentId = (new EntityEncoder())->encode($experimentId, 'experiments');
 
         $branchName = ['ON', 'OFF'];
         $percent = [100, 0];
@@ -63,7 +63,7 @@ class FeatureToggle extends Module implements DependsOnModule
             ];
     
             $idBranch = $this->laravel->haveRecord(self::TABLE_EXPERIMENT_BRANCHES, $recordBranch);
-            $encodeExperimentBranchId[] = (new Encoder())->encode($idBranch, 'experiment_branches');
+            $encodeExperimentBranchId[] = (new EntityEncoder())->encode($idBranch, 'experiment_branches');
             $this->laravel->seeRecord(self::TABLE_EXPERIMENT_BRANCHES, $recordBranch);
         }
         

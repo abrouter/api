@@ -7,13 +7,13 @@ use Modules\AbRouter\Models\Experiments\Experiment;
 use Modules\AbRouter\Models\Experiments\ExperimentBranches;
 use Modules\AbRouter\Services\Experiment\DTO\ExperimentDeleteDTO;
 use Modules\Auth\Exposable\AuthDecorator;
-use Modules\Core\EntityId\Encoder;
+use Modules\Core\EntityId\EntityEncoder;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ExperimentDeleteService
 {
     /**
-     * @var Encoder
+     * @var EntityEncoder
      */
     private $encoder;
 
@@ -22,7 +22,7 @@ class ExperimentDeleteService
      */
     private $authDecorator;
 
-    public function __construct(Encoder $encoder, AuthDecorator $authDecorator)
+    public function __construct(EntityEncoder $encoder, AuthDecorator $authDecorator)
     {
         $this->encoder = $encoder;
         $this->authDecorator = $authDecorator;

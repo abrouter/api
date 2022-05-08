@@ -6,7 +6,7 @@ namespace Tests\Module\Fixture;
 use Codeception\Lib\Interfaces\DependsOnModule;
 use Codeception\Module;
 use Codeception\Module\Laravel;
-use Modules\Core\EntityId\Encoder;
+use Modules\Core\EntityId\EntityEncoder;
 
 class DisplayUserEvents extends Module implements DependsOnModule
 {
@@ -61,7 +61,7 @@ class DisplayUserEvents extends Module implements DependsOnModule
         foreach($events as $event) {
             $eventId = $this->laravel->haveRecord(self::TABLE_DISPLAYY_USER_EVENTS, ['user_id' => $owner, 'event_name' => $event, 'order' => 0, 'created_at' => $date, 'updated_at' => $date]);
             $this->laravel->seeRecord(self::TABLE_DISPLAYY_USER_EVENTS, ['user_id' => $owner, 'event_name' => $event, 'order' => 0, 'created_at' => $date, 'updated_at' => $date]);
-            $encodeEventId = (new Encoder())->encode($eventId, 'display_user_events');
+            $encodeEventId = (new EntityEncoder())->encode($eventId, 'display_user_events');
             $eventsId[] = $encodeEventId;
         }
 

@@ -1,6 +1,6 @@
 <?php
 
-use Modules\Core\EntityId\Encoder;
+use Modules\Core\EntityId\EntityEncoder;
 
 class ExperimentCest
 {
@@ -125,7 +125,7 @@ class ExperimentCest
     
         $response = json_decode($I->grabResponse(), true);
 
-        $experimentId = (new Encoder())->decode($response['data']['id'], 'experiments');
+        $experimentId = (new EntityEncoder())->decode($response['data']['id'], 'experiments');
         $alias = $response['data']['attributes']['alias'];
         $config = $response['data']['attributes']['config'];
         $isEnabled = $response['data']['attributes']['is_enabled'];
@@ -264,9 +264,9 @@ class ExperimentCest
             ]
         ]);
 
-        $experimentUserId = (new Encoder())->decode($response['data']['relationships']['experiment_user']['data']['id'], 'experiment_users');
+        $experimentUserId = (new EntityEncoder())->decode($response['data']['relationships']['experiment_user']['data']['id'], 'experiment_users');
         $experimentId = $experiment['experimentId'];
-        $experimentBranchId = (new Encoder())->decode($response['data']['relationships']['experiment_branch_id']['data']['id'], 'experiment_branches');
+        $experimentBranchId = (new EntityEncoder())->decode($response['data']['relationships']['experiment_branch_id']['data']['id'], 'experiment_branches');
         $recordBranchUsers = ['experiment_user_id' => $experimentUserId, 'experiment_id' => $experimentId, 'experiment_branch_id' => $experimentBranchId];
         $recordExperimentUsers = ['owner_id' => $user['id'], 'user_signature' => $userSignature];
 

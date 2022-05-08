@@ -9,12 +9,12 @@ use Modules\AbRouter\Models\Experiments\ExperimentBranches;
 use Modules\AbRouter\Services\Experiment\DTO\BranchDTO;
 use Modules\AbRouter\Services\Experiment\DTO\ExperimentDTO;
 use Modules\Auth\Exposable\AuthDecorator;
-use Modules\Core\EntityId\Encoder;
+use Modules\Core\EntityId\EntityEncoder;
 
 class ExperimentService
 {
     /**
-     * @var Encoder
+     * @var EntityEncoder
      */
     private $encoder;
 
@@ -23,7 +23,7 @@ class ExperimentService
      */
     private $authDecorator;
 
-    public function __construct(Encoder $encoder, AuthDecorator $authDecorator, CreateAliasExperiments $createAlias)
+    public function __construct(EntityEncoder $encoder, AuthDecorator $authDecorator, CreateAliasExperiments $createAlias)
     {
         $this->encoder = $encoder;
         $this->authDecorator = $authDecorator;

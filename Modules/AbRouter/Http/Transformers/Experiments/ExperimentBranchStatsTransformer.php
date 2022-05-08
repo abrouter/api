@@ -6,7 +6,7 @@ namespace Modules\AbRouter\Http\Transformers\Experiments;
 use Illuminate\Http\Request;
 use Modules\AbRouter\Services\Events\DTO\StatsQueryDTO;
 use Modules\Auth\Exposable\AuthDecorator;
-use Modules\Core\EntityId\Encoder;
+use Modules\Core\EntityId\EntityEncoder;
 
 class ExperimentBranchStatsTransformer
 {
@@ -28,7 +28,7 @@ class ExperimentBranchStatsTransformer
             null,
             $request->input('filter.date_from'),
             $request->input('filter.date_to'),
-            (new Encoder())->decode($request->input('filter.experimentBranchId'), 'experiment_branches')
+            (new EntityEncoder())->decode($request->input('filter.experimentBranchId'), 'experiment_branches')
         );
     }
 }

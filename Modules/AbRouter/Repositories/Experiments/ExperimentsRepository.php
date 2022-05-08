@@ -7,14 +7,14 @@ use Illuminate\Support\Collection;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Modules\AbRouter\Models\Experiments\Experiment;
 use Modules\Core\Repositories\BaseRepository;
-use Modules\Core\EntityId\Encoder;
+use Modules\Core\EntityId\EntityEncoder;
 
 class ExperimentsRepository extends BaseRepository
 {
     public function getExperimentsById(string $experimentId, int $owner): ?Experiment
     {
         try {
-            $expInternalId = (new Encoder())->decode($experimentId, 'experiments');
+            $expInternalId = (new EntityEncoder())->decode($experimentId, 'experiments');
         } catch (\Throwable $e) {
             throw new NotFoundHttpException('Failed to find an experiment');
         }

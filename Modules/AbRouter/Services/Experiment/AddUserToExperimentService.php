@@ -9,7 +9,7 @@ use Modules\AbRouter\Repositories\Experiments\ExperimentBranchUserRepository;
 use Modules\AbRouter\Repositories\Experiments\ExperimentUsersRepository;
 use Modules\AbRouter\Managers\Experiments\ExperimentBranchUserManager;
 use Modules\AbRouter\Services\Experiment\DTO\AddUserToExperimentDTO;
-use Modules\Core\EntityId\Encoder;
+use Modules\Core\EntityId\EntityEncoder;
 
 class AddUserToExperimentService
 {
@@ -66,7 +66,7 @@ class AddUserToExperimentService
             ->branches()
             ->where(
                 'id',
-                (new Encoder())->decode($addUserToExperimentDTO->getExperimentBranchId(), 'experiment_branches')
+                (new EntityEncoder())->decode($addUserToExperimentDTO->getExperimentBranchId(), 'experiment_branches')
             )
             ->firstOrFail();
 

@@ -1,6 +1,6 @@
 <?php
 
-use Modules\Core\EntityId\Encoder;
+use Modules\Core\EntityId\EntityEncoder;
 
 class EventCest
 {
@@ -18,7 +18,7 @@ class EventCest
 
         for($i = 0; $i < 20; $i++) {
             $temporaryUserId = substr(md5('user_' . uniqid()), 0, 13);
-            $userId = (new Encoder())->encode(random_int(1, 1000), 'users');
+            $userId = (new EntityEncoder())->encode(random_int(1, 1000), 'users');
             $event = 'event_' . uniqid();
             $tag = 'tags_' . uniqid();
             $referrer = '';
