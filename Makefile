@@ -1,8 +1,8 @@
 APP = abr-app-api
 ARGS = $(filter-out $@,$(MAKECMDGOALS))
 
-.PHONY: provision
-provision:
+.PHONY: fill-consul
+fill-consul:
 	docker exec $(APP) rm -f /app/.env
 	docker exec $(APP) php /app/docker/build/consul.php i
 
