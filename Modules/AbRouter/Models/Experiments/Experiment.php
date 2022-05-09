@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 use Modules\Auth\Models\User\User;
-use Modules\Core\EntityId\EntityIdTrait;
+use Modules\Core\EntityId\IdTrait;
 
 /**
  * Class User
@@ -29,7 +29,7 @@ use Modules\Core\EntityId\EntityIdTrait;
  */
 class Experiment extends Model
 {
-    use EntityIdTrait;
+    use IdTrait;
 
     protected $casts = [
         'id' => 'int',

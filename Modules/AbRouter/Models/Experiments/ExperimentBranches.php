@@ -6,7 +6,7 @@ namespace Modules\AbRouter\Models\Experiments;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Modules\Core\EntityId\EntityIdTrait;
+use Modules\Core\EntityId\IdTrait;
 
 /**
  * Class User
@@ -23,7 +23,7 @@ use Modules\Core\EntityId\EntityIdTrait;
  */
 class ExperimentBranches extends Model
 {
-    use EntityIdTrait;
+    use IdTrait;
 
     protected $casts = [
         'id' => 'int',

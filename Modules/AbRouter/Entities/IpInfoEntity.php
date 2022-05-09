@@ -5,7 +5,7 @@ namespace Modules\AbRouter\Entities;
 
 use Modules\Core\EntityId\ResourceIdInterface;
 
-class IpInfoEntity implements ResourceIdInterface
+class IpInfoEntity
 {
     /**
      * @var string

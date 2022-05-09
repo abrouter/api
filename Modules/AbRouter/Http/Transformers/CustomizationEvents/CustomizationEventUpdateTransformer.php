@@ -6,7 +6,7 @@ namespace Modules\AbRouter\Http\Transformers\CustomizationEvents;
 use Illuminate\Http\Request;
 use Modules\AbRouter\Services\CustomizationEvent\DTO\CustomizationEventUpdateDTO;
 use Modules\Core\EntityId\EntityEncoder;
-use Modules\Core\EntityId\EntityIdTrait;
+use Modules\Core\EntityId\IdTrait;
 
 class CustomizationEventUpdateTransformer
 {

@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
 use Modules\AbRouter\Models\RelatedUsers\RelatedUser;
 use Modules\Auth\Models\User\User;
-use Modules\Core\EntityId\EntityIdTrait;
+use Modules\Core\EntityId\IdTrait;
 
 /**
  * Class Event
@@ -32,7 +32,7 @@ use Modules\Core\EntityId\EntityIdTrait;
  */
 class Event extends Model
 {
-    use EntityIdTrait;
+    use IdTrait;
 
     protected $casts = [
         'id' => 'int',

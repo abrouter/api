@@ -7,7 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
-use Modules\Core\EntityId\EntityIdTrait;
+use Modules\Core\EntityId\IdTrait;
 
 /**
  * Class User
@@ -21,7 +21,7 @@ use Modules\Core\EntityId\EntityIdTrait;
  */
 class User extends Authenticatable
 {
-    use Notifiable, HasApiTokens, EntityIdTrait;
+    use Notifiable, HasApiTokens, IdTrait;
 
     protected $casts = [
         'id' => 'int',

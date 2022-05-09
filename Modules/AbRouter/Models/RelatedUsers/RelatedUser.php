@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Modules\AbRouter\Models\Events\Event;
 use Modules\Auth\Models\User\User;
-use Modules\Core\EntityId\EntityIdTrait;
+use Modules\Core\EntityId\IdTrait;
 
 /**
  * Class RelatedUser
@@ -23,7 +23,7 @@ use Modules\Core\EntityId\EntityIdTrait;
  */
 class RelatedUser extends Model
 {
-    use EntityIdTrait;
+    use IdTrait;
 
     const UPDATED_AT = null;
 

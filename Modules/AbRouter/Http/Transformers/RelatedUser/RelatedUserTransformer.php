@@ -6,7 +6,7 @@ namespace Modules\AbRouter\Http\Transformers\RelatedUser;
 use Illuminate\Http\Request;
 use Modules\AbRouter\Services\RelatedUser\DTO\RelatedUserDTO;
 use Modules\Core\EntityId\EntityEncoder;
-use Modules\Core\EntityId\EntityIdTrait;
+use Modules\Core\EntityId\IdTrait;
 
 class RelatedUserTransformer
 {

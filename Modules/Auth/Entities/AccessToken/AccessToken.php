@@ -7,7 +7,7 @@ use Carbon\Carbon;
 use Laravel\Passport\PersonalAccessTokenResult;
 use Modules\Core\EntityId\ResourceIdInterface;
 
-class AccessToken implements ResourceIdInterface
+class AccessToken
 {
     /**
      * @var PersonalAccessTokenResult

@@ -7,7 +7,7 @@ use Carbon\Carbon;
 use Modules\Auth\Models\User\User;
 use Modules\Core\EntityId\ResourceIdInterface;
 
-class UserEntityDecorator implements ResourceIdInterface
+class UserEntityDecorator
 {
     /**
      * @var User $user

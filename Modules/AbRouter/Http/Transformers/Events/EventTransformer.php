@@ -6,7 +6,7 @@ namespace Modules\AbRouter\Http\Transformers\Events;
 use Illuminate\Http\Request;
 use Modules\AbRouter\Services\Events\DTO\EventDTO;
 use Modules\Core\EntityId\EntityEncoder;
-use Modules\Core\EntityId\EntityIdTrait;
+use Modules\Core\EntityId\IdTrait;
 
 class EventTransformer
 {

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int id
  * @mixin Model
  */
-trait EntityIdTrait
+trait IdTrait
 {
     public function getEntityId(): string
     {

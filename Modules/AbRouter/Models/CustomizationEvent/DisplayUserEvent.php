@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
 use Modules\Auth\Models\User\User;
-use Modules\Core\EntityId\EntityIdTrait;
+use Modules\Core\EntityId\IdTrait;
 
 /**
  * Class Event
@@ -23,7 +23,7 @@ use Modules\Core\EntityId\EntityIdTrait;
  */
 class DisplayUserEvent extends Model
 {
-    use EntityIdTrait;
+    use IdTrait;
     
     protected $casts = [
         'id' => 'int',

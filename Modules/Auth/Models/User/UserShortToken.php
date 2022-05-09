@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
-use Modules\Core\EntityId\EntityIdTrait;
+use Modules\Core\EntityId\IdTrait;
 
 /**
  * @property int id
@@ -19,7 +19,7 @@ use Modules\Core\EntityId\EntityIdTrait;
  */
 class UserShortToken extends Model
 {
-    use Notifiable, HasApiTokens, EntityIdTrait;
+    use Notifiable, HasApiTokens, IdTrait;
 
     protected $casts = [
         'id' => 'int',

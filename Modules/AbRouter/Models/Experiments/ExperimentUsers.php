@@ -5,7 +5,7 @@ namespace Modules\AbRouter\Models\Experiments;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Modules\Core\EntityId\EntityIdTrait;
+use Modules\Core\EntityId\IdTrait;
 
 /**
  * Class User
@@ -20,7 +20,7 @@ use Modules\Core\EntityId\EntityIdTrait;
  */
 class ExperimentUsers extends Model
 {
-    use EntityIdTrait;
+    use IdTrait;
 
     protected $casts = [
         'id' => 'int',
