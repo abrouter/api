@@ -19,14 +19,13 @@ class EntityEncoder
     public function encode(int $id, string $name): string
     {
         $hex = str_pad(dechex($id), self::ENTITY_LENGTH, self::ENTITY_BODY_CHAR, STR_PAD_LEFT);
-
         $entityHash = $this->getHashOfEntity($name);
-
         $entityId = join(self::EMPTY, [
             $this->getCheckSum($hex, $entityHash),
             join(self::ENTITY_SEPARATOR, str_split(strrev($hex), self::BLOCK_LENGTH)),
             $entityHash
         ]);
+
         return strtoupper($entityId);
     }
 
