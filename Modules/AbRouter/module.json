@@ -1,0 +1,13 @@
+{
+    "name": "AbRouter",
+    "alias": "abrouter",
+    "description": "",
+    "keywords": [],
+    "order": 0,
+    "providers": [
+        "Modules\\AbRouter\\Providers\\AbRouterServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}
