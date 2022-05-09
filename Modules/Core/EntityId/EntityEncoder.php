@@ -16,11 +16,6 @@ class EntityEncoder
     private const BLOCK_STARTING_POINT = 0;
     private const EMPTY = '';
 
-    /**
-     * @param int $id
-     * @param string $name
-     * @return string
-     */
     public function encode(int $id, string $name): string
     {
         $hex = str_pad(dechex($id), self::ENTITY_LENGTH, self::ENTITY_BODY_CHAR, STR_PAD_LEFT);
@@ -35,12 +30,6 @@ class EntityEncoder
         return strtoupper($entityId);
     }
 
-    /**
-     * @param string $entity
-     * @param string $name
-     * @return int
-     * @throws Exception
-     */
     public function decode(string $entity, string $name): int
     {
         $entity = strtolower($entity);
@@ -63,20 +52,11 @@ class EntityEncoder
         return hexdec($hex);
     }
 
-    /**
-     * @param string $name
-     * @return string
-     */
     private function getHashOfEntity(string $name): string
     {
         return substr(sha1($name), self::BLOCK_STARTING_POINT, self::BLOCK_LENGTH);
     }
 
-    /**
-     * @param string $hex
-     * @param string $entityHash
-     * @return string
-     */
     private function getCheckSum(string $hex, string $entityHash): string
     {
         return substr(
