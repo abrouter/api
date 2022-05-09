@@ -31,3 +31,4 @@ abrouter1/front/url: http://localhost:930
 abrouter1/api/marketing-api/url: http://abr-traefik:930
 
 abrouter1/api/app/is_paywall_enabled: disabled
+abrouter1/api/app/marketing_enabled: disabled
