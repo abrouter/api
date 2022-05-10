@@ -21,6 +21,7 @@ class ExperimentRequest extends FormRequest
                 Rule::in('experiments')
             ],
             'data.attributes.name' => 'required|string',
+            'data.attributes.uid' => 'required|string',
             'included.*.type' => ['required', Rule::in('experiment_branches')],
             'included.*.attributes.name' => 'required|string|distinct',
             'included.*.attributes.percent' => 'required|integer|min:0|max:100',
