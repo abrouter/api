@@ -53,11 +53,11 @@ class ExperimentService
         $experiment->fill([
             'owner_id' => $this->authDecorator->get()->getId(),
             'name' => $experimentDTO->getName(),
+            'uid' => $experimentDTO->getUid(),
             'alias' => $this->createAlias->create($experimentDTO->getName()),
             'config' => json_encode($experimentDTO->getConfig()),
             'is_enabled' => $experimentDTO->getIsEnabled(),
             'is_feature_toggle' => $experimentDTO->getIsFeatureToggle(),
-            'uid' => $experimentDTO->getName(),
         ]);
 
         $experiment->save();
