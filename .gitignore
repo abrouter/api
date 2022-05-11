@@ -1,0 +1,6 @@
+vendor
+.env
+.idea
+storage/oauth-private.key
+storage/oauth-public.key
+
