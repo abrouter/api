@@ -23,11 +23,10 @@ class ExperimentService
      */
     private $authDecorator;
 
-    public function __construct(EntityEncoder $encoder, AuthDecorator $authDecorator, CreateAliasExperiments $createAlias)
+    public function __construct(EntityEncoder $encoder, AuthDecorator $authDecorator)
     {
         $this->encoder = $encoder;
         $this->authDecorator = $authDecorator;
-        $this->createAlias = $createAlias;
     }
 
     public function createOrUpdate(ExperimentDTO $experimentDTO)
@@ -53,11 +52,11 @@ class ExperimentService
         $experiment->fill([
             'owner_id' => $this->authDecorator->get()->getId(),
             'name' => $experimentDTO->getName(),
-            'alias' => $this->createAlias->create($experimentDTO->getName()),
+            'uid' => $experimentDTO->getName(),
+            'alias' => $experimentDTO->getAlias(),
             'config' => json_encode($experimentDTO->getConfig()),
             'is_enabled' => $experimentDTO->getIsEnabled(),
             'is_feature_toggle' => $experimentDTO->getIsFeatureToggle(),
-            'uid' => $experimentDTO->getName(),
         ]);
 
         $experiment->save();

@@ -28,6 +28,8 @@ class ExperimentCest
                 'type' => 'experiments',
                 'attributes' => [
                     'name' => $experimentName,
+                    'uid' => $experimentName,
+                    'alias' => $experimentName,
                     'is_enabled' => true,
                     'is_feature_toggle' => false,
                     'config' => [],
@@ -130,7 +132,14 @@ class ExperimentCest
         $config = $response['data']['attributes']['config'];
         $isEnabled = $response['data']['attributes']['is_enabled'];
         $isFeatureToggle = $response['data']['attributes']['is_feature_toggle'];
-        $recordExperiment = ['name' => $experimentName, 'alias' => $alias, 'is_enabled' => $isEnabled, 'is_feature_toggle' => $isFeatureToggle , 'owner_id' => $user['id']];
+        $recordExperiment = [
+            'name' => $experimentName,
+            'uid' => $experimentName,
+            'alias' => $alias,
+            'is_enabled' => $isEnabled,
+            'is_feature_toggle' => $isFeatureToggle ,
+            'owner_id' => $user['id']
+        ];
 
         $I->seeResponseCodeIsSuccessful(201);
         $I->seeResponseContainsJson([
@@ -140,6 +149,7 @@ class ExperimentCest
                 'attributes' => [
                     'name' => $experimentName,
                     'alias' => $alias,
+                    'uid' => $experimentName,
                     'config' => $config,
                     'is_enabled' => $isEnabled,
                     'is_feature_toggle' => $isFeatureToggle
@@ -177,7 +187,12 @@ class ExperimentCest
         $percents = [$percentFirst, $percentSecond, $percentThird];
         
         for ($n = 0; $n < count($branches); $n++) { 
-            $recordBranch = ['experiment_id' => $experimentId,'name' => $branches[$n], 'uid' => $branches[$n], 'percent' => $percents[$n]];
+            $recordBranch = [
+                'experiment_id' => $experimentId,
+                'name' => $branches[$n],
+                'uid' => $branches[$n],
+                'percent' => $percents[$n]
+            ];
             $I->seeRecord('experiment_branches', $recordBranch);
         }
         
@@ -293,6 +308,8 @@ class ExperimentCest
                 'type' => 'experiments',
                 'attributes' => [
                     'name' => $experimentName,
+                    'uid' => $experimentName,
+                    'alias' => $experimentName,
                     'is_enabled' => true,
                     'is_feature_toggle' => false,
                     'config' => [],
@@ -346,8 +363,20 @@ class ExperimentCest
         $config = $response['data']['attributes']['config'];
         $isEnabled = $response['data']['attributes']['is_enabled'];
         $isFeatureToggle = $response['data']['attributes']['is_feature_toggle'];
-        $recordExperiment = ['name' => $experimentName, 'alias' => $alias, 'is_enabled' => $isEnabled, 'is_feature_toggle' => $isFeatureToggle, 'owner_id' => $user['id']];
-        $recordBranch = ['experiment_id' => $experiment['experimentId'],'name' => $branchName, 'uid' => $branchName, 'percent' => $percent];
+        $recordExperiment = [
+            'name' => $experimentName,
+            'uid' => $experimentName,
+            'alias' => $alias,
+            'is_enabled' => $isEnabled,
+            'is_feature_toggle' => $isFeatureToggle,
+            'owner_id' => $user['id']
+        ];
+        $recordBranch = [
+            'experiment_id' => $experiment['experimentId'],
+            'name' => $branchName,
+            'uid' => $branchName,
+            'percent' => $percent
+        ];
 
         $I->seeResponseCodeIsSuccessful(201);
         $I->seeResponseContainsJson([
@@ -356,6 +385,7 @@ class ExperimentCest
                 'type' => 'experiments',
                 'attributes' => [
                     'name' => $experimentName,
+                    'uid' => $experimentName,
                     'alias' => $alias,
                     'config' => $config,
                     'is_enabled' => $isEnabled,

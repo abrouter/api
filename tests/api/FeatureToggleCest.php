@@ -26,6 +26,7 @@ class FeatureToggleCest
                 'type' => 'feature-toggles',
                 'attributes' => [
                     'name' => $featureToggleName,
+                    'alias' => $featureToggleName,
                     'is_enabled' => true,
                     'is_feature_toggle' => true,
                     'config' => [],

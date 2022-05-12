@@ -37,6 +37,7 @@ class ExperimentScheme extends DocumentSchema
     {
         return new Attributes([
             'name' => $this->activeData->name,
+            'uid' => $this->activeData->uid,
             'alias' => $this->activeData->alias,
             'config' => json_decode($this->activeData->config, true),
             'is_enabled' => $this->activeData->is_enabled,

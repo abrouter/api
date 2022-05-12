@@ -5,7 +5,6 @@ namespace Tests\Module\Fixture;
 
 use Codeception\Module\Laravel;
 use Modules\Core\EntityId\EntityEncoder;
-use Modules\AbRouter\Services\Experiment\CreateAliasExperiments;
 use Codeception\Lib\Interfaces\DependsOnModule;
 use Codeception\Module;
 
@@ -30,13 +29,12 @@ class ExperimentEvents extends Module implements DependsOnModule
     public function haveExperimentWithThreeBranch(int $owner)
     {
         $experimentName = 'experiment_' . uniqid();
-        $experimentAlias = (new CreateAliasExperiments())->create($experimentName);
         $config = '[]';
         $date = (new \DateTime())->format('Y-m-d');
         $recordExperiment = [
             'owner_id' => $owner,
             'name' => $experimentName,
-            'alias' => $experimentAlias,
+            'alias' => $experimentName,
             'config' => $config,
             'is_enabled' => true,
             'is_feature_toggle' => true,
@@ -69,19 +67,23 @@ class ExperimentEvents extends Module implements DependsOnModule
             $this->laravel->seeRecord(self::TABLE_EXPERIMENT_BRANCHES, $recordBranch);
         }
         
-        return ['alias' => $experimentAlias, 'experimentId' => $encodeExperimentId, 'idBranch' => $encodeExperimentBranchId, 'branchName' => $branchName];
+        return [
+            'alias' => $experimentName,
+            'experimentId' => $encodeExperimentId,
+            'idBranch' => $encodeExperimentBranchId,
+            'branchName' => $branchName
+        ];
     }
 
     public function haveExperimentWithTwoBranch(int $owner)
     {
         $experimentName = 'experiment_' . uniqid();
-        $experimentAlias = (new CreateAliasExperiments())->create($experimentName);
         $config = '[]';
         $date = (new \DateTime())->format('Y-m-d');
         $recordExperiment = [
             'owner_id' => $owner,
             'name' => $experimentName,
-            'alias' => $experimentAlias,
+            'alias' => $experimentName,
             'config' => $config,
             'is_enabled' => true,
             'is_feature_toggle' => true,
@@ -114,7 +116,12 @@ class ExperimentEvents extends Module implements DependsOnModule
             $this->laravel->seeRecord(self::TABLE_EXPERIMENT_BRANCHES, $recordBranch);
         }
         
-        return ['alias' => $experimentAlias, 'experimentId' => $encodeExperimentId, 'idBranch' => $encodeExperimentBranchId, 'branchName' => $branchName];
+        return [
+            'alias' => $experimentName,
+            'experimentId' => $encodeExperimentId,
+            'idBranch' => $encodeExperimentBranchId,
+            'branchName' => $branchName
+        ];
     }
 
     public function runExperiments($I, $token, $experimentAlias, $users)

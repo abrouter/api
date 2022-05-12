@@ -5,7 +5,6 @@ namespace Tests\Module\Fixture;
 
 use Codeception\Module\Laravel;
 use Modules\Core\EntityId\EntityEncoder;
-use Modules\AbRouter\Services\Experiment\CreateAliasExperiments;
 use Codeception\Lib\Interfaces\DependsOnModule;
 use Codeception\Module;
 
@@ -28,7 +27,6 @@ class Experiment extends Module implements DependsOnModule
     public function haveExperiment(int $owner)
     {
         $experimentName = 'experiment_' . uniqid();
-        $experimentAlias = (new CreateAliasExperiments())->create($experimentName);
         $branchName = 'branch_' . uniqid();
         $config = '[]';
         $percent = random_int(1, 100);
@@ -36,7 +34,7 @@ class Experiment extends Module implements DependsOnModule
         $recordExperiment = [
             'owner_id' => $owner,
             'name' => $experimentName,
-            'alias' => $experimentAlias,
+            'alias' => $experimentName,
             'config' => $config,
             'is_enabled' => true,
             'is_feature_toggle' => true,
@@ -64,7 +62,14 @@ class Experiment extends Module implements DependsOnModule
         $encodeExperimentBranchId = (new EntityEncoder())->encode($idBranch, 'experiment_branches');
         $this->laravel->seeRecord(self::TABLE_EXPERIMENT_BRANCHES, $recordBranch);
         
-        return ['encodeExperimentId' => $encodeExperimentId, 'experimentId' => $experimentId, 'name' => $experimentName, 'alias' => $experimentAlias, 'idBranch' => $encodeExperimentBranchId, 'decodeBranchId' => $idBranch];
+        return [
+            'encodeExperimentId' => $encodeExperimentId,
+            'experimentId' => $experimentId,
+            'name' => $experimentName,
+            'alias' => $experimentName,
+            'idBranch' => $encodeExperimentBranchId,
+            'decodeBranchId' => $idBranch
+        ];
     }
     
     /**
