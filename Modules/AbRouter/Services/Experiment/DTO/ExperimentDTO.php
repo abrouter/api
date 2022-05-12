@@ -25,7 +25,7 @@ class ExperimentDTO
     /**
      * @var string
      */
-    private $uid;
+    private $alias;
 
     /**
      * @var string|null
@@ -45,7 +45,7 @@ class ExperimentDTO
     public function __construct(
         ?string $id,
         string $name,
-        string $uid,
+        string $alias,
         bool $isEnabled,
         bool $isFeatureToggle,
         array $config,
@@ -54,7 +54,7 @@ class ExperimentDTO
     ) {
         $this->id = $id;
         $this->name = $name;
-        $this->uid = $uid;
+        $this->alias = $alias;
         $this->isEnabled = $isEnabled;
         $this->isFeatureToggle = $isFeatureToggle;
         $this->config = $config;
@@ -73,9 +73,9 @@ class ExperimentDTO
     /**
      * @return string
      */
-    public function getUid(): string
+    public function getAlias(): string
     {
-        return $this->uid;
+        return $this->alias;
     }
 
     /**

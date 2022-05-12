@@ -29,6 +29,7 @@ class ExperimentCest
                 'attributes' => [
                     'name' => $experimentName,
                     'uid' => $experimentName,
+                    'alias' => $experimentName,
                     'is_enabled' => true,
                     'is_feature_toggle' => false,
                     'config' => [],
@@ -308,6 +309,7 @@ class ExperimentCest
                 'attributes' => [
                     'name' => $experimentName,
                     'uid' => $experimentName,
+                    'alias' => $experimentName,
                     'is_enabled' => true,
                     'is_feature_toggle' => false,
                     'config' => [],
