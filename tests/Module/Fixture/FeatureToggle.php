@@ -5,7 +5,6 @@ namespace Tests\Module\Fixture;
 
 use Codeception\Module\Laravel;
 use Modules\Core\EntityId\EntityEncoder;
-use Modules\AbRouter\Services\Experiment\CreateAliasExperiments;
 use Codeception\Lib\Interfaces\DependsOnModule;
 use Codeception\Module;
 
@@ -27,13 +26,12 @@ class FeatureToggle extends Module implements DependsOnModule
 
     public function haveFeatureToggle(int $owner)
     {
-        $experimentAlias = (new CreateAliasExperiments())->create('feature-toggle-experiment');
         $config = '[]';
         $date = (new \DateTime())->format('Y-m-d');
         $recordExperiment = [
             'owner_id' => $owner,
             'name' => 'feature-toggle-experiment',
-            'alias' => $experimentAlias,
+            'alias' => 'feature-toggle-experiment',
             'config' => $config,
             'is_enabled' => true,
             'is_feature_toggle' => true,
@@ -67,7 +65,13 @@ class FeatureToggle extends Module implements DependsOnModule
             $this->laravel->seeRecord(self::TABLE_EXPERIMENT_BRANCHES, $recordBranch);
         }
         
-        return ['encodeExperimentId' => $encodeExperimentId, 'experimentId' => $experimentId, 'name' => 'feature-toggle-experiment', 'alias' => $experimentAlias, 'idBranch' => $encodeExperimentBranchId];
+        return [
+            'encodeExperimentId' => $encodeExperimentId,
+            'experimentId' => $experimentId,
+            'name' => 'feature-toggle-experiment',
+            'alias' => 'feature-toggle-experiment',
+            'idBranch' => $encodeExperimentBranchId
+        ];
     }
     
     /**
