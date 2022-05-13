@@ -77,6 +77,8 @@ class Event extends Model
     
     public function relatedUsers(): HasMany
     {
-        return $this->hasMany(RelatedUser::class, 'event_id', 'id');
+        return $this
+            ->hasMany(RelatedUser::class, 'user_id', 'user_id')
+            ->union($this->hasMany(RelatedUser::class, 'related_user_id', 'user_id')->toBase());
     }
 }
