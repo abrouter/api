@@ -86,19 +86,19 @@ class Event extends Model
             ->union($this->hasMany(RelatedUser::class, 'related_user_id', 'user_id')->toBase())
             ->union($this->hasMany(RelatedUser::class, 'event_id', 'id')->toBase());
 
-        return $this
-            ->hasMany(RelatedUser::class, 'user_id', 'user_id')
-            ->union($this->hasMany(RelatedUser::class, 'related_user_id', 'user_id')->toBase());
-
-
-        return $this->hasMany(RelatedUser::class, 'event_id', 'id');
-
-
-        return $this
-            ->hasMany(RelatedUser::class, 'user_id', 'user_id')
-            ->union($this->hasMany(RelatedUser::class, 'related_user_id', 'user_id')->toBase());
-
-
-        return $this->hasMany(RelatedUser::class, 'event_id', 'id');
+//        return $this
+//            ->hasMany(RelatedUser::class, 'user_id', 'user_id')
+//            ->union($this->hasMany(RelatedUser::class, 'related_user_id', 'user_id')->toBase());
+//
+//
+//        return $this->hasMany(RelatedUser::class, 'event_id', 'id');
+//
+//
+//        return $this
+//            ->hasMany(RelatedUser::class, 'user_id', 'user_id')
+//            ->union($this->hasMany(RelatedUser::class, 'related_user_id', 'user_id')->toBase());
+//
+//
+//        return $this->hasMany(RelatedUser::class, 'event_id', 'id');
     }
 }
