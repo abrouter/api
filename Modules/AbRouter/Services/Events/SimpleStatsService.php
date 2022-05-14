@@ -342,7 +342,7 @@ class SimpleStatsService
 
     protected function getUniqRelatedUsersIds(RelatedUser...$relatedUsers): array
     {
-        return array_reduce($relatedUsers, function (array $ac, RelatedUser $relatedUser) {
+        return array_reduce($relatedUsers, function (array $acc, RelatedUser $relatedUser) {
             $acc[] = $relatedUser->user_id;
             $acc[] = $relatedUser->related_user_id;
 
