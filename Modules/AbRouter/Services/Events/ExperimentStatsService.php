@@ -217,7 +217,6 @@ class ExperimentStatsService extends SimpleStatsService
 
         $uniqUsersIds = $this->getUniqUsersIds($allUserEvents);
         $uniqRelatedUsersIds = $this->getUniqRelatedUsersIds(
-            $uniqUsersIds,
             $allRelatedUsers->all()
         );
         $experiment = $this->getExperiment(
