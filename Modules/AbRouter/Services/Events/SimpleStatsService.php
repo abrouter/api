@@ -64,7 +64,7 @@ class SimpleStatsService
         $referrers = $this->getReferrers($statsQueryDTO->getOwnerId());
         
         $uniqUsersIds = $this->getUniqUsersIds($allUserEvents);
-        $uniqRelatedUsersIds = $this->getUniqRelatedUsersIds($uniqUsersIds, $allRelatedUsers->all());
+        $uniqRelatedUsersIds = $this->getUniqRelatedUsersIdsWithoutBinding($uniqUsersIds, $allRelatedUsers->all());
         $uniqUsers = $this->getFinalUniqUsers($uniqUsersIds, $uniqRelatedUsersIds);
         
         $uniqUsersCount = count($uniqUsers);
@@ -157,7 +157,7 @@ class SimpleStatsService
             }, []);
     }
 
-    protected function getUniqRelatedUsersIds(array $uniqUsersIds, array $allRelatedUsers): array
+    protected function getUniqRelatedUsersIdsWithoutBinding(array $uniqUsersIds, array $allRelatedUsers): array
     {
         $relatedUsersIds = [];
         $glueUserRelatedUser = [];
