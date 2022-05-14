@@ -339,4 +339,14 @@ class SimpleStatsService
 
         return ['date_from' => $dateFrom, 'date_to' => $dateTo];
     }
+
+    protected function getUniqRelatedUsersIds(RelatedUser...$relatedUsers): array
+    {
+        return array_reduce($relatedUsers, function (array $ac, RelatedUser $relatedUser) {
+            $acc[] = $relatedUser->user_id;
+            $acc[] = $relatedUser->related_user_id;
+
+            return $acc;
+        }, []);
+    }
 }

@@ -80,9 +80,8 @@ class ExperimentStatsService extends SimpleStatsService
         $eventsNames = $this->getDisplayEvents($statsQueryDTO->getOwnerId());
         $uniqUsersIds = $this->getUniqUsersIds($allUserEvents);
         $uniqRelatedUsersIds = $this
-            ->getUniqRelatedUsersIdsWithoutBinding(
-                $uniqUsersIds,
-                $allRelatedUsers->all()
+            ->getUniqRelatedUsersIds(
+                ...$allRelatedUsers->all()
             );
 
         $uniqUsers = $this->getFinalUniqUsers($uniqUsersIds, $uniqRelatedUsersIds);
@@ -217,7 +216,7 @@ class ExperimentStatsService extends SimpleStatsService
             ->flatten();
 
         $uniqUsersIds = $this->getUniqUsersIds($allUserEvents);
-        $uniqRelatedUsersIds = $this->getUniqRelatedUsersIdsWithoutBinding(
+        $uniqRelatedUsersIds = $this->getUniqRelatedUsersIds(
             $uniqUsersIds,
             $allRelatedUsers->all()
         );
