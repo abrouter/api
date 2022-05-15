@@ -38,13 +38,8 @@ class ExperimentsController extends Controller
         RunExperimentTransformer $runExperimentTransformer,
         RunService $runService
     ) {
-        try {
-            $run = $runService->run($runExperimentTransformer->transform($request));
-            return (new ExperimentBranchUserScheme(new SimpleDataProvider($run)))->addInclude('experiment_branch_user');
-
-        } catch (\Throwable $e) {
-            die(var_dump($e->getMessage()));
-        }
+        $run = $runService->run($runExperimentTransformer->transform($request));
+        return (new ExperimentBranchUserScheme(new SimpleDataProvider($run)))->addInclude('experiment_branch_user');
     }
 
     /**
