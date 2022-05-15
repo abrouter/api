@@ -333,10 +333,12 @@ class Events extends Module implements DependsOnModule
             }
 
             if($m % 3 === 0) {
-                $temporaryUserId = '';
+                //something went wrong here
+//              $temporaryUserId = '';
                 $userId = (new EntityEncoder())->encode($m, 'users');
             } else {
-                $userId = '';
+                //something went wrong here
+//              $userId = '';
                 $temporaryUserId = substr(md5('user_' . $m), 0, 13);
             }
             

@@ -60,6 +60,7 @@ class Handler extends ExceptionHandler
             } else {
                 $status = $this->isHttpException($exception) ? $exception->getStatusCode() : 500;
             }
+
                 return new JsonResponse(
                     $this->convertExceptionToArray($exception),
                     $status,
@@ -76,7 +77,7 @@ class Handler extends ExceptionHandler
         $message = $e->getMessage();
         if ($e instanceof ValidationException) {
             $key = array_keys($e->errors())[0];
-            $message = $e->errors()[$key][0];
+            $message = 'Validation error: ' . $e->errors()[$key][0] . ' for parameter '. array_keys($e->errors())[0];
         }
         if ($e instanceof UnauthorizedHttpException) {
             $message = 'Unauthorized';

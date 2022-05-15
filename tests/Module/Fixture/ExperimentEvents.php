@@ -154,13 +154,12 @@ class ExperimentEvents extends Module implements DependsOnModule
                     ]
                 ]
             ];
+
             $I->sendPost('/experiment/run', $payload);
 
             $response = json_decode($I->grabResponse(), true);
 
-            if ($I->seeResponseCodeIsSuccessful(201)) {
-                die(var_dump('zhopa'));
-            }
+            $I->seeResponseCodeIsSuccessful(201);
 
             if(empty($branchesId[$response['included'][0]['id']])) {
                 $branchesId[$response['included'][0]['id']] = $response['included'][0]['id'];
