@@ -6,17 +6,18 @@ class ExperimentsStatsCest
     {
     }
 
-    public function showExperimentBranchStatsWhithThreeBranch(ApiTester $I)
+    public function showExperimentBranchStatsWithThreeBranches(ApiTester $I)
     {
         $user = $I->haveUser($I);
         $experiment = $I->haveExperimentWithThreeBranch($user['id']);
+
         $events = $I->haveUserEventsForExperimentStats();
-        $saveEvents = $I->saveUserEvents($user['id'], $events);
+        $I->saveUserEvents($user['id'], $events);
 
         $users = $I->createEventsWithRelatedUserAndUserForExperimentStats($user['id'], $events);
 
         $runExperiment = $I->runExperiments($I, $user['token'], $experiment['alias'], $users);
-        
+
         foreach ($runExperiment as $branchId) { 
             $I->haveHttpHeader('Content-Type', 'application/json');
             $I->haveHttpHeader('Accept', 'application/json');
@@ -45,7 +46,7 @@ class ExperimentsStatsCest
         
     }
 
-    public function showExperimentBranchStatsWhithTwoBranch(ApiTester $I)
+    public function showExperimentBranchStatsWithTwoBranches(ApiTester $I)
     {
         $user = $I->haveUser($I);
         $experiment = $I->haveExperimentWithTwoBranch($user['id']);
@@ -83,7 +84,7 @@ class ExperimentsStatsCest
         }
     }
 
-    public function showExperimentStatsByExperimentIdWhithThreeBranch(ApiTester $I)
+    public function showExperimentStatsByExperimentIdWithThreeBranches(ApiTester $I)
     {
         $user = $I->haveUser($I);
         $experiment = $I->haveExperimentWithThreeBranch($user['id']);

@@ -16,13 +16,13 @@ class ExperimentRunRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'data.type' => [
-                'required',
-                Rule::in('experiment-run')
-            ],
-            'data.attributes.userSignature' => 'required|string',
-            'data.relationships.experiment.data.id' => 'required|string',
-            'data.relationships.experiment.data.type' => 'required|in:experiments',
+//            'data.type' => [
+//                'required',
+//                Rule::in('experiment-run')
+//            ],
+//            'data.attributes.userSignature' => 'required|string',
+//            'data.relationships.experiment.data.id' => 'required|string',
+//            'data.relationships.experiment.data.type' => 'required|in:experiments',
         ];
     }
 }
