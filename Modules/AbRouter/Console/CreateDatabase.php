@@ -5,7 +5,7 @@ namespace Modules\AbRouter\Console;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class CreateDatabase extends Command
 {
