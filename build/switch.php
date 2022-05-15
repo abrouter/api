@@ -82,3 +82,4 @@ $envContents = strtr($envContents, [
 file_put_contents('/app/.env', $envContents);
 
 $successfulExitFunction('Database switched to ' . $dbname);
+

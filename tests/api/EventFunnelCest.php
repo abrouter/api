@@ -10,6 +10,7 @@ class EventFunnelCest
     {
         $user = $I->haveUser($I);
         $events = $I->haveUserEvents();
+        //create display user events
         $saveEvents = $I->saveUserEvents($user['id'], $events);
 
         $I->createEventsWithUserId($user['id'], $events);
@@ -53,7 +54,8 @@ class EventFunnelCest
     {
         $user = $I->haveUser($I);
         $events = $I->haveUserEvents();
-        $saveEvents = $I->saveUserEvents($user['id'], $events);
+        //add display events
+        $I->saveUserEvents($user['id'], $events);
 
         $I->createEventsWithTemporaryUserId($user['id'], $events);
 
@@ -62,7 +64,8 @@ class EventFunnelCest
         $I->sendPost('/event/funnel');
 
         $response = json_decode($I->grabResponse(), true);
-        
+        //0 percentages, counters absent
+
         $I->seeResponseCodeIsSuccessful(201);
         $I->seeResponseContainsJson([
             'percentage' => [
