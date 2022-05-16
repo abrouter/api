@@ -37,6 +37,7 @@ class EventCreator
             'temporary_user_id' => $eventDTO->getTemporaryUserId(),
             'user_id' => $eventDTO->getUserId(),
             'event' => $eventDTO->getEvent(),
+            'value' => $eventDTO->getValue(),
             'ip' => $eventDTO->getIp(),
             'tag' => $eventDTO->getTag(),
             'referrer' => $eventDTO->getReferrer(),

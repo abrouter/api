@@ -14,6 +14,7 @@ class CustomizationEventCreator
         $displayUserEvent->fill([
             'user_id' => $customizationEventDTO->getUserId(),
             'event_name' => $customizationEventDTO->getEventName(),
+            'type' => $customizationEventDTO->getType(),
             'order' => $customizationEventDTO->getOrder()
         ]);
         $displayUserEvent->save();

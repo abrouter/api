@@ -18,14 +18,14 @@ class CustomizationEventUpdateDTO
     /**
      * @var string
      */
-    private $event_name;
+    private $eventName;
     
     /**
      * CustomizationEventDTO constructor.
      *
      * @param int $id
      * @param int $userId
-     * @param string $event_name
+     * @param string $eventName
      */
     public function __construct(
         int $id,
@@ -59,5 +59,5 @@ class CustomizationEventUpdateDTO
     public function getEventName(): string
     {
         return $this->eventName;
-    }    
+    }
 }

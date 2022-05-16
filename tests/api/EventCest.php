@@ -33,6 +33,7 @@ class EventCest
                         'temporary_user_id' => $temporaryUserId,
                         'user_id' => $userId,
                         'event' => $event,
+                        'value' => '',
                         'tag' => $tag,
                         'referrer' => $referrer,
                         'ip' => $ip,
@@ -60,6 +61,7 @@ class EventCest
                     'attributes' => [
                         'user_id' => $response['data']['attributes']['user_id'],
                         'event' => $response['data']['attributes']['event'],
+                        'value' => '',
                         'tag' => $response['data']['attributes']['tag'],
                         'referrer' => $response['data']['attributes']['referrer'],
                         'ip' => $response['data']['attributes']['ip'],
@@ -81,6 +83,7 @@ class EventCest
                 'temporary_user_id' => $temporaryUserId,
                 'user_id' => $userId,
                 'event' => $event,
+                'value' => '',
                 'tag' => $tag,
                 'referrer' => $referrer,
                 'ip' => $ip,

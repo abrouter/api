@@ -57,10 +57,29 @@ class DisplayUserEvents extends Module implements DependsOnModule
     {
         $eventsId = [];
         $date = (new \DateTime())->format('Y-m-d');
+        $type = 'incremental';
 
         foreach($events as $event) {
-            $eventId = $this->laravel->haveRecord(self::TABLE_DISPLAYY_USER_EVENTS, ['user_id' => $owner, 'event_name' => $event, 'order' => 0, 'created_at' => $date, 'updated_at' => $date]);
-            $this->laravel->seeRecord(self::TABLE_DISPLAYY_USER_EVENTS, ['user_id' => $owner, 'event_name' => $event, 'order' => 0, 'created_at' => $date, 'updated_at' => $date]);
+            $eventId = $this->laravel->haveRecord(
+                self::TABLE_DISPLAYY_USER_EVENTS,
+                [
+                    'user_id' => $owner,
+                    'event_name' => $event,
+                    'type' => 'incremental',
+                    'order' => 0,
+                    'created_at' => $date,
+                    'updated_at' => $date
+                ]);
+            $this->laravel->seeRecord(
+                self::TABLE_DISPLAYY_USER_EVENTS,
+                [
+                    'user_id' => $owner,
+                    'event_name' => $event,
+                    'type' => 'incremental',
+                    'order' => 0,
+                    'created_at' => $date,
+                    'updated_at' => $date
+                ]);
             $encodeEventId = (new EntityEncoder())->encode($eventId, 'display_user_events');
             $eventsId[] = $encodeEventId;
         }
