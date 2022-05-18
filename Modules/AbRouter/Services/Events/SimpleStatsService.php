@@ -11,6 +11,7 @@ use Modules\AbRouter\Models\RelatedUsers\RelatedUser;
 use Modules\AbRouter\Repositories\Events\EventsRepository;
 use Modules\AbRouter\Repositories\Events\UserEventsRepository;
 use Modules\AbRouter\Repositories\RelatedUser\RelatedUserRepository;
+use Modules\AbRouter\Services\Events\Stats\StatsFactory;
 use Modules\AbRouter\Services\Events\DTO\StatsQueryDTO;
 use Modules\AbRouter\Services\Events\DTO\StatsResultsDTO;
 
@@ -30,17 +31,27 @@ class SimpleStatsService
      * @var RelatedUserRepository
      */
     protected $relatedUserRepository;
+
+    /**
+     * @var StatsFactory
+     */
+    protected $statsFactory;
     
     public function __construct(
         UserEventsRepository $userEventsRepository,
         EventsRepository $eventsRepository,
-        RelatedUserRepository $relatedUserRepository
+        RelatedUserRepository $relatedUserRepository,
+        StatsFactory $statsFactory
     ) {
         $this->userEventsRepository = $userEventsRepository;
         $this->eventsRepository = $eventsRepository;
         $this->relatedUserRepository = $relatedUserRepository;
+        $this->statsFactory = $statsFactory;
     }
 
+    /**
+     * @throws Exception
+     */
     public function getStats(StatsQueryDTO $statsQueryDTO): StatsResultsDTO
     {
         $date = $this->convertDateTime(
@@ -69,32 +80,48 @@ class SimpleStatsService
         
         $uniqUsersCount = count($uniqUsers);
         
-        $eventCounters = $this->getCounters(
+        $eventCounters = $this
+            ->statsFactory
+            ->getStatsMethod('event')
+            ->getCounters(
             $allUserEvents,
             $uniqUsers,
-            'event'
+            $eventsNames
         );
 
-        $eventCountersWithDate = $this->getCounters(
-            $allUserEvents,
-            $uniqUsers,
-            'event',
-            true
-        );
+        $eventCountersWithDate = $this
+            ->statsFactory
+            ->getStatsMethod('event')
+            ->getCounters(
+                $allUserEvents,
+                $uniqUsers,
+                $eventsNames,
+                true
+            );
         
-        $eventPercentages = $this->getPercentages(
+        $eventPercentages = $this
+            ->statsFactory
+            ->getStatsMethod('event')
+            ->getPercentages(
             $eventsNames,
             $eventCounters,
             $uniqUsersCount
         );
 
-        $referrerCounters = $this->getCounters(
-            $allUserEvents,
-            $uniqUsers,
-            'referrer'
-        );
+        $referrerCounters = $this
+            ->statsFactory
+            ->getStatsMethod('referrer')
+            ->getCounters(
+                $allUserEvents,
+                $uniqUsers,
+                [],
+                false
+            );
 
-        $referrerPercentage = $this->getPercentages(
+        $referrerPercentage = $this
+            ->statsFactory
+            ->getStatsMethod('referrer')
+            ->getPercentages(
             $referrers,
             $referrerCounters,
             $uniqUsersCount
@@ -132,7 +159,7 @@ class SimpleStatsService
             ->eventsRepository
             ->getEventsByUser($ownerId)
             ->reduce(function (array $acc, DisplayUserEvent $displayUserEvent) {
-                $acc[] = $displayUserEvent->event_name;
+                $acc[$displayUserEvent->event_name] = $displayUserEvent->type;
                 return $acc;
             }, []);
     }
@@ -200,127 +227,6 @@ class SimpleStatsService
     protected function getFinalUniqUsers(array $usersIds, array $relatedUsersIds): array
     {
         return array_unique(array_merge($usersIds, $relatedUsersIds));
-    }
-    
-    protected function getPercentages(array $events, array $eventCounters, int $uniqUsersCount): array
-    {
-        $eventPercentage = [];
-        foreach ($events as $eventName) {
-            if (!isset($eventCounters[$eventName])) {
-                $eventPercentage[$eventName] = 0;
-                continue;
-            }
-            
-            $counter = $eventCounters[$eventName];
-        
-            if ($uniqUsersCount === 0) {
-                $eventPercentage[$eventName] = 0;
-                continue;
-            }
-            $eventPercentage[$eventName] = intval(($counter / $uniqUsersCount) * 100);
-        }
-        
-        return $eventPercentage;
-    }
-
-    protected function getCounters(
-        Collection $eventsList,
-        array $uniqUsers,
-        string $action,
-        bool $date = false
-    ): array {
-        
-        $uniqUsers = array_flip($uniqUsers);
-        $eventCounters = [];
-        $userEventAdded = [];
-        
-        foreach ($eventsList as $event) {
-            /**
-             * @var Event $event
-             */
-
-            $eventOrReferrer = $action === 'event' ? $event->event : $event->referrer;
-
-            if ($action === 'referrer') {
-                preg_match(
-                    '/((http|https):\/\/([\w.]+\/?))|()/',
-                    $eventOrReferrer,
-                    $matches
-                );
-
-                if (!$matches) {
-                    continue;
-                }
-                $eventOrReferrer = $matches[0] === '' ? 'direct' : $matches[0];
-            }
-
-            $relatedUsersIds = $event
-                ->relatedUsers
-                ->reduce(function (array $acc, RelatedUser $relatedUser) {
-                    if (empty($relatedUser->related_user_id)) {
-                        return $acc;
-                    }
-                    
-                    $acc[] = $relatedUser->related_user_id;
-                    return $acc;
-                }, []);
-    
-            $userEventKey = $eventOrReferrer . '_' . $event->user_id;
-            
-            if (!empty($event->user_id) && isset($userEventAdded[$userEventKey])) {
-                continue;
-            }
-                
-            sort($relatedUsersIds);
-            if (!empty($relatedUsersIds)) {
-                $relatedUsersKey = $eventOrReferrer . '_' . join('_', $relatedUsersIds);
-            } else {
-                $relatedUsersKey = '';
-            }
-                
-            if (!empty($relatedUsersKey) && isset($userEventAdded[$relatedUsersKey])) {
-                continue;
-            }
-                
-            $hasUserInRelated = false;
-            foreach ($relatedUsersIds as $relatedUsersId) {
-                if (isset($uniqUsers[$relatedUsersId])) {
-                    $hasUserInRelated = true;
-                    break;
-                }
-            }
-            
-            if (!$hasUserInRelated && !isset($uniqUsers[$event->user_id])) {
-                continue;
-            }
-            
-            if ($hasUserInRelated) {
-                $userEventAdded[$relatedUsersKey] = true;
-            }
-            if (isset($uniqUsers[$event->user_id])) {
-                $userEventAdded[$userEventKey] = true;
-            }
-
-            if ($date) {
-                $convertDate = $event->created_at->format('Y-m-d');
-
-                if (!isset($eventCounters[$eventOrReferrer][$convertDate])) {
-                    $eventCounters[$eventOrReferrer][$convertDate] = 0;
-                }
-
-                $eventCounters[$eventOrReferrer][$convertDate] ++;
-
-                continue;
-            }
-
-            if (!isset($eventCounters[$eventOrReferrer])) {
-                $eventCounters[$eventOrReferrer] = 0;
-            }
-
-            $eventCounters[$eventOrReferrer] ++;
-        }
-        
-        return $eventCounters;
     }
 
     /**

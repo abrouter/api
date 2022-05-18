@@ -3,7 +3,6 @@ declare(strict_types =1);
 
 namespace Modules\AbRouter\Services\Events;
 
-use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Modules\AbRouter\Repositories\Events\EventsRepository;
 use Modules\AbRouter\Repositories\Events\UserEventsRepository;
@@ -13,6 +12,7 @@ use Modules\AbRouter\Repositories\Experiments\ExperimentsRepository;
 use Modules\AbRouter\Services\Events\DTO\StatsQueryDTO;
 use Modules\AbRouter\Services\Events\DTO\StatsResultsDTO;
 use Modules\AbRouter\Models\Experiments\Experiment;
+use Modules\AbRouter\Services\Events\Stats\StatsFactory;
 
 class ExperimentStatsService extends SimpleStatsService
 {
@@ -31,12 +31,14 @@ class ExperimentStatsService extends SimpleStatsService
         EventsRepository $eventsRepository,
         RelatedUserRepository $relatedUserRepository,
         ExperimentBranchUserRepository $experimentBranchUserRepository,
-        ExperimentsRepository $experimentsRepository
+        ExperimentsRepository $experimentsRepository,
+        StatsFactory $statsFactory
     ) {
         parent::__construct(
             $userEventsRepository,
             $eventsRepository,
-            $relatedUserRepository
+            $relatedUserRepository,
+            $statsFactory
         );
 
         $this->experimentBranchUserRepository = $experimentBranchUserRepository;
@@ -98,20 +100,29 @@ class ExperimentStatsService extends SimpleStatsService
         $eventCountersWithDate = [];
 
         foreach($jointUsers as $key => $jointUser) {
-            $eventCounters[$key] = $this->getCounters(
+            $eventCounters[$key] = $this
+                ->statsFactory
+                ->getStatsMethod('event')
+                ->getCounters(
                 $allUserEvents,
                 $jointUser,
-                'event'
+                []
             );
 
-            $eventCountersWithDate[$key] = $this->getCounters(
+            $eventCountersWithDate[$key] = $this
+                ->statsFactory
+                ->getStatsMethod('event')
+                ->getCounters(
                 $allUserEvents,
                 $jointUser,
-                'event',
+                [],
                 true
             );
             
-            $eventPercentages[$key] = $this->getPercentages(
+            $eventPercentages[$key] = $this
+                ->statsFactory
+                ->getStatsMethod('event')
+                ->getPercentages(
                 $eventsNames,
                 $eventCounters[$key],
                 count($jointUser)

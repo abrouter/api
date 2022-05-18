@@ -20,7 +20,7 @@ class DisplayUserEventSchema extends DocumentSchema
     {
         return new Identifier(
             $this->activeData->getEntityId(),
-            $this->activeData->type
+            $this->activeData::getType()
         );
     }
 
@@ -28,6 +28,7 @@ class DisplayUserEventSchema extends DocumentSchema
     {
         return new Attributes([
             'event_name' => $this->activeData->event_name,
+            'event_type' => $this->activeData->type,
         ]);
     }
 

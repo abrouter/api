@@ -18,9 +18,10 @@ class CustomizationEventRequests extends FormRequest
         return [
             'data.type' => [
                 'required',
-                Rule::in(['incremental', 'summarizable'])
+                Rule::in('display_user_events')
             ],
             'data.attributes.event_name' => 'required|string',
+            'data.attributes.event_type' => 'required|in:incremental,summarizable',
             'data.relationships.user.data.id' => 'required|string',
             'data.relationships.user.data.type' => 'required|in:users',
         ];

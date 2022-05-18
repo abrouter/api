@@ -8,6 +8,7 @@ use Modules\AbRouter\Repositories\Events\EventsRepository;
 use Modules\AbRouter\Repositories\Events\UserEventsRepository;
 use Modules\AbRouter\Repositories\RelatedUser\RelatedUserRepository;
 use Modules\AbRouter\Repositories\Experiments\ExperimentBranchUserRepository;
+use Modules\AbRouter\Services\Events\Stats\StatsFactory;
 use Modules\AbRouter\Services\Events\DTO\StatsQueryDTO;
 use Modules\AbRouter\Services\Events\DTO\StatsResultsDTO;
 
@@ -17,13 +18,15 @@ class ExperimentBranchStatsService extends SimpleStatsService
         UserEventsRepository           $userEventsRepository,
         EventsRepository               $eventsRepository,
         RelatedUserRepository          $relatedUserRepository,
-        ExperimentBranchUserRepository $experimentBranchUserRepository
+        ExperimentBranchUserRepository $experimentBranchUserRepository,
+        StatsFactory                    $statsFactory
     )
     {
         parent::__construct(
             $userEventsRepository,
             $eventsRepository,
-            $relatedUserRepository
+            $relatedUserRepository,
+            $statsFactory
         );
 
         $this->experimentBranchUserRepository = $experimentBranchUserRepository;
@@ -56,13 +59,19 @@ class ExperimentBranchStatsService extends SimpleStatsService
         );
         $uniqUsersCount = count($jointUsers);
 
-        $eventCounters = $this->getCounters(
+        $eventCounters = $this
+            ->statsFactory
+            ->getStatsMethod('event')
+            ->getCounters(
             $allUserEvents,
             $jointUsers,
-            'event'
+            []
         );
 
-        $eventPercentages = $this->getPercentages(
+        $eventPercentages = $this
+            ->statsFactory
+            ->getStatsMethod('event')
+            ->getPercentages(
             $eventsNames,
             $eventCounters,
             $uniqUsersCount

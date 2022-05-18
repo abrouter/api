@@ -19,10 +19,11 @@ class DisplayEventsCest
         foreach($events as $event) {
             $I->sendPost('/user-events', [
                 'data' => [
-                    'type' => $type[mt_rand(0,1)],
+                    'type' => 'display_user_events',
                     'attributes' => [
                         'id' => null,
-                        'event_name' => $event
+                        'event_name' => $event,
+                        'event_type' => $type[mt_rand(0,1)]
                     ],
                     'relationships' => [
                         'user' => [
@@ -38,12 +39,13 @@ class DisplayEventsCest
             $response = json_decode($I->grabResponse(), true);
             $entry = $response['data'];
             $eventName = $entry['attributes']['event_name'];
+            $eventType = $entry['attributes']['event_type'];
 
             $I->seeRecord(
                 'display_user_events',
                 [
                     'event_name' => $eventName,
-                    'type' => $entry['type'],
+                    'type' => $eventType,
                     'user_id' => $user['id']
                 ]);
             
@@ -51,9 +53,10 @@ class DisplayEventsCest
             $I->seeResponseContainsJson([
                 'data' => [
                     'id' => $entry['id'],
-                    'type' => $entry['type'],
+                    'type' => 'display_user_events',
                     'attributes' => [
-                        'event_name' => $eventName
+                        'event_name' => $eventName,
+                        'event_type' => $eventType
                     ],
                     'relationships' => [
                         'user_id' => [
@@ -89,9 +92,10 @@ class DisplayEventsCest
             $I->seeResponseContainsJson([
                 'data' => [
                     'id' => $response['data'][$n]['id'],
-                    'type' => 'incremental',
+                    'type' => 'display_user_events',
                     'attributes' => [
-                        'event_name' => $event
+                        'event_name' => $event,
+                        'event_type' => 'summarizable'
                     ],
                     'relationships' => [
                         'user_id' => [
@@ -113,7 +117,6 @@ class DisplayEventsCest
         $user = $I->haveUser($I);
         $events = $I->haveUserEvents();
         $saveEvents = $I->saveUserEvents($user['id'], $events);
-        $type = ['incremental', 'summarizable'];
         $n = 0;
 
         $I->haveHttpHeader('Content-Type', 'application/json');
@@ -125,7 +128,7 @@ class DisplayEventsCest
 
             $I->sendPatch('/user-events/' . $id, [
                 'data' => [
-                    'type' => $type[mt_rand(0,1)],
+                    'type' => 'display_user_events',
                     'attributes' => [
                         'id' => $id,
                         'event_name' => $event
@@ -171,7 +174,6 @@ class DisplayEventsCest
         $user = $I->haveUser($I);
         $events = $I->haveUserEvents();
         $saveEvents = $I->saveUserEvents($user['id'], $events);
-        $type = ['incremental', 'summarizable'];
         $n = 0;
 
         $I->haveHttpHeader('Content-Type', 'application/json');
@@ -182,7 +184,7 @@ class DisplayEventsCest
 
             $I->sendDelete('/user-events/' . $id, [
                 'data' => [
-                    'type' => $type[mt_rand(0,1)],
+                    'type' => 'display_user_events',
                     'attributes' => [
                         'id' => $id,
                         'event_name' => $saveEvents['events'][$n]

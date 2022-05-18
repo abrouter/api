@@ -57,7 +57,6 @@ class DisplayUserEvents extends Module implements DependsOnModule
     {
         $eventsId = [];
         $date = (new \DateTime())->format('Y-m-d');
-        $type = 'incremental';
 
         foreach($events as $event) {
             $eventId = $this->laravel->haveRecord(
@@ -65,7 +64,7 @@ class DisplayUserEvents extends Module implements DependsOnModule
                 [
                     'user_id' => $owner,
                     'event_name' => $event,
-                    'type' => 'incremental',
+                    'type' => 'summarizable',
                     'order' => 0,
                     'created_at' => $date,
                     'updated_at' => $date
@@ -75,7 +74,7 @@ class DisplayUserEvents extends Module implements DependsOnModule
                 [
                     'user_id' => $owner,
                     'event_name' => $event,
-                    'type' => 'incremental',
+                    'type' => 'summarizable',
                     'order' => 0,
                     'created_at' => $date,
                     'updated_at' => $date

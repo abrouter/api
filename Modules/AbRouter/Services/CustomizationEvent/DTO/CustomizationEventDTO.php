@@ -18,7 +18,7 @@ class CustomizationEventDTO
     /**
      * @var string
      */
-    private $type;
+    private $eventType;
 
     /**
      * @var string
@@ -30,18 +30,18 @@ class CustomizationEventDTO
      *
      * @param int $userId
      * @param string $eventName
-     * @param string $type
+     * @param string $eventType
      * @param string $order
      */
     public function __construct(
         int $userId,
         string $eventName,
-        string $type,
+        string $eventType,
         string $order
     ) {
         $this->userId = $userId;
         $this->eventName = $eventName;
-        $this->type = $type;
+        $this->eventType = $eventType;
         $this->order = $order;
     }
     
@@ -64,9 +64,9 @@ class CustomizationEventDTO
     /**
      * @return string
      */
-    public function getType(): string
+    public function getEventType(): string
     {
-        return $this->type;
+        return $this->eventType;
     }
     
     /**

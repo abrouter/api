@@ -44,7 +44,19 @@ class EventFunnelCest
                 'skip_call_booking' => 20,
                 'thankyou_page' => 20,
                 'leave' => 20,
-                'sign up' => 20
+                'sign up' => 20,
+                'summarization' => [
+                    'visit_mainpage' => $response['counters']['summarization']['visit_mainpage'],
+                    'open_contact_form' => $response['counters']['summarization']['open_contact_form'],
+                    'visited_book_call' => $response['counters']['summarization']['visited_book_call'],
+                    'fill_form_later' => $response['counters']['summarization']['fill_form_later'],
+                    'form_filler_complete' => $response['counters']['summarization']['form_filler_complete'],
+                    'visited_nutrionists_page' => $response['counters']['summarization']['visited_nutrionists_page'],
+                    'skip_call_booking' => $response['counters']['summarization']['skip_call_booking'],
+                    'thankyou_page' => $response['counters']['summarization']['thankyou_page'],
+                    'leave' => $response['counters']['summarization']['leave'],
+                    'sign up' => $response['counters']['summarization']['sign up'],
+                ]
             ]
         ]);
     }
@@ -87,7 +99,19 @@ class EventFunnelCest
                 'skip_call_booking' => 10,
                 'thankyou_page' => 10,
                 'leave' => 10,
-                'sign up' => 10
+                'sign up' => 10,
+                'summarization' => [
+                    'visit_mainpage' => $response['counters']['summarization']['visit_mainpage'],
+                    'open_contact_form' => $response['counters']['summarization']['open_contact_form'],
+                    'visited_book_call' => $response['counters']['summarization']['visited_book_call'],
+                    'fill_form_later' => $response['counters']['summarization']['fill_form_later'],
+                    'form_filler_complete' => $response['counters']['summarization']['form_filler_complete'],
+                    'visited_nutrionists_page' => $response['counters']['summarization']['visited_nutrionists_page'],
+                    'skip_call_booking' => $response['counters']['summarization']['skip_call_booking'],
+                    'thankyou_page' => $response['counters']['summarization']['thankyou_page'],
+                    'leave' => $response['counters']['summarization']['leave'],
+                    'sign up' => $response['counters']['summarization']['sign up'],
+                ]
             ]
         ]);
     }
@@ -130,7 +154,19 @@ class EventFunnelCest
                 'skip_call_booking' => 100,
                 'thankyou_page' => 100,
                 'leave' => 100,
-                'sign up' => 100
+                'sign up' => 100,
+                'summarization' => [
+                    'visit_mainpage' => $response['counters']['summarization']['visit_mainpage'],
+                    'open_contact_form' => $response['counters']['summarization']['open_contact_form'],
+                    'visited_book_call' => $response['counters']['summarization']['visited_book_call'],
+                    'fill_form_later' => $response['counters']['summarization']['fill_form_later'],
+                    'form_filler_complete' => $response['counters']['summarization']['form_filler_complete'],
+                    'visited_nutrionists_page' => $response['counters']['summarization']['visited_nutrionists_page'],
+                    'skip_call_booking' => $response['counters']['summarization']['skip_call_booking'],
+                    'thankyou_page' => $response['counters']['summarization']['thankyou_page'],
+                    'leave' => $response['counters']['summarization']['leave'],
+                    'sign up' => $response['counters']['summarization']['sign up'],
+                ]
             ]
         ]);
     }
@@ -173,7 +209,19 @@ class EventFunnelCest
                 'skip_call_booking' => 100,
                 'thankyou_page' => 100,
                 'leave' => 100,
-                'sign up' => 100
+                'sign up' => 100,
+                'summarization' => [
+                    'visit_mainpage' => $response['counters']['summarization']['visit_mainpage'],
+                    'open_contact_form' => $response['counters']['summarization']['open_contact_form'],
+                    'visited_book_call' => $response['counters']['summarization']['visited_book_call'],
+                    'fill_form_later' => $response['counters']['summarization']['fill_form_later'],
+                    'form_filler_complete' => $response['counters']['summarization']['form_filler_complete'],
+                    'visited_nutrionists_page' => $response['counters']['summarization']['visited_nutrionists_page'],
+                    'skip_call_booking' => $response['counters']['summarization']['skip_call_booking'],
+                    'thankyou_page' => $response['counters']['summarization']['thankyou_page'],
+                    'leave' => $response['counters']['summarization']['leave'],
+                    'sign up' => $response['counters']['summarization']['sign up'],
+                ]
             ]
         ]);
     }
