@@ -20,6 +20,7 @@ use Modules\Core\EntityId\IdTrait;
  * @property string temporary_user_id
  * @property string user_id
  * @property string event
+ * @property string value
  * @property string tag
  * @property string ip
  * @property string referrer
