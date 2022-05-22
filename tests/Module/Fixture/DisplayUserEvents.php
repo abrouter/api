@@ -10,7 +10,7 @@ use Modules\Core\EntityId\EntityEncoder;
 
 class DisplayUserEvents extends Module implements DependsOnModule
 {
-    public const TABLE_DISPLAYY_USER_EVENTS = 'display_user_events';
+    public const TABLE_DISPLAY_USER_EVENTS = 'display_user_events';
 
     /**
      * @var Laravel
@@ -60,7 +60,7 @@ class DisplayUserEvents extends Module implements DependsOnModule
 
         foreach($events as $event) {
             $eventId = $this->laravel->haveRecord(
-                self::TABLE_DISPLAYY_USER_EVENTS,
+                self::TABLE_DISPLAY_USER_EVENTS,
                 [
                     'user_id' => $owner,
                     'event_name' => $event,
@@ -70,7 +70,7 @@ class DisplayUserEvents extends Module implements DependsOnModule
                     'updated_at' => $date
                 ]);
             $this->laravel->seeRecord(
-                self::TABLE_DISPLAYY_USER_EVENTS,
+                self::TABLE_DISPLAY_USER_EVENTS,
                 [
                     'user_id' => $owner,
                     'event_name' => $event,
@@ -93,7 +93,7 @@ class DisplayUserEvents extends Module implements DependsOnModule
 
         foreach(range(0,1) as $i) {
             $this->laravel->haveRecord(
-                self::TABLE_DISPLAYY_USER_EVENTS,
+                self::TABLE_DISPLAY_USER_EVENTS,
                 [
                     'user_id' => $owner,
                     'event_name' => $events[$i],
@@ -103,7 +103,7 @@ class DisplayUserEvents extends Module implements DependsOnModule
                     'updated_at' => $date
                 ]);
             $this->laravel->seeRecord(
-                self::TABLE_DISPLAYY_USER_EVENTS,
+                self::TABLE_DISPLAY_USER_EVENTS,
                 [
                     'user_id' => $owner,
                     'event_name' => $events[$i],
@@ -123,7 +123,7 @@ class DisplayUserEvents extends Module implements DependsOnModule
 
         foreach(range(0,1) as $i) {
             $this->laravel->haveRecord(
-                self::TABLE_DISPLAYY_USER_EVENTS,
+                self::TABLE_DISPLAY_USER_EVENTS,
                 [
                     'user_id' => $owner,
                     'event_name' => 'summarizable_event',
@@ -133,7 +133,7 @@ class DisplayUserEvents extends Module implements DependsOnModule
                     'updated_at' => $date
                 ]);
             $this->laravel->seeRecord(
-                self::TABLE_DISPLAYY_USER_EVENTS,
+                self::TABLE_DISPLAY_USER_EVENTS,
                 [
                     'user_id' => $owner,
                     'event_name' => 'summarizable_event',
