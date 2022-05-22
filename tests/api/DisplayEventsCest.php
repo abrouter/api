@@ -7,7 +7,7 @@ class DisplayEventsCest
     }
 
     public function createEvents(ApiTester $I)
-    {   
+    {
         $user = $I->haveUser($I);
         $events = $I->haveUserEvents();
         $type = ['incremental', 'summarizable'];

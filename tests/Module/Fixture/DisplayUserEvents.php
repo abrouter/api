@@ -85,6 +85,67 @@ class DisplayUserEvents extends Module implements DependsOnModule
 
         return ['events' => $events, 'eventsId' => $eventsId];
     }
+
+    public function haveIncrementalEvents(int $owner)
+    {
+        $events = ['incremental_event_first', 'incremental_events_second'];
+        $date = (new \DateTime())->format('Y-m-d');
+
+        foreach(range(0,1) as $i) {
+            $this->laravel->haveRecord(
+                self::TABLE_DISPLAYY_USER_EVENTS,
+                [
+                    'user_id' => $owner,
+                    'event_name' => $events[$i],
+                    'type' => 'incremental',
+                    'order' => 0,
+                    'created_at' => $date,
+                    'updated_at' => $date
+                ]);
+            $this->laravel->seeRecord(
+                self::TABLE_DISPLAYY_USER_EVENTS,
+                [
+                    'user_id' => $owner,
+                    'event_name' => $events[$i],
+                    'type' => 'incremental',
+                    'order' => 0,
+                    'created_at' => $date,
+                    'updated_at' => $date
+                ]);
+        }
+
+        return $events;
+    }
+
+    public function haveSummarizableEvents(int $owner)
+    {
+        $date = (new \DateTime())->format('Y-m-d');
+
+        foreach(range(0,1) as $i) {
+            $this->laravel->haveRecord(
+                self::TABLE_DISPLAYY_USER_EVENTS,
+                [
+                    'user_id' => $owner,
+                    'event_name' => 'summarizable_event',
+                    'type' => 'summarizable',
+                    'order' => 0,
+                    'created_at' => $date,
+                    'updated_at' => $date
+                ]);
+            $this->laravel->seeRecord(
+                self::TABLE_DISPLAYY_USER_EVENTS,
+                [
+                    'user_id' => $owner,
+                    'event_name' => 'summarizable_event',
+                    'type' => 'summarizable',
+                    'order' => 0,
+                    'created_at' => $date,
+                    'updated_at' => $date
+                ]);
+        }
+
+        return 'summarizable_event';
+    }
     
     /**
      * {@inheritdoc}
