@@ -124,7 +124,7 @@ class ExperimentEvents extends Module implements DependsOnModule
         ];
     }
 
-    public function runExperiments($I, $token, $experimentAlias, $users)
+    public function runExperiments(\ApiTester $I, $token, $experimentAlias, $users)
     {   
         $branchesId = [];
 
@@ -137,7 +137,8 @@ class ExperimentEvents extends Module implements DependsOnModule
             $I->haveHttpHeader('Accept', 'application/json');
             $I->amBearerAuthenticated($token);
 
-            $I->sendPost('/experiment/run', [
+
+            $payload = [
                 'data' => [
                     'type' => 'experiment-run',
                     'attributes' => [
@@ -151,8 +152,10 @@ class ExperimentEvents extends Module implements DependsOnModule
                             ]
                         ]
                     ]
-                ]                
-            ]);
+                ]
+            ];
+
+            $I->sendPost('/experiment/run', $payload);
 
             $response = json_decode($I->grabResponse(), true);
 

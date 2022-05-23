@@ -74,8 +74,7 @@ class Events extends Module implements DependsOnModule
         $users = [];
 
         for ($i = 0; $i < 20; $i++) { 
-            $userId = (new EntityEncoder())->encode($i, 'users');
-            $users[] = $userId;
+            $users[] = uniqid();
         }
 
         $c = 0;
@@ -135,7 +134,7 @@ class Events extends Module implements DependsOnModule
         $temporaryUsers = [];
 
         for ($i = 0; $i < 10; $i++) { 
-            $temporaryUserId = substr(md5('user_' . $i), 0, 13);
+            $temporaryUserId = uniqid();
             $temporaryUsers[] = $temporaryUserId;
         }
 
@@ -207,8 +206,12 @@ class Events extends Module implements DependsOnModule
             }
 
             if($m % 2 === 0) {
+                $temporaryUserId = '';
                 $userId = (new EntityEncoder())->encode($m, 'users');
-            } else $temporaryUserId = substr(md5('user_' . $m), 0, 13);
+            } else {
+                $userId = '';
+                $temporaryUserId = substr(md5('user_' . $m), 0, 13);
+            }
             
             $tag = 'test';
             $referrer = '';
@@ -267,7 +270,11 @@ class Events extends Module implements DependsOnModule
 
             if($m % 3 === 0) {
                 $userId = (new EntityEncoder())->encode($m, 'users');
-            } else $temporaryUserId = substr(md5('user_' . $m), 0, 13);
+                $temporaryUserId = '';
+            } else {
+                $userId = '';
+                $temporaryUserId = substr(md5('user_' . $m), 0, 13);
+            }
             
             
             $tag = 'test';
@@ -391,8 +398,14 @@ class Events extends Module implements DependsOnModule
             }
 
             if($m % 3 === 0) {
+                //something went wrong here
+//              $temporaryUserId = '';
                 $userId = (new EntityEncoder())->encode($m, 'users');
-            } else $temporaryUserId = substr(md5('user_' . $m), 0, 13);
+            } else {
+                //something went wrong here
+//              $userId = '';
+                $temporaryUserId = substr(md5('user_' . $m), 0, 13);
+            }
             
             
             $tag = 'test';

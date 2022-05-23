@@ -75,7 +75,7 @@ class SimpleStatsService
         $referrers = $this->getReferrers($statsQueryDTO->getOwnerId());
         
         $uniqUsersIds = $this->getUniqUsersIds($allUserEvents);
-        $uniqRelatedUsersIds = $this->getUniqRelatedUsersIds($uniqUsersIds, $allRelatedUsers->all());
+        $uniqRelatedUsersIds = $this->getUniqRelatedUsersIdsWithoutBinding($allRelatedUsers->all());
         $uniqUsers = $this->getFinalUniqUsers($uniqUsersIds, $uniqRelatedUsersIds);
         
         $uniqUsersCount = count($uniqUsers);
@@ -184,7 +184,7 @@ class SimpleStatsService
             }, []);
     }
 
-    protected function getUniqRelatedUsersIds(array $uniqUsersIds, array $allRelatedUsers): array
+    protected function getUniqRelatedUsersIdsWithoutBinding(array $allRelatedUsers): array
     {
         $relatedUsersIds = [];
         $glueUserRelatedUser = [];
@@ -244,5 +244,15 @@ class SimpleStatsService
         $dateTo = (new \DateTime($dateFrom))->add(new \DateInterval('P1D'))->format('Y-m-d');
 
         return ['date_from' => $dateFrom, 'date_to' => $dateTo];
+    }
+
+    protected function getUniqRelatedUsersIds(RelatedUser...$relatedUsers): array
+    {
+        return array_reduce($relatedUsers, function (array $acc, RelatedUser $relatedUser) {
+            $acc[] = $relatedUser->user_id;
+            $acc[] = $relatedUser->related_user_id;
+
+            return $acc;
+        }, []);
     }
 }
