@@ -93,7 +93,7 @@ class Events extends Module implements DependsOnModule
 
             $tag = 'test';
             $referrer = '';
-            $ip = random_int(1, 255) . '.' . random_int(1, 255) . '.' . random_int(1, 255) . '.' . random_int(1, 255);
+            $ip = mt_rand(1, 255) . '.' . mt_rand(1, 255) . '.' . mt_rand(1, 255) . '.' . mt_rand(1, 255);
             $meta = '[]';
             $createdAt = (new \DateTime())->format('Y-m-d');
             $updatedAt = (new \DateTime())->format('Y-m-d');
@@ -102,7 +102,7 @@ class Events extends Module implements DependsOnModule
                 'owner_id' => $owner,
                 'temporary_user_id' => '',
                 'user_id' => $users[$m],
-                'event' => $events[$c],
+                'event' => $events[$c]['event_name'],
                 'value' => mt_rand(0,100),
                 'tag' => $tag,
                 'referrer' => $referrer,
@@ -154,7 +154,7 @@ class Events extends Module implements DependsOnModule
 
             $tag = 'test';
             $referrer = '';
-            $ip = random_int(1, 255) . '.' . random_int(1, 255) . '.' . random_int(1, 255) . '.' . random_int(1, 255);
+            $ip = mt_rand(1, 255) . '.' . mt_rand(1, 255) . '.' . mt_rand(1, 255) . '.' . mt_rand(1, 255);
             $meta = '[]';
             $createdAt = (new \DateTime())->format('Y-m-d');
             $updatedAt = (new \DateTime())->format('Y-m-d');
@@ -163,7 +163,7 @@ class Events extends Module implements DependsOnModule
                 'owner_id' => $owner,
                 'temporary_user_id' => $temporaryUsers[$m],
                 'user_id' => '',
-                'event' => $events[$c],
+                'event' => $events[$c]['event_name'],
                 'value' => mt_rand(0,100),
                 'tag' => $tag,
                 'referrer' => $referrer,
@@ -221,7 +221,7 @@ class Events extends Module implements DependsOnModule
                 'owner_id' => $owner,
                 'temporary_user_id' => $temporaryUserId ?? '',
                 'user_id' => $userId ?? '',
-                'event' => $events[$c],
+                'event' => $events[$c]['event_name'],
                 'value' => mt_rand(0,100),
                 'tag' => $tag,
                 'referrer' => $referrer,
@@ -281,7 +281,7 @@ class Events extends Module implements DependsOnModule
                 'owner_id' => $owner,
                 'temporary_user_id' => $temporaryUserId ?? '',
                 'user_id' => $userId ?? '',
-                'event' => $events[$c],
+                'event' => $events[$c]['event_name'],
                 'value' => mt_rand(0,100),
                 'tag' => $tag,
                 'referrer' => $referrer,
@@ -311,6 +311,66 @@ class Events extends Module implements DependsOnModule
         }
     }
 
+    public function createRevenueEventsWithRelatedUserAndUser(
+        int $owner,
+        array $events,
+        int $numberEvents,
+        string $typeEvents,
+        ?string $staticUserId = null,
+        ?string $staticTemporaryUserId = null
+    ) {
+        $filterEvents = array_values(array_filter($events, function ($event) use ($typeEvents) {
+           return $event['type'] === $typeEvents;
+        }));
+
+        $n = 0;
+
+        foreach(range(1, $numberEvents) as $i) {
+            if ($n === count($filterEvents)) {
+                $n = 0;
+            }
+
+            $userId = $staticUserId ?? (new EntityEncoder())->encode($i, 'users');
+            $temporaryUserId = $staticTemporaryUserId ?? substr(md5('user_' . $i), 0, 13);
+            $tag = 'test';
+            $referrer = '';
+            $ip = mt_rand(1, 255) . '.' . mt_rand(1, 255) . '.' . mt_rand(1, 255) . '.' . mt_rand(1, 255);
+            $meta = '[]';
+            $createdAt = (new \DateTime())->format('Y-m-d');
+            $updatedAt = (new \DateTime())->format('Y-m-d');
+
+            $recordEvents = [
+                'owner_id' => $owner,
+                'temporary_user_id' => $temporaryUserId ?? '',
+                'user_id' => $userId ?? '',
+                'event' => $filterEvents[$n]['event_name'],
+                'value' => $typeEvents === 'incremental' ? '' : $i,
+                'tag' => $tag,
+                'referrer' => $referrer,
+                'ip' => $ip,
+                'meta' => $meta,
+                'created_at' => $createdAt,
+                'updated_at' => $updatedAt
+            ];
+
+            $eventId = $this->laravel->haveRecord(self::TABLE_EVENTS, $recordEvents);
+            $this->laravel->seeRecord(self::TABLE_EVENTS, $recordEvents);
+
+            $recordRelatedUsers = [
+                'owner_id' => $owner,
+                'event_id' => $eventId,
+                'user_id' => $userId ?? '',
+                'related_user_id' => $temporaryUserId ?? '',
+                'created_at' => $createdAt,
+            ];
+
+            $this->laravel->haveRecord(self::TABLE_RELATED_USERS, $recordRelatedUsers);
+            $this->laravel->seeRecord(self::TABLE_RELATED_USERS, $recordRelatedUsers);
+
+            $n++;
+        }
+    }
+
     public function createEventsWithRelatedUserAndUserForExperimentStats(int $owner, array $events)
     {
         $c = 0;
@@ -325,7 +385,7 @@ class Events extends Module implements DependsOnModule
                 $n = 0;
                 $c++;
 
-                if($c === 4) {
+                if($c === 10) {
                     $c = 0;
                 }
             }
@@ -337,7 +397,7 @@ class Events extends Module implements DependsOnModule
             
             $tag = 'test';
             $referrer = '';
-            $ip = random_int(1, 255) . '.' . random_int(1, 255) . '.' . random_int(1, 255) . '.' . random_int(1, 255);
+            $ip = mt_rand(1, 255) . '.' . mt_rand(1, 255) . '.' . mt_rand(1, 255) . '.' . mt_rand(1, 255);
             $meta = '[]';
             $createdAt = (new \DateTime())->format('Y-m-d');
             $updatedAt = (new \DateTime())->format('Y-m-d');
@@ -346,7 +406,7 @@ class Events extends Module implements DependsOnModule
                 'owner_id' => $owner,
                 'temporary_user_id' => $temporaryUserId ?? '',
                 'user_id' => $userId ?? '',
-                'event' => $events[$c],
+                'event' => $events[$c]['event_name'],
                 'value' => mt_rand(0,100),
                 'tag' => $tag,
                 'referrer' => $referrer,

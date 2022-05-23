@@ -9,8 +9,7 @@ class EventFunnelCest
     public function showStatsByUserId(ApiTester $I)
     {
         $user = $I->haveUser($I);
-        $events = $I->haveUserEvents();
-        $saveEvents = $I->saveUserEvents($user['id'], $events);
+        $events = $I->haveUserEvents($user['id']);
 
         $I->createEventsWithUserId($user['id'], $events);
         
@@ -64,8 +63,7 @@ class EventFunnelCest
     public function showStatsByTemporaryUserId(ApiTester $I)
     {
         $user = $I->haveUser($I);
-        $events = $I->haveUserEvents();
-        $saveEvents = $I->saveUserEvents($user['id'], $events);
+        $events = $I->haveUserEvents($user['id']);
 
         $I->createEventsWithTemporaryUserId($user['id'], $events);
 
@@ -119,8 +117,7 @@ class EventFunnelCest
     public function showStatsTemporaryUsersAndUsers(ApiTester $I)
     {
         $user = $I->haveUser($I);
-        $events = $I->haveUserEvents();
-        $saveEvents = $I->saveUserEvents($user['id'], $events);
+        $events = $I->haveUserEvents($user['id']);
 
         $I->createEventsWithTemporaryUserAndUser($user['id'], $events);
         
@@ -174,8 +171,7 @@ class EventFunnelCest
     public function showStatsRelatedUsersAndUsers(ApiTester $I)
     {
         $user = $I->haveUser($I);
-        $events = $I->haveUserEvents();
-        $saveEvents = $I->saveUserEvents($user['id'], $events);
+        $events = $I->haveUserEvents($user['id']);
 
         $I->createEventsWithRelatedUserAndUser($user['id'], $events);
 
@@ -226,11 +222,212 @@ class EventFunnelCest
         ]);
     }
 
+    public function showStatsRevenueForTenIncrementalEvents(ApiTester $I)
+    {
+        $unsavedEvents = [
+            ['type' => 'incremental', 'event_name' => 'first_incremental_events'],
+            ['type' => 'incremental', 'event_name' => 'second_incremental_events'],
+            ['type' => 'summarizable', 'event_name' => 'summarizable_events']
+        ];
+
+        $user = $I->haveUser($I);
+        $events = $I->haveRevenueEvents($user['id'], $unsavedEvents);
+
+        $I->createRevenueEventsWithRelatedUserAndUser($user['id'], $events, 10, 'incremental');
+
+        $I->amBearerAuthenticated($user['token']);
+
+        $I->sendPost('/event/funnel');
+
+        $response = json_decode($I->grabResponse(), true);
+
+        $I->seeResponseCodeIsSuccessful(200);
+        $I->seeResponseContainsJson([
+            'percentage' => [
+                'first_incremental_events' => 50,
+                'second_incremental_events' => 50,
+            ],
+            'counters' => [
+                'first_incremental_events' => 5,
+                'second_incremental_events' => 5,
+            ]
+        ]);
+    }
+
+    public function showStatsRevenueForTwentyIncrementalEvents(ApiTester $I)
+    {
+        $unsavedEvents = [
+            ['type' => 'incremental', 'event_name' => 'first_incremental_events'],
+            ['type' => 'incremental', 'event_name' => 'second_incremental_events'],
+            ['type' => 'summarizable', 'event_name' => 'summarizable_events']
+        ];
+
+        $user = $I->haveUser($I);
+        $events = $I->haveRevenueEvents($user['id'], $unsavedEvents);
+
+        $I->createRevenueEventsWithRelatedUserAndUser($user['id'], $events, 20, 'incremental');
+
+        $I->amBearerAuthenticated($user['token']);
+
+        $I->sendPost('/event/funnel');
+
+        $response = json_decode($I->grabResponse(), true);
+
+        $I->seeResponseCodeIsSuccessful(200);
+        $I->seeResponseContainsJson([
+            'percentage' => [
+                'first_incremental_events' => 50,
+                'second_incremental_events' => 50,
+            ],
+            'counters' => [
+                'first_incremental_events' => 10,
+                'second_incremental_events' => 10,
+            ]
+        ]);
+    }
+
+    public function showStatsRevenueForHundredSummarizableEvents(ApiTester $I)
+    {
+        $unsavedEvents = [
+            ['type' => 'incremental', 'event_name' => 'first_incremental_events'],
+            ['type' => 'incremental', 'event_name' => 'second_incremental_events'],
+            ['type' => 'summarizable', 'event_name' => 'summarizable_events']
+        ];
+
+        $user = $I->haveUser($I);
+        $events = $I->haveRevenueEvents($user['id'], $unsavedEvents);
+
+        $I->createRevenueEventsWithRelatedUserAndUser($user['id'], $events, 100, 'summarizable');
+
+        $I->amBearerAuthenticated($user['token']);
+
+        $I->sendPost('/event/funnel');
+
+        $I->seeResponseCodeIsSuccessful(200);
+        $I->seeResponseContainsJson([
+            'percentage' => [
+                'summarizable_events' => 100,
+            ],
+            'counters' => [
+                'summarizable_events' => 100,
+                'summarization' => [
+                    'summarizable_events' => 5051
+                ]
+            ]
+        ]);
+    }
+
+    public function showStatsRevenueForFourHundredSummarizableEvents(ApiTester $I)
+    {
+        $unsavedEvents = [
+            ['type' => 'incremental', 'event_name' => 'first_incremental_events'],
+            ['type' => 'incremental', 'event_name' => 'second_incremental_events'],
+            ['type' => 'summarizable', 'event_name' => 'summarizable_events']
+        ];
+
+        $user = $I->haveUser($I);
+        $events = $I->haveRevenueEvents($user['id'], $unsavedEvents);
+
+        $I->createRevenueEventsWithRelatedUserAndUser($user['id'], $events, 400, 'summarizable');
+
+        $I->amBearerAuthenticated($user['token']);
+
+        $I->sendPost('/event/funnel');
+
+        $I->seeResponseCodeIsSuccessful(200);
+        $I->seeResponseContainsJson([
+            'percentage' => [
+                'summarizable_events' => 100,
+            ],
+            'counters' => [
+                'summarizable_events' => 400,
+                'summarization' => [
+                    'summarizable_events' => 80201
+                ]
+            ]
+        ]);
+    }
+
+    public function showStatsRevenueForHundredSummarizableEventsByOneUser(ApiTester $I)
+    {
+        $unsavedEvents = [
+            ['type' => 'incremental', 'event_name' => 'first_incremental_events'],
+            ['type' => 'incremental', 'event_name' => 'second_incremental_events'],
+            ['type' => 'summarizable', 'event_name' => 'summarizable_events']
+        ];
+
+        $user = $I->haveUser($I);
+        $events = $I->haveRevenueEvents($user['id'], $unsavedEvents);
+
+        $I->createRevenueEventsWithRelatedUserAndUser(
+            $user['id'],
+            $events,
+            100,
+            'summarizable',
+            'user_' . uniqid(),
+            'temporary_user_' . uniqid()
+        );
+
+        $I->amBearerAuthenticated($user['token']);
+
+        $I->sendPost('/event/funnel');
+
+        $I->seeResponseCodeIsSuccessful(200);
+        $I->seeResponseContainsJson([
+            'percentage' => [
+                'summarizable_events' => 2,
+            ],
+            'counters' => [
+                'summarizable_events' => 1,
+                'summarization' => [
+                    'summarizable_events' => 2
+                ]
+            ]
+        ]);
+    }
+
+    public function showStatsRevenueForTwoHundredSummarizableEventsByOneUser(ApiTester $I)
+    {
+        $unsavedEvents = [
+            ['type' => 'incremental', 'event_name' => 'first_incremental_events'],
+            ['type' => 'incremental', 'event_name' => 'second_incremental_events'],
+            ['type' => 'summarizable', 'event_name' => 'summarizable_events']
+        ];
+
+        $user = $I->haveUser($I);
+        $events = $I->haveRevenueEvents($user['id'], $unsavedEvents);
+
+        $I->createRevenueEventsWithRelatedUserAndUser(
+            $user['id'],
+            $events,
+            200,
+            'summarizable',
+            'user_' . uniqid(),
+            'temporary_user_' . uniqid()
+        );
+
+        $I->amBearerAuthenticated($user['token']);
+
+        $I->sendPost('/event/funnel');
+
+        $I->seeResponseCodeIsSuccessful(200);
+        $I->seeResponseContainsJson([
+            'percentage' => [
+                'summarizable_events' => 100,
+            ],
+            'counters' => [
+                'summarizable_events' => 1,
+                'summarization' => [
+                    'summarizable_events' => 200
+                ]
+            ]
+        ]);
+    }
+
     public function getAllEventsWithOwnerByRelatedId(ApiTester $I)
     {
         $user = $I->haveUser($I);
-        $events = $I->haveUserEvents();
-        $saveEvents = $I->saveUserEvents($user['id'], $events);
+        $events = $I->haveUserEvents($user['id']);
 
         $temporaryUsersIds = $I->createEventsWithTemporaryUserId($user['id'], $events);
 
@@ -260,8 +457,7 @@ class EventFunnelCest
     public function getAllEventsWithOwnerByUserId(ApiTester $I)
     {
         $user = $I->haveUser($I);
-        $events = $I->haveUserEvents();
-        $saveEvents = $I->saveUserEvents($user['id'], $events);
+        $events = $I->haveUserEvents($user['id']);
 
         $usersIds = $I->createEventsWithUserId($user['id'], $events);
 
