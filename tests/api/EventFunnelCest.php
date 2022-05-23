@@ -375,7 +375,7 @@ class EventFunnelCest
         $I->seeResponseCodeIsSuccessful(200);
         $I->seeResponseContainsJson([
             'percentage' => [
-                'summarizable_events' => 2,
+                'summarizable_events' => 100,
             ],
             'counters' => [
                 'summarizable_events' => 1,
@@ -418,7 +418,7 @@ class EventFunnelCest
             'counters' => [
                 'summarizable_events' => 1,
                 'summarization' => [
-                    'summarizable_events' => 200
+                    'summarizable_events' => 2
                 ]
             ]
         ]);
