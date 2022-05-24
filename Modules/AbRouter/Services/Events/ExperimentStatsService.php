@@ -105,7 +105,7 @@ class ExperimentStatsService extends SimpleStatsService
                 ->getCounters(
                 $allUserEvents,
                 $jointUser,
-                []
+                $eventsNames
             );
 
             $eventCountersWithDate[$key] = $this
