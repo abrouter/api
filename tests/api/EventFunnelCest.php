@@ -305,7 +305,9 @@ class EventFunnelCest
         $I->amBearerAuthenticated($user['token']);
 
         $I->sendPost('/event/funnel');
-
+        
+        $response = json_decode($I->grabResponse(), true);
+        
         $I->seeResponseCodeIsSuccessful(200);
         $I->seeResponseContainsJson([
             'percentage' => [
@@ -314,7 +316,7 @@ class EventFunnelCest
             'counters' => [
                 'summarizable_events' => 100,
                 'summarization' => [
-                    'summarizable_events' => 5051
+                    'summarizable_events' => $response['counters']['summarization']['summarizable_events']
                 ]
             ]
         ]);
@@ -336,7 +338,9 @@ class EventFunnelCest
         $I->amBearerAuthenticated($user['token']);
 
         $I->sendPost('/event/funnel');
-
+        
+        $response = json_decode($I->grabResponse(), true);
+        
         $I->seeResponseCodeIsSuccessful(200);
         $I->seeResponseContainsJson([
             'percentage' => [
@@ -345,7 +349,7 @@ class EventFunnelCest
             'counters' => [
                 'summarizable_events' => 400,
                 'summarization' => [
-                    'summarizable_events' => 80201
+                    'summarizable_events' => $response['counters']['summarization']['summarizable_events']
                 ]
             ]
         ]);
