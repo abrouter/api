@@ -326,6 +326,8 @@ class Events extends Module implements DependsOnModule
         ?string $staticUserId = null,
         ?string $staticTemporaryUserId = null
     ) {
+        $users = [];
+
         $filterEvents = array_values(array_filter($events, function ($event) use ($typeEvents) {
            return $event['type'] === $typeEvents;
         }));
@@ -348,8 +350,8 @@ class Events extends Module implements DependsOnModule
 
             $recordEvents = [
                 'owner_id' => $owner,
-                'temporary_user_id' => $temporaryUserId ?? '',
-                'user_id' => $userId ?? '',
+                'temporary_user_id' => $temporaryUserId,
+                'user_id' => $userId,
                 'event' => $filterEvents[$n]['event_name'],
                 'value' => $typeEvents === 'incremental' ? '' : $i,
                 'tag' => $tag,
@@ -366,16 +368,20 @@ class Events extends Module implements DependsOnModule
             $recordRelatedUsers = [
                 'owner_id' => $owner,
                 'event_id' => $eventId,
-                'user_id' => $userId ?? '',
-                'related_user_id' => $temporaryUserId ?? '',
+                'user_id' => $userId,
+                'related_user_id' => $temporaryUserId,
                 'created_at' => $createdAt,
             ];
 
             $this->laravel->haveRecord(self::TABLE_RELATED_USERS, $recordRelatedUsers);
             $this->laravel->seeRecord(self::TABLE_RELATED_USERS, $recordRelatedUsers);
 
+            $users[] = $userId;
+
             $n++;
         }
+
+        return $users;
     }
 
     public function createEventsWithRelatedUserAndUserForExperimentStats(int $owner, array $events)

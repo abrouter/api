@@ -13,13 +13,13 @@ class EventFunnelCest
 
 
         $I->createEventsWithUserId($user['id'], $events);
-        
+
         $I->amBearerAuthenticated($user['token']);
 
         $I->sendPost('/event/funnel');
 
         $response = json_decode($I->grabResponse(), true);
-        
+
         $I->seeResponseCodeIsSuccessful(201);
         $I->seeResponseContainsJson([
             'percentage' => [
@@ -123,13 +123,13 @@ class EventFunnelCest
         $events = $I->haveUserEvents($user['id']);
 
         $I->createEventsWithTemporaryUserAndUser($user['id'], $events);
-        
+
         $I->amBearerAuthenticated($user['token']);
 
         $I->sendPost('/event/funnel');
 
         $response = json_decode($I->grabResponse(), true);
-        
+
         $I->seeResponseCodeIsSuccessful(201);
         $I->seeResponseContainsJson([
             'percentage' => [
@@ -183,7 +183,7 @@ class EventFunnelCest
         $I->sendPost('/event/funnel');
 
         $response = json_decode($I->grabResponse(), true);
-        
+
         $I->seeResponseCodeIsSuccessful(201);
         $I->seeResponseContainsJson([
             'percentage' => [

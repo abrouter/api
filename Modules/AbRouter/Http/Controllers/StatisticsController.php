@@ -105,6 +105,7 @@ class StatisticsController
         return [
             'experiment' => $results->getExperiments(),
             'percentage' => $results->getPercentage(),
+            'counters' => $results->getCounters(),
             'eventCountersWithDate' => $results->getEventCountersWithDate()
         ];
     }
