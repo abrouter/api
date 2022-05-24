@@ -339,63 +339,63 @@ class ExperimentsStatsCest
         }
     }
 
-//    public function showRevenueExperimentStatsForTenIncrementalEventsByExperimentIdWhithTwoBranch(ApiTester $I)
-//    {
-//        $unsavedEvents = [
-//            ['type' => 'incremental', 'event_name' => 'first_incremental_events'],
-//            ['type' => 'incremental', 'event_name' => 'second_incremental_events'],
-//            ['type' => 'summarizable', 'event_name' => 'summarizable_events']
-//        ];
-//
-//        $user = $I->haveUser($I);
-//        $experiment = $I->haveExperimentWithTwoBranch($user['id']);
-//        $events = $I->haveRevenueEvents($user['id'], $unsavedEvents);
-//
-//        $users = $I->createRevenueEventsWithRelatedUserAndUser(
-//            $user['id'],
-//            $events,
-//            10,
-//            'incremental'
-//        );
-//
-//        $I->runExperiments($I, $user['token'], $experiment['alias'], $users);
-//
-//        $I->haveHttpHeader('Content-Type', 'application/json');
-//        $I->haveHttpHeader('Accept', 'application/json');
-//        $I->amBearerAuthenticated($user['token']);
-//
-//        $I->sendGet('/experiments/stats?filter[experimentId]=' . $experiment['experimentId']);
-//
-//        $response = json_decode($I->grabResponse(), true);
-//
-//        $I->seeResponseCodeIsSuccessful(201);
-//
-//        foreach($response['eventCountersWithDate'] as $branch => $event) {
-//            $I->seeResponseContainsJson([
-//                'experiment' => [
-//                    'id' => $response['experiment']['id'],
-//                    'name' => $response['experiment']['name'],
-//                    'is_enabled' => $response['experiment']['is_enabled'],
-//                    'days_running' => $response['experiment']['days_running'],
-//                    'total_users' => $response['experiment']['total_users']
-//                ],
-//                'percentage' => [
-//                    $branch => [
-//                        'first_incremental_events' => $response['percentage'][$branch]['first_incremental_events'],
-//                        'second_incremental_events' => $response['percentage'][$branch]['second_incremental_events']
-//                    ]
-//                ],
-//                'counters' => [
-//                    $branch => [
-//                        'first_incremental_events' => $response['counters'][$branch]['first_incremental_events'],
-//                        'second_incremental_events' => $response['counters'][$branch]['second_incremental_events']
-//                    ]
-//                ]
-//            ]);
-//        }
-//    }
+    public function showRevenueExperimentStatsForTenIncrementalEventsByExperimentIdWhithTwoBranch(ApiTester $I)
+    {
+        $unsavedEvents = [
+            ['type' => 'incremental', 'event_name' => 'first_incremental_events'],
+            ['type' => 'incremental', 'event_name' => 'second_incremental_events'],
+            ['type' => 'summarizable', 'event_name' => 'summarizable_events']
+        ];
 
-    public function showRevenueExperimentStatsForTwentyIncrementalEventsByExperimentIdWhithTwoBranch(ApiTester $I)
+        $user = $I->haveUser($I);
+        $experiment = $I->haveExperimentWithTwoBranch($user['id']);
+        $events = $I->haveRevenueEvents($user['id'], $unsavedEvents);
+
+        $users = $I->createRevenueEventsWithRelatedUserAndUser(
+            $user['id'],
+            $events,
+            10,
+            'incremental'
+        );
+
+        $I->runExperiments($I, $user['token'], $experiment['alias'], $users);
+
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->haveHttpHeader('Accept', 'application/json');
+        $I->amBearerAuthenticated($user['token']);
+
+        $I->sendGet('/experiments/stats?filter[experimentId]=' . $experiment['experimentId']);
+
+        $response = json_decode($I->grabResponse(), true);
+
+        $I->seeResponseCodeIsSuccessful(201);
+
+        foreach($response['eventCountersWithDate'] as $branch => $event) {
+            $I->seeResponseContainsJson([
+                'experiment' => [
+                    'id' => $response['experiment']['id'],
+                    'name' => $response['experiment']['name'],
+                    'is_enabled' => $response['experiment']['is_enabled'],
+                    'days_running' => $response['experiment']['days_running'],
+                    'total_users' => $response['experiment']['total_users']
+                ],
+                'percentage' => [
+                    $branch => [
+                        'first_incremental_events' => $response['percentage'][$branch]['first_incremental_events'],
+                        'second_incremental_events' => $response['percentage'][$branch]['second_incremental_events']
+                    ]
+                ],
+                'counters' => [
+                    $branch => [
+                        'first_incremental_events' => $response['counters'][$branch]['first_incremental_events'],
+                        'second_incremental_events' => $response['counters'][$branch]['second_incremental_events']
+                    ]
+                ]
+            ]);
+        }
+    }
+
+    public function showRevenueExperimentStatsForTwentyIncrementalEventsByExperimentIdWithTwoBranch(ApiTester $I)
     {
         $unsavedEvents = [
             ['type' => 'incremental', 'event_name' => 'first_incremental_events'],

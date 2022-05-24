@@ -124,14 +124,11 @@ class ExperimentEvents extends Module implements DependsOnModule
         ];
     }
 
-    public function runExperiments(\ApiTester $I, $token, $experimentAlias, $users)
+    public function runExperiments(\ApiTester $I, string $token, string $experimentAlias, array $users)
     {   
         $branchesId = [];
 
-        for ($i = 0, $n = 0; $i < 190; $i++, $n++) {
-            if($n === 4) {
-                $n = 0;
-            } 
+        foreach (range(0, count($users) - 1) as $i) {
 
             $I->haveHttpHeader('Content-Type', 'application/json');
             $I->haveHttpHeader('Accept', 'application/json');
@@ -142,7 +139,7 @@ class ExperimentEvents extends Module implements DependsOnModule
                 'data' => [
                     'type' => 'experiment-run',
                     'attributes' => [
-                        'userSignature' => $users[$n]
+                        'userSignature' => $users[$i]
                     ],
                     'relationships' => [
                         'experiment' => [
