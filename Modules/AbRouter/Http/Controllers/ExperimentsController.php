@@ -95,7 +95,6 @@ class ExperimentsController extends Controller
                     ->newQuery()
                     ->where('owner_id', $userId)
                     ->get()
-                    ->all()
             )
         ))->addMeta([
             'token' => (new Token())->newQuery()->where('user_id', $authDecorator->get()->getId())->first()->id,
