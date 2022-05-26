@@ -9,10 +9,10 @@ class EventCest
    public function createEvents(ApiTester $I)
    {
        $user = $I->haveUser($I);
+       $events = $I->haveUserEvents();
+       $savedEvents = $I->saveUserEvents($user['id'], $events);
 
-       foreach(range(0, 9) as $i) {
-           $events = $I->haveEvents($user['id']);
-
+       foreach($savedEvents as $event) {
            $I->haveHttpHeader('Content-Type', 'application/json');
            $I->haveHttpHeader('Accept', 'application/json');
            $I->amBearerAuthenticated($user['token']);
@@ -21,7 +21,7 @@ class EventCest
            $userId = uniqid();
            $tag = 'tags_' . uniqid();
            $referrer = '';
-           $ip = mt_rand( 1 , 255 ). '.' . mt_rand( 1 , 255 ). '.' . mt_rand( 1 , 255 ). '.' . mt_rand( 1 , 255 ) ;;
+           $ip = $I->getRandomIpAddress();
            $meta = [];
            $date = (new \DateTime())->format('Y-m-d');
 
@@ -31,8 +31,7 @@ class EventCest
                    'attributes' => [
                        'temporary_user_id' => $temporaryUserId,
                        'user_id' => $userId,
-                       'event' => $events[$i]['event'],
-                       'value' => '',
+                       'event' => $event['event_name'],
                        'tag' => $tag,
                        'referrer' => $referrer,
                        'ip' => $ip,
@@ -59,19 +58,18 @@ class EventCest
                    'id' => $response['data']['id'],
                    'type' => 'events',
                    'attributes' => [
-                       'user_id' => $response['data']['attributes']['user_id'],
-                       'event' => $response['data']['attributes']['event'],
-                       'value' => '',
-                       'tag' => $response['data']['attributes']['tag'],
-                       'referrer' => $response['data']['attributes']['referrer'],
-                       'ip' => $response['data']['attributes']['ip'],
+                       'user_id' => $userId,
+                       'event' => $event['event_name'],
+                       'tag' => $tag,
+                       'referrer' => $referrer,
+                       'ip' => $ip,
                        'meta' => $response['data']['attributes']['meta'],
                        'created_at' => $response['data']['attributes']['created_at']
                    ],
                    'relationships' => [
                        'owner' => [
                            'data' => [
-                               'id' => $response['data']['relationships']['owner']['data']['id'],
+                               'id' => $user['encodeId'],
                                'type' => 'users'
                            ]
                        ]
@@ -82,7 +80,7 @@ class EventCest
            $recordEvents = [
                'temporary_user_id' => $temporaryUserId,
                'user_id' => $userId,
-               'event' => $events[$i]['event'],
+               'event' => $event['event_name'],
                'value' => '',
                'tag' => $tag,
                'referrer' => $referrer,

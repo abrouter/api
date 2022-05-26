@@ -43,7 +43,8 @@ class EventCreator
             'referrer' => $eventDTO->getReferrer(),
             'meta' => json_encode($this->getMetadata($eventDTO)),
             'created_at' => $eventDTO->getCreatedAt() ?? (new \DateTime())->format('Y-m-d'),
-            'country_code' => strtoupper($this->getCountryCode($eventDTO)),
+            'country_code' => 'ua'
+//            'country_code' => strtoupper($this->getCountryCode($eventDTO)),
         ]);
 
         $saved = $event->save();

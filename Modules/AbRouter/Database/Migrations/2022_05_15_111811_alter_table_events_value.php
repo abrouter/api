@@ -14,7 +14,7 @@ class AlterTableEventsValue extends Migration
     public function up()
     {
         Schema::table('events', function (Blueprint $table) {
-            $table->string('value', 50)->after('event');
+            $table->string('value', 50)->nullable()->after('event');
         });
     }
 

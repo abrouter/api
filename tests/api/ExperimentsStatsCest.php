@@ -11,12 +11,13 @@ class ExperimentsStatsCest
         $user = $I->haveUser($I);
         $experiment = $I->haveExperimentWithThreeBranch($user['id']);
 
-        $events = $I->haveUserEvents($user['id']);
+        $events = $I->haveUserEvents();
 
+        $I->saveUserEvents($user['id'], $events);
 
         $users = $I->createEventsWithRelatedUserAndUserForExperimentStats($user['id'], $events);
 
-        $runExperiment = $I->runExperiments($I, $user['token'], $experiment['alias'], $users);
+        $I->runExperiments($I, $user['token'], $experiment['alias'], $users);
 
         foreach ($runExperiment as $branchId) {
             $I->haveHttpHeader('Content-Type', 'application/json');
@@ -62,7 +63,9 @@ class ExperimentsStatsCest
     {
         $user = $I->haveUser($I);
         $experiment = $I->haveExperimentWithTwoBranch($user['id']);
-        $events = $I->haveUserEvents($user['id']);
+        $events = $I->haveUserEvents();
+
+        $I->saveUserEvents($user['id'], $events);
 
         $users = $I->createEventsWithRelatedUserAndUserForExperimentStats($user['id'], $events);
 
@@ -111,7 +114,9 @@ class ExperimentsStatsCest
     {
         $user = $I->haveUser($I);
         $experiment = $I->haveExperimentWithThreeBranch($user['id']);
-        $events = $I->haveUserEvents($user['id']);
+        $events = $I->haveUserEvents();
+
+        $I->saveUserEvents($user['id'], $events);;
 
         $users = $I->createEventsWithRelatedUserAndUserForExperimentStats($user['id'], $events);
 
@@ -168,11 +173,13 @@ class ExperimentsStatsCest
         }
     }
 
-    public function showExperimentStatsByExperimentIdWhithTwoBranch(ApiTester $I)
+    public function showExperimentStatsByExperimentIdWithTwoBranch(ApiTester $I)
     {
         $user = $I->haveUser($I);
         $experiment = $I->haveExperimentWithTwoBranch($user['id']);
-        $events = $I->haveUserEvents($user['id']);
+        $events = $I->haveUserEvents();
+
+        $I->saveUserEvents($user['id'], $events);
 
         $users = $I->createEventsWithRelatedUserAndUserForExperimentStats($user['id'], $events);
 
@@ -229,11 +236,13 @@ class ExperimentsStatsCest
         }
     }
 
-    public function showExperimentStatsByAliasWhithThreeBranch(ApiTester $I)
+    public function showExperimentStatsByAliasWithThreeBranch(ApiTester $I)
     {
         $user = $I->haveUser($I);
         $experiment = $I->haveExperimentWithThreeBranch($user['id']);
-        $events = $I->haveUserEvents($user['id']);
+        $events = $I->haveUserEvents();
+
+        $I->saveUserEvents($user['id'], $events);
 
         $users = $I->createEventsWithRelatedUserAndUserForExperimentStats($user['id'], $events);
 
@@ -290,11 +299,13 @@ class ExperimentsStatsCest
         }
     }
 
-    public function showExperimentStatsByAliasWhithTwoBranch(ApiTester $I)
+    public function showExperimentStatsByAliasWithTwoBranch(ApiTester $I)
     {
         $user = $I->haveUser($I);
         $experiment = $I->haveExperimentWithTwoBranch($user['id']);
-        $events = $I->haveUserEvents($user['id']);
+        $events = $I->haveUserEvents();
+
+        $I->saveUserEvents($user['id'], $events);
 
         $users = $I->createEventsWithRelatedUserAndUserForExperimentStats($user['id'], $events);
 
@@ -339,7 +350,7 @@ class ExperimentsStatsCest
         }
     }
 
-    public function showRevenueExperimentStatsForTenIncrementalEventsByExperimentIdWhithTwoBranch(ApiTester $I)
+    public function showRevenueExperimentStatsForTenIncrementalEventsByExperimentIdWithTwoBranch(ApiTester $I)
     {
         $unsavedEvents = [
             ['type' => 'incremental', 'event_name' => 'first_incremental_events'],
@@ -349,7 +360,7 @@ class ExperimentsStatsCest
 
         $user = $I->haveUser($I);
         $experiment = $I->haveExperimentWithTwoBranch($user['id']);
-        $events = $I->haveRevenueEvents($user['id'], $unsavedEvents);
+        $events = $I->haveSummarizationEvents($user['id'], $unsavedEvents);
 
         $users = $I->createRevenueEventsWithRelatedUserAndUser(
             $user['id'],
@@ -370,29 +381,35 @@ class ExperimentsStatsCest
 
         $I->seeResponseCodeIsSuccessful(201);
 
-        foreach($response['eventCountersWithDate'] as $branch => $event) {
-            $I->seeResponseContainsJson([
-                'experiment' => [
-                    'id' => $response['experiment']['id'],
-                    'name' => $response['experiment']['name'],
-                    'is_enabled' => $response['experiment']['is_enabled'],
-                    'days_running' => $response['experiment']['days_running'],
-                    'total_users' => $response['experiment']['total_users']
+        $I->seeResponseContainsJson([
+            'experiment' => [
+                'id' => $response['experiment']['id'],
+                'name' => $experiment['alias'],
+                'is_enabled' => true,
+                'days_running' => 0,
+                'total_users' => 10
+            ],
+            'percentage' => [
+                'branch_first' => [
+                    'first_incremental_events' => 25,
+                    'second_incremental_events' => 25
                 ],
-                'percentage' => [
-                    $branch => [
-                        'first_incremental_events' => $response['percentage'][$branch]['first_incremental_events'],
-                        'second_incremental_events' => $response['percentage'][$branch]['second_incremental_events']
-                    ]
-                ],
-                'counters' => [
-                    $branch => [
-                        'first_incremental_events' => $response['counters'][$branch]['first_incremental_events'],
-                        'second_incremental_events' => $response['counters'][$branch]['second_incremental_events']
-                    ]
+                'branch_second' => [
+                    'first_incremental_events' => 25,
+                    'second_incremental_events' => 25
                 ]
-            ]);
-        }
+            ],
+            'counters' => [
+                'branch_first' => [
+                    'first_incremental_events' => 2,
+                    'second_incremental_events' => 2
+                ],
+                'branch_second' => [
+                    'first_incremental_events' => 3,
+                    'second_incremental_events' => 3
+                ]
+            ]
+        ]);
     }
 
     public function showRevenueExperimentStatsForTwentyIncrementalEventsByExperimentIdWithTwoBranch(ApiTester $I)
@@ -405,7 +422,7 @@ class ExperimentsStatsCest
 
         $user = $I->haveUser($I);
         $experiment = $I->haveExperimentWithTwoBranch($user['id']);
-        $events = $I->haveRevenueEvents($user['id'], $unsavedEvents);
+        $events = $I->haveSummarizationEvents($user['id'], $unsavedEvents);
 
         $users = $I->createRevenueEventsWithRelatedUserAndUser(
             $user['id'],
@@ -414,7 +431,8 @@ class ExperimentsStatsCest
             'incremental'
         );
 
-        $I->runExperiments($I, $user['token'], $experiment['alias'], $users);
+        $resultExperiment = $I->runExperiments($I, $user['token'], $experiment['alias'], $users);
+        var_dump($resultExperiment);
 
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->haveHttpHeader('Accept', 'application/json');
@@ -426,32 +444,38 @@ class ExperimentsStatsCest
 
         $I->seeResponseCodeIsSuccessful(200);
 
-        foreach($response['eventCountersWithDate'] as $branch => $event) {
-            $I->seeResponseContainsJson([
-                'experiment' => [
-                    'id' => $response['experiment']['id'],
-                    'name' => $response['experiment']['name'],
-                    'is_enabled' => $response['experiment']['is_enabled'],
-                    'days_running' => $response['experiment']['days_running'],
-                    'total_users' => $response['experiment']['total_users']
+        $I->seeResponseContainsJson([
+            'experiment' => [
+                'id' => $response['experiment']['id'],
+                'name' => $experiment['alias'],
+                'is_enabled' => true,
+                'days_running' => 0,
+                'total_users' => 20
+            ],
+            'percentage' => [
+                'branch_first' => [
+                    'first_incremental_events' => 50,
+                    'second_incremental_events' => 50
                 ],
-                'percentage' => [
-                    $branch => [
-                        'first_incremental_events' => $response['percentage'][$branch]['first_incremental_events'],
-                        'second_incremental_events' => $response['percentage'][$branch]['second_incremental_events']
-                    ]
-                ],
-                'counters' => [
-                    $branch => [
-                        'first_incremental_events' => $response['counters'][$branch]['first_incremental_events'],
-                        'second_incremental_events' => $response['counters'][$branch]['second_incremental_events']
-                    ]
+                'branch_second' => [
+                    'first_incremental_events' => 50,
+                    'second_incremental_events' => 50
                 ]
-            ]);
-        }
+            ],
+            'counters' => [
+                'branch_first' => [
+                    'first_incremental_events' => 5,
+                    'second_incremental_events' => 5
+                ],
+                'branch_second' => [
+                    'first_incremental_events' => 5,
+                    'second_incremental_events' => 5
+                ]
+            ]
+        ]);
     }
 
-    public function showRevenueExperimentStatsForFourHundredSummarizableEventsByExperimentIdWhithTwoBranch(ApiTester $I)
+    public function showRevenueExperimentStatsForFourHundredSummarizableEventsByExperimentIdWithTwoBranch(ApiTester $I)
     {
         $unsavedEvents = [
             ['type' => 'incremental', 'event_name' => 'first_incremental_events'],
@@ -461,7 +485,7 @@ class ExperimentsStatsCest
 
         $user = $I->haveUser($I);
         $experiment = $I->haveExperimentWithTwoBranch($user['id']);
-        $events = $I->haveRevenueEvents($user['id'], $unsavedEvents);
+        $events = $I->haveSummarizationEvents($user['id'], $unsavedEvents);
 
         $users = $I->createRevenueEventsWithRelatedUserAndUser(
             $user['id'],
@@ -486,21 +510,30 @@ class ExperimentsStatsCest
             $I->seeResponseContainsJson([
                 'experiment' => [
                     'id' => $response['experiment']['id'],
-                    'name' => $response['experiment']['name'],
-                    'is_enabled' => $response['experiment']['is_enabled'],
-                    'days_running' => $response['experiment']['days_running'],
-                    'total_users' => $response['experiment']['total_users']
+                    'name' => $experiment['alias'],
+                    'is_enabled' => true,
+                    'days_running' => 0,
+                    'total_users' => 400
                 ],
                 'percentage' => [
-                    $branch => [
-                        'summarizable_events' => $response['percentage'][$branch]['summarizable_events'],
+                    'branch_first' => [
+                        'summarizable_events' => 100,
+                    ],
+                    'branch_second' => [
+                        'summarizable_events' => 100,
                     ]
                 ],
                 'counters' => [
-                    $branch => [
-                        'summarizable_events' => $response['counters'][$branch]['summarizable_events'],
+                    'branch_first' => [
+                        'summarizable_events' => 200,
                         'summarization' => [
-                            'summarizable_events' => $response['counters'][$branch]['summarization']['summarizable_events']
+                            'summarizable_events' => 200
+                        ]
+                    ],
+                    'branch_second' => [
+                        'summarizable_events' => 200,
+                        'summarization' => [
+                            'summarizable_events' => 200
                         ]
                     ]
                 ]
@@ -508,7 +541,7 @@ class ExperimentsStatsCest
         }
     }
 
-    public function showRevenueExperimentStatsForHundredSummarizableEventsByExperimentIdWhithTwoBranchByOneUser(ApiTester $I)
+    public function showRevenueExperimentStatsForHundredSummarizableEventsByExperimentIdWithTwoBranchByOneUser(ApiTester $I)
     {
         $unsavedEvents = [
             ['type' => 'incremental', 'event_name' => 'first_incremental_events'],
@@ -518,7 +551,7 @@ class ExperimentsStatsCest
 
         $user = $I->haveUser($I);
         $experiment = $I->haveExperimentWithTwoBranch($user['id']);
-        $events = $I->haveRevenueEvents($user['id'], $unsavedEvents);
+        $events = $I->haveSummarizationEvents($user['id'], $unsavedEvents);
 
         $users = $I->createRevenueEventsWithRelatedUserAndUser(
             $user['id'],
@@ -541,33 +574,40 @@ class ExperimentsStatsCest
 
         $I->seeResponseCodeIsSuccessful(201);
 
-        foreach($response['eventCountersWithDate'] as $branch => $event) {
-            $I->seeResponseContainsJson([
-                'experiment' => [
-                    'id' => $response['experiment']['id'],
-                    'name' => $response['experiment']['name'],
-                    'is_enabled' => $response['experiment']['is_enabled'],
-                    'days_running' => $response['experiment']['days_running'],
-                    'total_users' => $response['experiment']['total_users']
+        $I->seeResponseContainsJson([
+            'experiment' => [
+                'id' => $response['experiment']['id'],
+                'name' => $experiment['alias'],
+                'is_enabled' => true,
+                'days_running' => 0,
+                'total_users' => 1
+            ],
+            'percentage' => [
+                'branch_first' => [
+                    'summarizable_events' => 100,
                 ],
-                'percentage' => [
-                    $branch => [
-                        'summarizable_events' => $response['percentage'][$branch]['summarizable_events'],
+                'branch_second' => [
+                    'summarizable_events' => 100,
+                ]
+            ],
+            'counters' => [
+                'branch_first' => [
+                    'summarizable_events' => 1,
+                    'summarization' => [
+                        'summarizable_events' => 1
                     ]
                 ],
-                'counters' => [
-                    $branch => [
-                        'summarizable_events' => $response['counters'][$branch]['summarizable_events'],
-                        'summarization' => [
-                            'summarizable_events' => $response['counters'][$branch]['summarization']['summarizable_events']
-                        ]
+                'branch_second' => [
+                    'summarizable_events' => 1,
+                    'summarization' => [
+                        'summarizable_events' => 1
                     ]
                 ]
-            ]);
-        }
+            ]
+        ]);
     }
 
-    public function showRevenueExperimentStatsForTwoHundredSummarizableEventsByExperimentIdWhithTwoBranchByOneUser(ApiTester $I)
+    public function showRevenueExperimentStatsForTwoHundredSummarizableEventsByExperimentIdWithTwoBranchByOneUser(ApiTester $I)
     {
         $unsavedEvents = [
             ['type' => 'incremental', 'event_name' => 'first_incremental_events'],
@@ -577,12 +617,12 @@ class ExperimentsStatsCest
 
         $user = $I->haveUser($I);
         $experiment = $I->haveExperimentWithTwoBranch($user['id']);
-        $events = $I->haveRevenueEvents($user['id'], $unsavedEvents);
+        $events = $I->haveSummarizationEvents($user['id'], $unsavedEvents);
 
         $users = $I->createRevenueEventsWithRelatedUserAndUser(
             $user['id'],
             $events,
-            100,
+            200,
             'summarizable',
             'user_' . uniqid(),
             'temporary_user_' . uniqid()
@@ -604,21 +644,30 @@ class ExperimentsStatsCest
             $I->seeResponseContainsJson([
                 'experiment' => [
                     'id' => $response['experiment']['id'],
-                    'name' => $response['experiment']['name'],
-                    'is_enabled' => $response['experiment']['is_enabled'],
-                    'days_running' => $response['experiment']['days_running'],
-                    'total_users' => $response['experiment']['total_users']
+                    'name' => $experiment['alias'],
+                    'is_enabled' => true,
+                    'days_running' => 0,
+                    'total_users' => 1
                 ],
                 'percentage' => [
-                    $branch => [
-                        'summarizable_events' => $response['percentage'][$branch]['summarizable_events'],
+                    'branch_first' => [
+                        'summarizable_events' => 100,
+                    ],
+                    'branch_second' => [
+                        'summarizable_events' => 100,
                     ]
                 ],
                 'counters' => [
-                    $branch => [
-                        'summarizable_events' => $response['counters'][$branch]['summarizable_events'],
+                    'branch_first' => [
+                        'summarizable_events' => 1,
                         'summarization' => [
-                            'summarizable_events' => $response['counters'][$branch]['summarization']['summarizable_events']
+                            'summarizable_events' => 1
+                        ]
+                    ],
+                    'branch_second' => [
+                        'summarizable_events' => 1,
+                        'summarization' => [
+                            'summarizable_events' => 1
                         ]
                     ]
                 ]

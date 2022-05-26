@@ -84,9 +84,9 @@ class SimpleStatsService
             ->statsFactory
             ->getStatsMethod('event')
             ->getCounters(
-            $allUserEvents,
-            $uniqUsers,
-            $eventsNames
+                $allUserEvents,
+                $uniqUsers,
+                $eventsNames
         );
 
         $eventCountersWithDate = $this
@@ -103,9 +103,9 @@ class SimpleStatsService
             ->statsFactory
             ->getStatsMethod('event')
             ->getPercentages(
-            $eventsNames,
-            $eventCounters,
-            $uniqUsersCount
+                $eventsNames,
+                $eventCounters,
+                $uniqUsersCount
         );
 
         $referrerCounters = $this
@@ -122,9 +122,9 @@ class SimpleStatsService
             ->statsFactory
             ->getStatsMethod('referrer')
             ->getPercentages(
-            $referrers,
-            $referrerCounters,
-            $uniqUsersCount
+                $referrers,
+                $referrerCounters,
+                $uniqUsersCount
         );
 
         arsort($eventPercentages);

@@ -103,28 +103,28 @@ class ExperimentStatsService extends SimpleStatsService
                 ->statsFactory
                 ->getStatsMethod('event')
                 ->getCounters(
-                $allUserEvents,
-                $jointUser,
-                $eventsNames
+                    $allUserEvents,
+                    $jointUser,
+                    $eventsNames
             );
 
             $eventCountersWithDate[$key] = $this
                 ->statsFactory
                 ->getStatsMethod('event')
                 ->getCounters(
-                $allUserEvents,
-                $jointUser,
-                [],
-                true
+                    $allUserEvents,
+                    $jointUser,
+                    [],
+                    true
             );
             
             $eventPercentages[$key] = $this
                 ->statsFactory
                 ->getStatsMethod('event')
                 ->getPercentages(
-                $eventsNames,
-                $eventCounters[$key],
-                count($jointUser)
+                    $eventsNames,
+                    $eventCounters[$key],
+                    count($jointUser)
             );
         }
 

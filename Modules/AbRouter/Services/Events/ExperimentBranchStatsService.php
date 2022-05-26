@@ -19,7 +19,7 @@ class ExperimentBranchStatsService extends SimpleStatsService
         EventsRepository               $eventsRepository,
         RelatedUserRepository          $relatedUserRepository,
         ExperimentBranchUserRepository $experimentBranchUserRepository,
-        StatsFactory                    $statsFactory
+        StatsFactory                   $statsFactory
     )
     {
         parent::__construct(
@@ -63,18 +63,18 @@ class ExperimentBranchStatsService extends SimpleStatsService
             ->statsFactory
             ->getStatsMethod('event')
             ->getCounters(
-            $allUserEvents,
-            $jointUsers,
-            []
+                $allUserEvents,
+                $jointUsers,
+                []
         );
 
         $eventPercentages = $this
             ->statsFactory
             ->getStatsMethod('event')
             ->getPercentages(
-            $eventsNames,
-            $eventCounters,
-            $uniqUsersCount
+                $eventsNames,
+                $eventCounters,
+                $uniqUsersCount
         );
 
         return new StatsResultsDTO(

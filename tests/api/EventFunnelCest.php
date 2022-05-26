@@ -9,16 +9,15 @@ class EventFunnelCest
     public function showStatsByUserId(ApiTester $I)
     {
         $user = $I->haveUser($I);
-        $events = $I->haveUserEvents($user['id']);
+        $events = $I->haveUserEvents();
 
+        $I->saveUserEvents($user['id'], $events);
 
         $I->createEventsWithUserId($user['id'], $events);
 
         $I->amBearerAuthenticated($user['token']);
 
         $I->sendPost('/event/funnel');
-
-        $response = json_decode($I->grabResponse(), true);
 
         $I->seeResponseCodeIsSuccessful(201);
         $I->seeResponseContainsJson([
@@ -45,18 +44,6 @@ class EventFunnelCest
                 'thankyou_page' => 20,
                 'leave' => 20,
                 'sign up' => 20,
-                'summarization' => [
-                    'visit_mainpage' => $response['counters']['summarization']['visit_mainpage'],
-                    'open_contact_form' => $response['counters']['summarization']['open_contact_form'],
-                    'visited_book_call' => $response['counters']['summarization']['visited_book_call'],
-                    'fill_form_later' => $response['counters']['summarization']['fill_form_later'],
-                    'form_filler_complete' => $response['counters']['summarization']['form_filler_complete'],
-                    'visited_nutrionists_page' => $response['counters']['summarization']['visited_nutrionists_page'],
-                    'skip_call_booking' => $response['counters']['summarization']['skip_call_booking'],
-                    'thankyou_page' => $response['counters']['summarization']['thankyou_page'],
-                    'leave' => $response['counters']['summarization']['leave'],
-                    'sign up' => $response['counters']['summarization']['sign up'],
-                ]
             ]
         ]);
     }
@@ -64,17 +51,15 @@ class EventFunnelCest
     public function showStatsByTemporaryUserId(ApiTester $I)
     {
         $user = $I->haveUser($I);
-        $events = $I->haveUserEvents($user['id']);
+        $events = $I->haveUserEvents();
 
+        $I->saveUserEvents($user['id'], $events);
 
         $I->createEventsWithTemporaryUserId($user['id'], $events);
 
         $I->amBearerAuthenticated($user['token']);
 
         $I->sendPost('/event/funnel');
-
-        $response = json_decode($I->grabResponse(), true);
-        //0 percentages, counters absent
 
         $I->seeResponseCodeIsSuccessful(201);
         $I->seeResponseContainsJson([
@@ -101,18 +86,6 @@ class EventFunnelCest
                 'thankyou_page' => 10,
                 'leave' => 10,
                 'sign up' => 10,
-                'summarization' => [
-                    'visit_mainpage' => $response['counters']['summarization']['visit_mainpage'],
-                    'open_contact_form' => $response['counters']['summarization']['open_contact_form'],
-                    'visited_book_call' => $response['counters']['summarization']['visited_book_call'],
-                    'fill_form_later' => $response['counters']['summarization']['fill_form_later'],
-                    'form_filler_complete' => $response['counters']['summarization']['form_filler_complete'],
-                    'visited_nutrionists_page' => $response['counters']['summarization']['visited_nutrionists_page'],
-                    'skip_call_booking' => $response['counters']['summarization']['skip_call_booking'],
-                    'thankyou_page' => $response['counters']['summarization']['thankyou_page'],
-                    'leave' => $response['counters']['summarization']['leave'],
-                    'sign up' => $response['counters']['summarization']['sign up'],
-                ]
             ]
         ]);
     }
@@ -120,15 +93,15 @@ class EventFunnelCest
     public function showStatsTemporaryUsersAndUsers(ApiTester $I)
     {
         $user = $I->haveUser($I);
-        $events = $I->haveUserEvents($user['id']);
+        $events = $I->haveUserEvents();
+
+        $I->saveUserEvents($user['id'], $events);
 
         $I->createEventsWithTemporaryUserAndUser($user['id'], $events);
 
         $I->amBearerAuthenticated($user['token']);
 
         $I->sendPost('/event/funnel');
-
-        $response = json_decode($I->grabResponse(), true);
 
         $I->seeResponseCodeIsSuccessful(201);
         $I->seeResponseContainsJson([
@@ -155,18 +128,6 @@ class EventFunnelCest
                 'thankyou_page' => 100,
                 'leave' => 100,
                 'sign up' => 100,
-                'summarization' => [
-                    'visit_mainpage' => $response['counters']['summarization']['visit_mainpage'],
-                    'open_contact_form' => $response['counters']['summarization']['open_contact_form'],
-                    'visited_book_call' => $response['counters']['summarization']['visited_book_call'],
-                    'fill_form_later' => $response['counters']['summarization']['fill_form_later'],
-                    'form_filler_complete' => $response['counters']['summarization']['form_filler_complete'],
-                    'visited_nutrionists_page' => $response['counters']['summarization']['visited_nutrionists_page'],
-                    'skip_call_booking' => $response['counters']['summarization']['skip_call_booking'],
-                    'thankyou_page' => $response['counters']['summarization']['thankyou_page'],
-                    'leave' => $response['counters']['summarization']['leave'],
-                    'sign up' => $response['counters']['summarization']['sign up'],
-                ]
             ]
         ]);
     }
@@ -174,15 +135,15 @@ class EventFunnelCest
     public function showStatsRelatedUsersAndUsers(ApiTester $I)
     {
         $user = $I->haveUser($I);
-        $events = $I->haveUserEvents($user['id']);
+        $events = $I->haveUserEvents();
+
+        $I->saveUserEvents($user['id'], $events);
 
         $I->createEventsWithRelatedUserAndUser($user['id'], $events);
 
         $I->amBearerAuthenticated($user['token']);
 
         $I->sendPost('/event/funnel');
-
-        $response = json_decode($I->grabResponse(), true);
 
         $I->seeResponseCodeIsSuccessful(201);
         $I->seeResponseContainsJson([
@@ -209,50 +170,6 @@ class EventFunnelCest
                 'thankyou_page' => 100,
                 'leave' => 100,
                 'sign up' => 100,
-                'summarization' => [
-                    'visit_mainpage' => $response['counters']['summarization']['visit_mainpage'],
-                    'open_contact_form' => $response['counters']['summarization']['open_contact_form'],
-                    'visited_book_call' => $response['counters']['summarization']['visited_book_call'],
-                    'fill_form_later' => $response['counters']['summarization']['fill_form_later'],
-                    'form_filler_complete' => $response['counters']['summarization']['form_filler_complete'],
-                    'visited_nutrionists_page' => $response['counters']['summarization']['visited_nutrionists_page'],
-                    'skip_call_booking' => $response['counters']['summarization']['skip_call_booking'],
-                    'thankyou_page' => $response['counters']['summarization']['thankyou_page'],
-                    'leave' => $response['counters']['summarization']['leave'],
-                    'sign up' => $response['counters']['summarization']['sign up'],
-                ]
-            ]
-        ]);
-    }
-
-    public function showStatsRevenueForTenIncrementalEvents(ApiTester $I)
-    {
-        $unsavedEvents = [
-            ['type' => 'incremental', 'event_name' => 'first_incremental_events'],
-            ['type' => 'incremental', 'event_name' => 'second_incremental_events'],
-            ['type' => 'summarizable', 'event_name' => 'summarizable_events']
-        ];
-
-        $user = $I->haveUser($I);
-        $events = $I->haveRevenueEvents($user['id'], $unsavedEvents);
-
-        $I->createRevenueEventsWithRelatedUserAndUser($user['id'], $events, 10, 'incremental');
-
-        $I->amBearerAuthenticated($user['token']);
-
-        $I->sendPost('/event/funnel');
-
-        $response = json_decode($I->grabResponse(), true);
-
-        $I->seeResponseCodeIsSuccessful(200);
-        $I->seeResponseContainsJson([
-            'percentage' => [
-                'first_incremental_events' => 50,
-                'second_incremental_events' => 50,
-            ],
-            'counters' => [
-                'first_incremental_events' => 5,
-                'second_incremental_events' => 5,
             ]
         ]);
     }
@@ -266,15 +183,13 @@ class EventFunnelCest
         ];
 
         $user = $I->haveUser($I);
-        $events = $I->haveRevenueEvents($user['id'], $unsavedEvents);
+        $events = $I->haveSummarizationEvents($user['id'], $unsavedEvents);
 
         $I->createRevenueEventsWithRelatedUserAndUser($user['id'], $events, 20, 'incremental');
 
         $I->amBearerAuthenticated($user['token']);
 
         $I->sendPost('/event/funnel');
-
-        $response = json_decode($I->grabResponse(), true);
 
         $I->seeResponseCodeIsSuccessful(200);
         $I->seeResponseContainsJson([
@@ -289,7 +204,7 @@ class EventFunnelCest
         ]);
     }
 
-    public function showStatsRevenueForHundredSummarizableEvents(ApiTester $I)
+    public function showStatsRevenueForHundredSummarizationEvents(ApiTester $I)
     {
         $unsavedEvents = [
             ['type' => 'incremental', 'event_name' => 'first_incremental_events'],
@@ -298,7 +213,7 @@ class EventFunnelCest
         ];
 
         $user = $I->haveUser($I);
-        $events = $I->haveRevenueEvents($user['id'], $unsavedEvents);
+        $events = $I->haveSummarizationEvents($user['id'], $unsavedEvents);
 
         $I->createRevenueEventsWithRelatedUserAndUser($user['id'], $events, 100, 'summarizable');
 
@@ -316,13 +231,13 @@ class EventFunnelCest
             'counters' => [
                 'summarizable_events' => 100,
                 'summarization' => [
-                    'summarizable_events' => $response['counters']['summarization']['summarizable_events']
+                    'summarizable_events' => 100
                 ]
             ]
         ]);
     }
 
-    public function showStatsRevenueForFourHundredSummarizableEvents(ApiTester $I)
+    public function showStatsRevenueForFourHundredSummarizationEvents(ApiTester $I)
     {
         $unsavedEvents = [
             ['type' => 'incremental', 'event_name' => 'first_incremental_events'],
@@ -331,7 +246,7 @@ class EventFunnelCest
         ];
 
         $user = $I->haveUser($I);
-        $events = $I->haveRevenueEvents($user['id'], $unsavedEvents);
+        $events = $I->haveSummarizationEvents($user['id'], $unsavedEvents);
 
         $I->createRevenueEventsWithRelatedUserAndUser(
             $user['id'],
@@ -354,13 +269,13 @@ class EventFunnelCest
             'counters' => [
                 'summarizable_events' => 400,
                 'summarization' => [
-                    'summarizable_events' => $response['counters']['summarization']['summarizable_events']
+                    'summarizable_events' => 400
                 ]
             ]
         ]);
     }
 
-    public function showStatsRevenueForHundredSummarizableEventsByOneUser(ApiTester $I)
+    public function showStatsRevenueForHundredSummarizationEventsByOneUser(ApiTester $I)
     {
         $unsavedEvents = [
             ['type' => 'incremental', 'event_name' => 'first_incremental_events'],
@@ -369,7 +284,7 @@ class EventFunnelCest
         ];
 
         $user = $I->haveUser($I);
-        $events = $I->haveRevenueEvents($user['id'], $unsavedEvents);
+        $events = $I->haveSummarizationEvents($user['id'], $unsavedEvents);
 
         $I->createRevenueEventsWithRelatedUserAndUser(
             $user['id'],
@@ -392,13 +307,13 @@ class EventFunnelCest
             'counters' => [
                 'summarizable_events' => 1,
                 'summarization' => [
-                    'summarizable_events' => 2
+                    'summarizable_events' => 1
                 ]
             ]
         ]);
     }
 
-    public function showStatsRevenueForTwoHundredSummarizableEventsByOneUser(ApiTester $I)
+    public function showStatsRevenueForTwoHundredSummarizationEventsByOneUser(ApiTester $I)
     {
         $unsavedEvents = [
             ['type' => 'incremental', 'event_name' => 'first_incremental_events'],
@@ -407,7 +322,7 @@ class EventFunnelCest
         ];
 
         $user = $I->haveUser($I);
-        $events = $I->haveRevenueEvents($user['id'], $unsavedEvents);
+        $events = $I->haveSummarizationEvents($user['id'], $unsavedEvents);
 
         $I->createRevenueEventsWithRelatedUserAndUser(
             $user['id'],
@@ -430,7 +345,7 @@ class EventFunnelCest
             'counters' => [
                 'summarizable_events' => 1,
                 'summarization' => [
-                    'summarizable_events' => 2
+                    'summarizable_events' => 1
                 ]
             ]
         ]);

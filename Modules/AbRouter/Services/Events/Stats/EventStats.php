@@ -12,15 +12,15 @@ class EventStats implements Stats
     /**
      * @param Collection $eventsList
      * @param array $uniqUsers
-     * @param array $eventsName
-     * @param bool $date
+     * @param array $eventsNames
+     * @param bool $enableDateCounter
      * @return array
      */
     public function getCounters(
         Collection $eventsList,
         array $uniqUsers,
-        array $eventsName,
-        bool $date = false
+        array $eventsNames,
+        bool $enableDateCounter = false
     ): array {
         $uniqUsers = array_flip($uniqUsers);
         $eventCounters = [];
@@ -78,7 +78,7 @@ class EventStats implements Stats
                 $userEventAdded[$userEventKey] = true;
             }
 
-            if ($date) {
+            if ($enableDateCounter) {
                 $convertDate = $event->created_at->format('Y-m-d');
 
                 if (!isset($eventCounters[$event->event][$convertDate])) {
@@ -94,13 +94,17 @@ class EventStats implements Stats
                 $eventCounters[$event->event] = 0;
             }
 
-            $eventType = !empty($eventsName) ? $eventsName[$event->event] : '';
+            $eventCounters[$event->event] ++;
+
+            $eventType = !empty($eventsNames) ? $eventsNames[$event->event] : '';
 
             if ($eventType === 'summarizable') {
                 if (!isset($eventCounters['summarization'][$event->event])) {
                     is_numeric($event->value) ?
                         $eventCounters['summarization'][$event->event] = $event->value
                         : $eventCounters['summarization'][$event->event] = 0;
+
+                    continue;
                 }
 
                 $eventCounters['summarization'][$event->event] += is_numeric($event->value) ?
@@ -108,7 +112,7 @@ class EventStats implements Stats
                     : 0;
             }
 
-            $eventCounters[$event->event] ++;
+
 
         }
 

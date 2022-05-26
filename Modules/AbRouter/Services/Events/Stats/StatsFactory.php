@@ -9,12 +9,12 @@ class StatsFactory
     public function getStatsMethod(string $action): Stats
     {
         switch ($action) {
-            case "event":
+            case 'event':
                 return new EventStats();
-            case "referrer":
+            case 'referrer':
                 return new ReferrerStats();
             default:
-                throw new \Exception("Unknown Stats Method");
+                throw new \Exception('Unknown Stats Method');
         }
     }
 }

@@ -30,13 +30,15 @@ class DisplayEventsCest
         $I->amBearerAuthenticated($user['token']);
 
         foreach($events as $event) {
+            $eventType = $type[mt_rand(0,1)];
+
             $I->sendPost('/user-events', [
                 'data' => [
                     'type' => 'display_user_events',
                     'attributes' => [
                         'id' => null,
                         'event_name' => $event,
-                        'event_type' => $type[mt_rand(0,1)]
+                        'event_type' => $eventType
                     ],
                     'relationships' => [
                         'user' => [
@@ -51,13 +53,11 @@ class DisplayEventsCest
     
             $response = json_decode($I->grabResponse(), true);
             $entry = $response['data'];
-            $eventName = $entry['attributes']['event_name'];
-            $eventType = $entry['attributes']['event_type'];
 
             $I->seeRecord(
                 'display_user_events',
                 [
-                    'event_name' => $eventName,
+                    'event_name' => $event,
                     'type' => $eventType,
                     'user_id' => $user['id']
                 ]);
@@ -68,7 +68,7 @@ class DisplayEventsCest
                     'id' => $entry['id'],
                     'type' => 'display_user_events',
                     'attributes' => [
-                        'event_name' => $eventName,
+                        'event_name' => $event,
                         'event_type' => $eventType
                     ],
                     'relationships' => [
@@ -88,31 +88,32 @@ class DisplayEventsCest
     {
         $user = $I->haveUser($I);
         $events = $I->haveUserEvents($user['id']);
+        $savedEvents = $I->saveUserEvents($user['id'], $events);
 
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->haveHttpHeader('Accept', 'application/json');
         $I->amBearerAuthenticated($user['token']);
 
         $I->sendGet('/user-events');
-
-        $response = json_decode($I->grabResponse(), true);
         
         $I->seeResponseCodeIsSuccessful(201);
         
-        foreach($events as $event) {
+        foreach($savedEvents as $event) {
             $I->seeResponseContainsJson([
                 'data' => [
-                    'id' => $event['id'],
-                    'type' => 'display_user_events',
-                    'attributes' => [
-                        'event_name' => $event['event_name'],
-                        'event_type' => 'summarizable'
-                    ],
-                    'relationships' => [
-                        'user_id' => [
-                            'data' => [
-                                'id' => $user['encodeId'],
-                                'type' => 'users'
+                    [
+                        'id' => $event['id'],
+                        'type' => 'display_user_events',
+                        'attributes' => [
+                            'event_name' => $event['event_name'],
+                            'event_type' => 'incremental'
+                        ],
+                        'relationships' => [
+                            'user_id' => [
+                                'data' => [
+                                    'id' => $user['encodeId'],
+                                    'type' => 'users'
+                                ]
                             ]
                         ]
                     ]
@@ -125,13 +126,14 @@ class DisplayEventsCest
     {
         $user = $I->haveUser($I);
         $events = $I->haveUserEvents($user['id']);
+        $savedEvents = $I->saveUserEvents($user['id'], $events);
         $n = 0;
 
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->haveHttpHeader('Accept', 'application/json');
         $I->amBearerAuthenticated($user['token']);
 
-        foreach($events as $event) {
+        foreach($savedEvents as $event) {
             $newEvent = 'event_' . $n . uniqid();
 
             $I->sendPatch('/user-events/' . $event['id'], [
@@ -177,13 +179,13 @@ class DisplayEventsCest
     {
         $user = $I->haveUser($I);
         $events = $I->haveUserEvents($user['id']);
+        $savedEvents = $I->saveUserEvents($user['id'], $events);
 
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->haveHttpHeader('Accept', 'application/json');
         $I->amBearerAuthenticated($user['token']);
 
-        foreach($events as $event) {
-
+        foreach($savedEvents as $event) {
             $I->sendDelete('/user-events/' . $event['id'], [
                 'data' => [
                     'type' => 'display_user_events',

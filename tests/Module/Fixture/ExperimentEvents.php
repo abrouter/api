@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Tests\Module\Fixture;
 
+use ApiTester;
 use Codeception\Module\Laravel;
 use Modules\Core\EntityId\EntityEncoder;
 use Codeception\Lib\Interfaces\DependsOnModule;
@@ -124,11 +125,11 @@ class ExperimentEvents extends Module implements DependsOnModule
         ];
     }
 
-    public function runExperiments(\ApiTester $I, string $token, string $experimentAlias, array $users)
-    {   
-        $branchesId = [];
+    public function runExperiments(ApiTester $I, string $token, string $experimentAlias, array $users)
+    {
+        $result = [];
 
-        foreach (range(0, count($users) - 1) as $i) {
+        foreach ($users as $userKey => $user) {
 
             $I->haveHttpHeader('Content-Type', 'application/json');
             $I->haveHttpHeader('Accept', 'application/json');
@@ -139,7 +140,7 @@ class ExperimentEvents extends Module implements DependsOnModule
                 'data' => [
                     'type' => 'experiment-run',
                     'attributes' => [
-                        'userSignature' => $users[$i]
+                        'userSignature' => $user
                     ],
                     'relationships' => [
                         'experiment' => [
@@ -155,15 +156,18 @@ class ExperimentEvents extends Module implements DependsOnModule
             $I->sendPost('/experiment/run', $payload);
 
             $response = json_decode($I->grabResponse(), true);
+            $branch = $response['included'][0]['attributes']['name'];
+            $userId = $response['data']['relationships']['experiment_user']['data']['id'];
 
             $I->seeResponseCodeIsSuccessful(201);
 
-            if(empty($branchesId[$response['included'][0]['id']])) {
-                $branchesId[$response['included'][0]['id']] = $response['included'][0]['id'];
-            }
+//            if(empty($branchesId[$response['included'][0]['id']])) {
+//                $branchesId[$response['included'][0]['id']] = $response['included'][0]['id'];
+//            }
+            $result[$branch][] = ['userId' => $userId];
         }
-
-        return $branchesId;
+//        return $branchesId;
+        return $result;
     }
 
     public function experimentsHaveUsers(
