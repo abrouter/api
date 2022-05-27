@@ -114,8 +114,7 @@ class SimpleStatsService
             ->getCounters(
                 $allUserEvents,
                 $uniqUsers,
-                collect([]),
-                false
+                collect([])
             );
 
         $referrerPercentage = $this

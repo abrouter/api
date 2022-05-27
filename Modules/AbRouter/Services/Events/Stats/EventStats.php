@@ -97,7 +97,7 @@ class EventStats implements Stats
 
             $eventCounters[$event->event] ++;
 
-            $eventType = !empty($allDisplayEvents)
+            $eventType = $allDisplayEvents->isNotEmpty()
                 ? $allDisplayEvents->reduce(
                     function (array $acc, DisplayUserEvent $displayUserEvent) use ($event) {
                         if ($displayUserEvent->event_name === $event->event) {
@@ -106,7 +106,7 @@ class EventStats implements Stats
                         }
                         return $acc;
                     }, [])
-                : '';
+                : ['type' => ''];
 
             if ($eventType['type'] === 'summarizable') {
                 if (!isset($eventCounters['summarization'][$event->event])) {
@@ -126,8 +126,17 @@ class EventStats implements Stats
         return $eventCounters;
     }
 
-    public function getPercentages(Collection $allDisplayEvents, array $eventCounters, int $uniqUsersCount): array
-    {
+    /**
+     * @param Collection $allDisplayEvents
+     * @param array $eventCounters
+     * @param int $uniqUsersCount
+     * @return array
+     */
+    public function getPercentages(
+        Collection $allDisplayEvents,
+        array $eventCounters,
+        int $uniqUsersCount
+    ): array {
         $eventPercentage = [];
         foreach ($allDisplayEvents as $displayEvent) {
             if (!isset($eventCounters[$displayEvent->event_name])) {

@@ -65,7 +65,7 @@ class ExperimentBranchStatsService extends SimpleStatsService
             ->getCounters(
                 $allUserEvents,
                 $jointUsers,
-                []
+                collect([])
         );
 
         $eventPercentages = $this

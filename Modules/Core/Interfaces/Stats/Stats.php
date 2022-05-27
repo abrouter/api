@@ -20,6 +20,12 @@ interface Stats
         bool $date = false
     ): array;
 
+    /**
+     * @param Collection $allDisplayEvents
+     * @param array $counters
+     * @param int $uniqUsersCount
+     * @return array
+     */
     public function getPercentages(
         Collection $allDisplayEvents,
         array $counters,

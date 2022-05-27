@@ -114,7 +114,7 @@ class ExperimentStatsService extends SimpleStatsService
                 ->getCounters(
                     $allUserEvents,
                     $jointUser,
-                    [],
+                    collect([]),
                     true
             );
             
