@@ -12,7 +12,7 @@ class ReferrerStats implements Stats
     public function getCounters(
         Collection $eventsList,
         array $uniqUsers,
-        array $eventsName,
+        Collection $allDisplayEvents,
         bool $date = false
     ): array {
         $uniqUsers = array_flip($uniqUsers);
@@ -83,7 +83,7 @@ class ReferrerStats implements Stats
                 $userEventAdded[$userEventKey] = true;
             }
 
-            if ($eventsName) {
+            if ($allDisplayEvents) {
                 $convertDate = $event->created_at->format('Y-m-d');
 
                 if (!isset($referrerCounters[$referrer][$convertDate])) {
@@ -105,7 +105,7 @@ class ReferrerStats implements Stats
         return $referrerCounters;
     }
 
-    public function getPercentages(array $referrers, array $referrerCounters, int $uniqUsersCount): array
+    public function getPercentages(Collection $referrers, array $referrerCounters, int $uniqUsersCount): array
     {
         $eventPercentage = [];
         foreach ($referrers as $referrer) {
@@ -120,6 +120,7 @@ class ReferrerStats implements Stats
                 $eventPercentage[$referrer] = 0;
                 continue;
             }
+            var_dump($referrerCounters);
             $eventPercentage[$referrer] = intval(($counter / $uniqUsersCount) * 100);
         }
 

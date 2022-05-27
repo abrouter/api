@@ -9,19 +9,19 @@ interface Stats
     /**
      * @param Collection $eventsList
      * @param array $uniqUsers
-     * @param array $eventsName
+     * @param Collection $allDisplayEvents
      * @param bool $date
      * @return array
      */
     public function getCounters(
         Collection $eventsList,
         array $uniqUsers,
-        array $eventsName,
+        Collection $allDisplayEvents,
         bool $date = false
     ): array;
 
     public function getPercentages(
-        array $events,
+        Collection $allDisplayEvents,
         array $counters,
         int $uniqUsersCount
     ): array;

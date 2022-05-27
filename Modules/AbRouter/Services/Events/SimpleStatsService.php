@@ -71,7 +71,7 @@ class SimpleStatsService
 
         $allRelatedUsers = $allUserEvents->pluck('relatedUsers')->flatten();
         
-        $eventsNames = $this->getDisplayEvents($statsQueryDTO->getOwnerId());
+        $allDisplayEvents = $this->getDisplayEvents($statsQueryDTO->getOwnerId());
         $referrers = $this->getReferrers($statsQueryDTO->getOwnerId());
         
         $uniqUsersIds = $this->getUniqUsersIds($allUserEvents);
@@ -86,7 +86,7 @@ class SimpleStatsService
             ->getCounters(
                 $allUserEvents,
                 $uniqUsers,
-                $eventsNames
+                $allDisplayEvents
         );
 
         $eventCountersWithDate = $this
@@ -95,7 +95,7 @@ class SimpleStatsService
             ->getCounters(
                 $allUserEvents,
                 $uniqUsers,
-                $eventsNames,
+                $allDisplayEvents,
                 true
             );
         
@@ -103,7 +103,7 @@ class SimpleStatsService
             ->statsFactory
             ->getStatsMethod('event')
             ->getPercentages(
-                $eventsNames,
+                $allDisplayEvents,
                 $eventCounters,
                 $uniqUsersCount
         );
@@ -114,7 +114,7 @@ class SimpleStatsService
             ->getCounters(
                 $allUserEvents,
                 $uniqUsers,
-                [],
+                collect([]),
                 false
             );
 
@@ -122,7 +122,7 @@ class SimpleStatsService
             ->statsFactory
             ->getStatsMethod('referrer')
             ->getPercentages(
-                $referrers,
+                collect($referrers),
                 $referrerCounters,
                 $uniqUsersCount
         );
@@ -153,15 +153,11 @@ class SimpleStatsService
         return array_flip($usersFlip);
     }
     
-    protected function getDisplayEvents(int $ownerId): array
+    protected function getDisplayEvents(int $ownerId): Collection
     {
         return $this
             ->eventsRepository
-            ->getEventsByUser($ownerId)
-            ->reduce(function (array $acc, DisplayUserEvent $displayUserEvent) {
-                $acc[$displayUserEvent->event_name] = $displayUserEvent->type;
-                return $acc;
-            }, []);
+            ->getEventsByUser($ownerId);
     }
 
     protected function getReferrers(int $ownerId): array

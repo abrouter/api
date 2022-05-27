@@ -3,6 +3,7 @@
 namespace Modules\AbRouter\Services\Events\Stats;
 
 use Illuminate\Support\Collection;
+use Modules\AbRouter\Models\CustomizationEvent\DisplayUserEvent;
 use Modules\AbRouter\Models\Events\Event;
 use Modules\AbRouter\Models\RelatedUsers\RelatedUser;
 use Modules\Core\Interfaces\Stats\Stats;
@@ -12,14 +13,14 @@ class EventStats implements Stats
     /**
      * @param Collection $eventsList
      * @param array $uniqUsers
-     * @param array $eventsNames
+     * @param Collection $allDisplayEvents
      * @param bool $enableDateCounter
      * @return array
      */
     public function getCounters(
         Collection $eventsList,
         array $uniqUsers,
-        array $eventsNames,
+        Collection $allDisplayEvents,
         bool $enableDateCounter = false
     ): array {
         $uniqUsers = array_flip($uniqUsers);
@@ -96,9 +97,18 @@ class EventStats implements Stats
 
             $eventCounters[$event->event] ++;
 
-            $eventType = !empty($eventsNames) ? $eventsNames[$event->event] : '';
+            $eventType = !empty($allDisplayEvents)
+                ? $allDisplayEvents->reduce(
+                    function (array $acc, DisplayUserEvent $displayUserEvent) use ($event) {
+                        if ($displayUserEvent->event_name === $event->event) {
+                           $acc['type'] = $displayUserEvent->type;
+                           return $acc;
+                        }
+                        return $acc;
+                    }, [])
+                : '';
 
-            if ($eventType === 'summarizable') {
+            if ($eventType['type'] === 'summarizable') {
                 if (!isset($eventCounters['summarization'][$event->event])) {
                     is_numeric($event->value) ?
                         $eventCounters['summarization'][$event->event] = $event->value
@@ -111,30 +121,27 @@ class EventStats implements Stats
                     $event->value
                     : 0;
             }
-
-
-
         }
 
         return $eventCounters;
     }
 
-    public function getPercentages(array $events, array $eventCounters, int $uniqUsersCount): array
+    public function getPercentages(Collection $allDisplayEvents, array $eventCounters, int $uniqUsersCount): array
     {
         $eventPercentage = [];
-        foreach ($events as $eventName => $type) {
-            if (!isset($eventCounters[$eventName])) {
-                $eventPercentage[$eventName] = 0;
+        foreach ($allDisplayEvents as $displayEvent) {
+            if (!isset($eventCounters[$displayEvent->event_name])) {
+                $eventPercentage[$displayEvent->event_name] = 0;
                 continue;
             }
 
-            $counter = $eventCounters[$eventName];
+            $counter = $eventCounters[$displayEvent->event_name];
 
             if ($uniqUsersCount === 0) {
-                $eventPercentage[$eventName] = 0;
+                $eventPercentage[$displayEvent->event_name] = 0;
                 continue;
             }
-            $eventPercentage[$eventName] = intval(($counter / $uniqUsersCount) * 100);
+            $eventPercentage[$displayEvent->event_name] = intval(($counter / $uniqUsersCount) * 100);
         }
 
         return $eventPercentage;
