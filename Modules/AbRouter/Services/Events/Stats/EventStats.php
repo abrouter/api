@@ -13,14 +13,14 @@ class EventStats implements Stats
     /**
      * @param Collection $eventsList
      * @param array $uniqUsers
-     * @param Collection $allDisplayEvents
+     * @param array $allDisplayEvents
      * @param bool $enableDateCounter
      * @return array
      */
     public function getCounters(
         Collection $eventsList,
         array $uniqUsers,
-        Collection $allDisplayEvents,
+        array $allDisplayEvents,
         bool $enableDateCounter = false
     ): array {
         $uniqUsers = array_flip($uniqUsers);
@@ -97,11 +97,11 @@ class EventStats implements Stats
 
             $eventCounters[$event->event] ++;
 
-            $eventType = $allDisplayEvents->isNotEmpty()
-                ? $allDisplayEvents->reduce(
-                    function (array $acc, DisplayUserEvent $displayUserEvent) use ($event) {
-                        if ($displayUserEvent->event_name === $event->event) {
-                           $acc['type'] = $displayUserEvent->type;
+            $eventType = !empty($allDisplayEvents)
+                ? array_reduce($allDisplayEvents,
+                    function (array $acc, $allDisplayEvents) use ($event) {
+                        if ($allDisplayEvents['event_name'] === $event->event) {
+                           $acc['type'] = $allDisplayEvents['type'];
                            return $acc;
                         }
                         return $acc;
@@ -127,30 +127,30 @@ class EventStats implements Stats
     }
 
     /**
-     * @param Collection $allDisplayEvents
+     * @param array $allDisplayEvents
      * @param array $eventCounters
      * @param int $uniqUsersCount
      * @return array
      */
     public function getPercentages(
-        Collection $allDisplayEvents,
+        array $allDisplayEvents,
         array $eventCounters,
         int $uniqUsersCount
     ): array {
         $eventPercentage = [];
         foreach ($allDisplayEvents as $displayEvent) {
-            if (!isset($eventCounters[$displayEvent->event_name])) {
-                $eventPercentage[$displayEvent->event_name] = 0;
+            if (!isset($eventCounters[$displayEvent['event_name']])) {
+                $eventPercentage[$displayEvent['event_name']] = 0;
                 continue;
             }
 
-            $counter = $eventCounters[$displayEvent->event_name];
+            $counter = $eventCounters[$displayEvent['event_name']];
 
             if ($uniqUsersCount === 0) {
-                $eventPercentage[$displayEvent->event_name] = 0;
+                $eventPercentage[$displayEvent['event_name']] = 0;
                 continue;
             }
-            $eventPercentage[$displayEvent->event_name] = intval(($counter / $uniqUsersCount) * 100);
+            $eventPercentage[$displayEvent['event_name']] = intval(($counter / $uniqUsersCount) * 100);
         }
 
         return $eventPercentage;

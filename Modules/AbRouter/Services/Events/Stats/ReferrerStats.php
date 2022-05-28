@@ -12,14 +12,14 @@ class ReferrerStats implements Stats
     /**
      * @param Collection $eventsList
      * @param array $uniqUsers
-     * @param Collection $allDisplayEvents
+     * @param array $allDisplayEvents
      * @param bool $enableDateCounter
      * @return array
      */
     public function getCounters(
         Collection $eventsList,
         array $uniqUsers,
-        Collection $allDisplayEvents,
+        array $allDisplayEvents,
         bool $enableDateCounter = false
     ): array {
         $uniqUsers = array_flip($uniqUsers);
@@ -113,33 +113,33 @@ class ReferrerStats implements Stats
     }
 
     /**
-     * @param Collection $referrers
+     * @param array $referrers
      * @param array $referrerCounters
      * @param int $uniqUsersCount
      * @return array
      */
     public function getPercentages(
-        Collection $referrers,
+        array $referrers,
         array $referrerCounters,
         int $uniqUsersCount
     ): array {
-        $eventPercentage = [];
+        $referrerPercentage = [];
         foreach ($referrers as $referrer) {
             if (!isset($referrerCounters[$referrer])) {
-                $eventPercentage[$referrer] = 0;
+                $referrerPercentage[$referrer] = 0;
                 continue;
             }
 
             $counter = $referrerCounters[$referrer];
 
             if ($uniqUsersCount === 0) {
-                $eventPercentage[$referrer] = 0;
+                $referrerPercentage[$referrer] = 0;
                 continue;
             }
 
-            $eventPercentage[$referrer] = intval(($counter / $uniqUsersCount) * 100);
+            $referrerPercentage[$referrer] = intval(($counter / $uniqUsersCount) * 100);
         }
 
-        return $eventPercentage;
+        return $referrerPercentage;
     }
 }

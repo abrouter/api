@@ -114,14 +114,14 @@ class SimpleStatsService
             ->getCounters(
                 $allUserEvents,
                 $uniqUsers,
-                collect([])
+                []
             );
 
         $referrerPercentage = $this
             ->statsFactory
             ->getStatsMethod('referrer')
             ->getPercentages(
-                collect($referrers),
+                $referrers,
                 $referrerCounters,
                 $uniqUsersCount
         );
@@ -152,11 +152,12 @@ class SimpleStatsService
         return array_flip($usersFlip);
     }
     
-    protected function getDisplayEvents(int $ownerId): Collection
+    protected function getDisplayEvents(int $ownerId): array
     {
         return $this
             ->eventsRepository
-            ->getEventsByUser($ownerId);
+            ->getEventsByUser($ownerId)
+            ->toArray();
     }
 
     protected function getReferrers(int $ownerId): array

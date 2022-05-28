@@ -48,7 +48,7 @@ class ExperimentBranchStatsService extends SimpleStatsService
             ->pluck('relatedUsers')
             ->flatten();
 
-        $eventsNames = $this->getDisplayEvents($statsQueryDTO->getOwnerId());
+        $allDisplayEvents = $this->getDisplayEvents($statsQueryDTO->getOwnerId());
 
         $uniqUsersIds = $this->getUniqUsersIds($allUserEvents);
         $uniqRelatedUsersIds = $this->getUniqRelatedUsersIds(...$allRelatedUsers->all());
@@ -65,14 +65,14 @@ class ExperimentBranchStatsService extends SimpleStatsService
             ->getCounters(
                 $allUserEvents,
                 $jointUsers,
-                collect([])
+                []
         );
 
         $eventPercentages = $this
             ->statsFactory
             ->getStatsMethod('event')
             ->getPercentages(
-                $eventsNames,
+                $allDisplayEvents,
                 $eventCounters,
                 $uniqUsersCount
         );
