@@ -8,18 +8,37 @@ use Modules\AbRouter\Models\Experiments\ExperimentUsers;
 
 class ExperimentUsersRepository extends BaseRepository
 {
-    public function getExperimentsByUserSignatureAndOwner(string $userSignature, int $owner): ExperimentUsers
+    /**
+     * @param string $userSignature
+     * @param int $owner
+     * @return ExperimentUsers|null
+     */
+    public function getExperimentsByUserSignatureAndOwner(string $userSignature, int $owner): ?ExperimentUsers
     {
         /**
          * @var ExperimentUsers $model
          */
         $model = $this
             ->query()
-            ->where(function ($query) use($userSignature, $owner) {
-                $query->where('owner_id', $owner)
-                    ->where('user_signature', $userSignature);
-            })
-            ->firstOrFail();
+            ->where('owner_id', $owner)
+            ->where('user_signature', $userSignature)
+            ->first();
+
+        return $model;
+    }
+
+    public function createExperimentUser(int $owner, string $userSignature): ExperimentUsers
+    {
+        /**
+         * @var ExperimentUsers $model
+         */
+        $model = ExperimentUsers
+            ::query()
+            ->create([
+                'owner_id' => $owner,
+                'user_signature' => $userSignature,
+                'config' => '{}',
+            ]);
 
         return $model;
     }
