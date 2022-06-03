@@ -23,7 +23,7 @@ class AddUserToExperimentTransformer
     {
         return new AddUserToExperimentDTO(
             $this->authDecorator->get()->getId(),
-            $request->getAttribute('user_signature'),
+            $request->getAttribute('userSignature'),
             $request->input('data.relationships.experiments.data.id'),
             $request->input('data.relationships.branches.data.id')
         );

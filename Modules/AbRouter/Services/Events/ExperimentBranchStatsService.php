@@ -66,7 +66,7 @@ class ExperimentBranchStatsService extends SimpleStatsService
                 $allUserEvents,
                 $jointUsers,
                 []
-        );
+            );
 
         $eventPercentages = $this
             ->statsFactory
