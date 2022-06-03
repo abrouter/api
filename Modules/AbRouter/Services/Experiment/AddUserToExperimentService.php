@@ -77,6 +77,15 @@ class AddUserToExperimentService
                 $addUserToExperimentDTO->getOwner()
             );
 
+        if (empty($experimentUser)) {
+            $experimentUser = $this
+                ->experimentUsersRepository
+                ->createExperimentUser(
+                    $addUserToExperimentDTO->getOwner(),
+                    $addUserToExperimentDTO->getUserSignature(),
+                );
+        }
+
         $experimentBranchUser = $this
             ->branchUserRepository
             ->getExperimentBranchUserByExperimentIdAndExperimentUserId(
