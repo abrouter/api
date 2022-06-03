@@ -20,7 +20,7 @@ class AddUserToExperimentRequest extends FormRequest
                 'required',
                 Rule::in('experiment_users')
             ],
-            'data.attributes.user_signature' => 'required|string',
+            'data.attributes.userSignature' => 'required|string',
             'data.relationships.experiments.data.id' => 'required|string',
             'data.relationships.experiments.data.type' => ['required', Rule::in('experiments')],
             'data.relationships.branches.data.id' => 'required|string',
