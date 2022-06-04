@@ -47,21 +47,6 @@ class ExperimentsRepository extends BaseRepository
         return $model;
     }
 
-    public function getExperimentsWhichHaveUser (int $owner, string $id): Collection
-    {
-        /**
-         * @var Collection $collection
-         */
-
-        return $this
-            ->query()
-            ->where('owner_id', $owner)
-            ->whereHas('experimentUsers.experimentUser', function ($query) use($id) {
-                $query->where('user_signature', $id);
-            })
-            ->get();
-    }
-
     protected function getModel()
     {
         return new Experiment();
