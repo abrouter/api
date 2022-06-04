@@ -104,6 +104,7 @@ class EventStats implements Stats
                            $acc['type'] = $allDisplayEvents['type'];
                            return $acc;
                         }
+                        $acc['type'] = '';
                         return $acc;
                     }, [])
                 : ['type' => ''];

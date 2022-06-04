@@ -87,7 +87,7 @@ class SimpleStatsService
                 $allUserEvents,
                 $uniqUsers,
                 $allDisplayEvents
-        );
+            );
 
         $eventCountersWithDate = $this
             ->statsFactory
@@ -106,7 +106,7 @@ class SimpleStatsService
                 $allDisplayEvents,
                 $eventCounters,
                 $uniqUsersCount
-        );
+            );
 
         $referrerCounters = $this
             ->statsFactory
@@ -124,7 +124,7 @@ class SimpleStatsService
                 $referrers,
                 $referrerCounters,
                 $uniqUsersCount
-        );
+            );
 
         arsort($eventPercentages);
         arsort($referrerCounters);

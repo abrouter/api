@@ -106,7 +106,7 @@ class ExperimentStatsService extends SimpleStatsService
                     $allUserEvents,
                     $jointUser,
                     $eventsNames
-            );
+                );
 
             $eventCountersWithDate[$key] = $this
                 ->statsFactory
@@ -116,7 +116,7 @@ class ExperimentStatsService extends SimpleStatsService
                     $jointUser,
                     [],
                     true
-            );
+                );
             
             $eventPercentages[$key] = $this
                 ->statsFactory
