@@ -24,6 +24,13 @@ class Experiment extends Module implements DependsOnModule
         $this->laravel = $laravel;
     }
 
+    /**
+     * @deprecated creates the branches, but it doesn't need here and unexpected
+     * @todo replace it and rewrite the tests
+     * @param int $owner
+     * @return array
+     * @throws \Exception
+     */
     public function haveExperiment(int $owner)
     {
         $experimentName = 'experiment_' . uniqid();
@@ -68,7 +75,8 @@ class Experiment extends Module implements DependsOnModule
             'name' => $experimentName,
             'alias' => $experimentName,
             'idBranch' => $encodeExperimentBranchId,
-            'decodeBranchId' => $idBranch
+            'decodeBranchId' => $idBranch,
+            'branchName' => $branchName,
         ];
     }
     

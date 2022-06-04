@@ -467,13 +467,18 @@ class ExperimentCest
     public function getExperimentsHaveUser(ApiTester $I)
     {
         $user = $I->haveUser($I);
-        $experiment = $I->haveExperiment($user['id']);
+
+
+        //please, attention
+        // the method inside creates the branches, but it's to declarative
+        $experimentWithBranch = $I->haveExperiment($user['id']);
         $userSignature = uniqid();
+
         $I->experimentsHaveUsers(
             $userSignature,
             $user['id'],
-            $experiment['experimentId'],
-            $experiment['decodeBranchId']
+            $experimentWithBranch['experimentId'],
+            $experimentWithBranch['decodeBranchId']
         );
 
         $I->haveHttpHeader('Accept', 'application/json');
@@ -482,30 +487,17 @@ class ExperimentCest
 
         $response = json_decode($I->grabResponse(), true);
 
-        $entry = $response['data'][0];
-
         $I->seeResponseCodeIsSuccessful(200);
 
         $I->seeResponseContainsJson([
             'data' => [
                 [
-                    'type' => 'experiments',
-                    'id' => $entry['id'],
+                    'type' => 'experiment_branch_users',
                     'attributes' => [
-                        'name' => $entry['attributes']['name'],
-                        'alias' => $entry['attributes']['alias'],
-                        'config' => $entry['attributes']['config'],
-                        'is_enabled' => true,
-                        'is_feature_toggle' => true
+                        'run-uid' => $experimentWithBranch['alias'] . '-' . $experimentWithBranch['branchName'],
+                        'branch-uid' => $experimentWithBranch['branchName'],
+                        'experiment-uid' => $experimentWithBranch['alias'] ,
                     ],
-                    'relationships' => [
-                        'owner' => [
-                            'data' => [
-                                'type' => $entry['relationships']['owner']['data']['type'],
-                                'id' => $entry['relationships']['owner']['data']['id']
-                            ]
-                        ]
-                    ]
                 ]
             ]
         ]);

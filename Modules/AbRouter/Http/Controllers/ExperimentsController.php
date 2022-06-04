@@ -17,6 +17,7 @@ use Modules\AbRouter\Http\Transformers\Experiments\RunExperimentTransformer;
 use Modules\AbRouter\Http\Transformers\Experiments\SimpleRunTransformer;
 use Modules\AbRouter\Http\Transformers\Experiments\AddUserToExperimentTransformer;
 use Modules\AbRouter\Models\Experiments\Experiment;
+use Modules\AbRouter\Repositories\Experiments\ExperimentBranchUserRepository;
 use Modules\AbRouter\Repositories\Experiments\ExperimentsRepository;
 use Modules\AbRouter\Services\Experiment\ExperimentService;
 use Modules\AbRouter\Services\Experiment\ExperimentDeleteService;
@@ -102,21 +103,23 @@ class ExperimentsController extends Controller
     }
 
     /**
+     * Wrong name. Todo: rename
      * @param AuthDecorator $authDecorator
-     * @param ExperimentsRepository $experimentsRepository
+     * @param ExperimentBranchUserRepository $experimentsRepository
      * @param string $userId
-     * @return ExperimentScheme
+     * @return ExperimentBranchUserScheme
      */
     public function getExperimentsHaveUsers(
         AuthDecorator $authDecorator,
-        ExperimentsRepository $experimentsRepository,
+        ExperimentBranchUserRepository $experimentsRepository,
         string $userId
-    ) {
+    ): ExperimentBranchUserScheme
+    {
         $owner = $authDecorator->get()->getId();
 
-        return (new ExperimentScheme(
+        return (new ExperimentBranchUserScheme(
             new SimpleDataProvider(
-                $experimentsRepository->getExperimentsWhichHaveUser($owner, $userId)
+                $experimentsRepository->getExperimentsBranchesByUserSignature($owner, $userId)
             )
         ));
     }
