@@ -107,7 +107,7 @@ class ExperimentsController extends Controller
      * @param AuthDecorator $authDecorator
      * @param ExperimentBranchUserRepository $experimentsRepository
      * @param string $userId
-     * @return ExperimentScheme
+     * @return ExperimentBranchUserScheme
      */
     public function getExperimentsHaveUsers(
         AuthDecorator $authDecorator,

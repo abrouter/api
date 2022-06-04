@@ -44,6 +44,7 @@ class ExperimentBranchUserRepository extends BaseRepository
     }
 
     /**
+     * @param int $ownerId
      * @param string $userSignature
      * @return Collection
      */
