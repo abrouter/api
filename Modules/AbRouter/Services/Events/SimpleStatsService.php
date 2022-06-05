@@ -98,6 +98,15 @@ class SimpleStatsService
                 $allDisplayEvents,
                 true
             );
+
+        $eventRevenueValue = $this
+            ->statsFactory
+            ->getStatsMethod('revenue')
+            ->getCounters(
+                $allUserEvents,
+                $uniqUsers,
+                $allDisplayEvents
+            );
         
         $eventPercentages = $this
             ->statsFactory
@@ -132,6 +141,7 @@ class SimpleStatsService
         return new StatsResultsDTO(
             $eventPercentages,
             $eventCounters,
+            $eventRevenueValue,
             $referrerCounters,
             $referrerPercentage,
             $eventCountersWithDate

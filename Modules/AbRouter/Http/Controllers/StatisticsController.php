@@ -70,6 +70,7 @@ class StatisticsController
         return [
             'percentage' => $results->getPercentage(),
             'counters' => $results->getCounters(),
+            'revenueCounters' => $results->getRevenueCounters(),
             'referrersCounters' => $results->getReferrersCounters(),
             'referrersPercentage' => $results->getReferrersPercentage(),
             'eventCountersWithDate' => $results->getEventCountersWithDate()

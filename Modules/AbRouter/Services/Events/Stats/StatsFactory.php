@@ -13,6 +13,8 @@ class StatsFactory
                 return new EventStats();
             case 'referrer':
                 return new ReferrerStats();
+            case 'revenue':
+                return new RevenueStats();
             default:
                 throw new \Exception('Unknown Stats Method');
         }

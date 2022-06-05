@@ -40,6 +40,7 @@ class StatsResultsDTO
     public function __construct(
         array $percentage,
         array $counters,
+        array $revenue,
         array $referrersCounters,
         array $referrersPercentage,
         array $eventCountersWithDate,
@@ -47,6 +48,7 @@ class StatsResultsDTO
     ) {
         $this->percentage = $percentage;
         $this->counters = $counters;
+        $this->revenueCounters = $revenue;
         $this->referrersCounters = $referrersCounters;
         $this->referrersPercentage = $referrersPercentage;
         $this->eventCountersWithDate = $eventCountersWithDate;
@@ -75,6 +77,11 @@ class StatsResultsDTO
     public function getReferrersCounters(): array
     {
         return $this->referrersCounters;
+    }
+
+    public function getRevenueCounters(): array
+    {
+        return $this->revenueCounters;
     }
 
     /**

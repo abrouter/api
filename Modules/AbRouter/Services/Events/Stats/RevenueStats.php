@@ -7,7 +7,7 @@ use Modules\AbRouter\Models\Events\Event;
 use Modules\AbRouter\Models\RelatedUsers\RelatedUser;
 use Modules\Core\Interfaces\Stats\Stats;
 
-class EventStats implements Stats
+class RevenueStats implements Stats
 {
     /**
      * @param Collection $eventsList
@@ -30,6 +30,10 @@ class EventStats implements Stats
             /**
              * @var Event $event
              */
+
+            if ($event->event === null) {
+                continue;
+            }
 
             $relatedUsersIds = $event
                 ->relatedUsers
@@ -90,36 +94,25 @@ class EventStats implements Stats
                 continue;
             }
 
-            if (!isset($eventCounters[$event->event])) {
-                $eventCounters[$event->event] = 0;
-            }
-
-            $eventCounters[$event->event] ++;
-
-            $eventType = !empty($allDisplayEvents)
-                ? array_reduce($allDisplayEvents,
+            $eventType = array_reduce($allDisplayEvents,
                     function (array $acc, $allDisplayEvents) use ($event) {
                         if ($allDisplayEvents['event_name'] === $event->event) {
-                           $acc['type'] = $allDisplayEvents['type'];
-                           return $acc;
+                            $acc['type'] = $allDisplayEvents['type'];
+
+                            return $acc;
                         }
+
                         $acc['type'] = '';
+
                         return $acc;
-                    }, [])
-                : ['type' => ''];
+                    }, []);
 
             if ($eventType['type'] === 'summarizable') {
-                if (!isset($eventCounters['summarization'][$event->event])) {
-                    is_numeric($event->value) ?
-                        $eventCounters['summarization'][$event->event] = $event->value
-                        : $eventCounters['summarization'][$event->event] = 0;
-
-                    continue;
+                if (!isset($eventCounters[$event->event])) {
+                    $eventCounters[$event->event] = $event->value;
                 }
 
-                $eventCounters['summarization'][$event->event] += is_numeric($event->value) ?
-                    $event->value
-                    : 0;
+                $eventCounters[$event->event] += $event->value;
             }
         }
 
