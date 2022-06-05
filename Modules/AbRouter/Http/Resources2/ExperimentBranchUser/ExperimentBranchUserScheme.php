@@ -33,7 +33,7 @@ class ExperimentBranchUserScheme extends DocumentSchema
         return new Attributes([
             'run-uid' => $uid,
             'branch-uid' => $this->activeData->experimentBranch->uid,
-            'experiment-uid' => $this->activeData->experiment->uid,
+            'experiment-uid' => $this->activeData->experiment->alias,
         ]);
     }
 
