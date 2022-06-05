@@ -43,6 +43,26 @@ class ExperimentBranchUserRepository extends BaseRepository
             ->first();
     }
 
+    /**
+     * @param int $ownerId
+     * @param string $userSignature
+     * @return Collection
+     */
+    public function getExperimentsBranchesByUserSignature(int $ownerId, string $userSignature)
+    {
+        /**
+         * @var Collection $collection
+         */
+        $collection = $this->query()
+            ->whereHas('experimentUser', function ($query) use ($ownerId, $userSignature) {
+                $query->where('user_signature', $userSignature);
+                $query->where('owner_id', $ownerId);
+            })
+        ->get();
+
+        return $collection;
+    }
+
     protected function getModel(): ExperimentBranchUser
     {
         return new ExperimentBranchUser();

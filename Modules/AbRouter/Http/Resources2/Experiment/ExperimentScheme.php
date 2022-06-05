@@ -91,4 +91,11 @@ class ExperimentScheme extends DocumentSchema
     {
         return new Meta($this->meta);
     }
+
+    public function getAllowedSearchFields(): array
+    {
+        return [
+            'alias',
+        ];
+    }
 }
