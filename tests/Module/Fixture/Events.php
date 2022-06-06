@@ -307,9 +307,7 @@ class Events extends Module implements DependsOnModule
         int $ownerId,
         array $events,
         int $eventsCount,
-        string $typeEvents,
-        ?string $staticUserId = null,
-        ?string $staticTemporaryUserId = null
+        string $typeEvents
     ) {
         $users = [];
 

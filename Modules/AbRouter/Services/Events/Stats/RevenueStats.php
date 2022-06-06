@@ -4,7 +4,6 @@ namespace Modules\AbRouter\Services\Events\Stats;
 
 use Illuminate\Support\Collection;
 use Modules\AbRouter\Models\Events\Event;
-use Modules\AbRouter\Models\RelatedUsers\RelatedUser;
 use Modules\Core\Interfaces\Stats\Stats;
 
 class RevenueStats implements Stats
@@ -19,97 +18,19 @@ class RevenueStats implements Stats
     public function getCounters(
         Collection $eventsList,
         array $uniqUsers,
-        array $allDisplayEvents,
+        array $displayEvents,
         bool $enableDateCounter = false
     ): array {
-        $uniqUsers = array_flip($uniqUsers);
         $eventCounters = [];
-        $userEventAdded = [];
 
         foreach ($eventsList as $event) {
             /**
              * @var Event $event
              */
 
-            if ($event->event === null) {
-                continue;
-            }
-
-            $relatedUsersIds = $event
-                ->relatedUsers
-                ->reduce(function (array $acc, RelatedUser $relatedUser) {
-                    if (empty($relatedUser->related_user_id)) {
-                        return $acc;
-                    }
-
-                    $acc[] = $relatedUser->related_user_id;
-                    return $acc;
-                }, []);
-
-            $userEventKey = $event->event . '_' . $event->user_id;
-
-            if (!empty($event->user_id) && isset($userEventAdded[$userEventKey])) {
-                continue;
-            }
-
-            sort($relatedUsersIds);
-            if (!empty($relatedUsersIds)) {
-                $relatedUsersKey = $event->event . '_' . join('_', $relatedUsersIds);
-            } else {
-                $relatedUsersKey = '';
-            }
-
-            if (!empty($relatedUsersKey) && isset($userEventAdded[$relatedUsersKey])) {
-                continue;
-            }
-
-            $hasUserInRelated = false;
-            foreach ($relatedUsersIds as $relatedUsersId) {
-                if (isset($uniqUsers[$relatedUsersId])) {
-                    $hasUserInRelated = true;
-                    break;
-                }
-            }
-
-            if (!$hasUserInRelated && !isset($uniqUsers[$event->user_id])) {
-                continue;
-            }
-
-            if ($hasUserInRelated) {
-                $userEventAdded[$relatedUsersKey] = true;
-            }
-            if (isset($uniqUsers[$event->user_id])) {
-                $userEventAdded[$userEventKey] = true;
-            }
-
-            if ($enableDateCounter) {
-                $convertDate = $event->created_at->format('Y-m-d');
-
-                if (!isset($eventCounters[$event->event][$convertDate])) {
-                    $eventCounters[$event->event][$convertDate] = 0;
-                }
-
-                $eventCounters[$event->event][$convertDate] ++;
-
-                continue;
-            }
-
-            $eventType = array_reduce($allDisplayEvents,
-                    function (array $acc, $allDisplayEvents) use ($event) {
-                        if ($allDisplayEvents['event_name'] === $event->event) {
-                            $acc['type'] = $allDisplayEvents['type'];
-
-                            return $acc;
-                        }
-
-                        $acc['type'] = '';
-
-                        return $acc;
-                    }, []);
-
-            if ($eventType['type'] === 'summarizable') {
+            if (in_array($event->event, $displayEvents, true)) {
                 if (!isset($eventCounters[$event->event])) {
-                    $eventCounters[$event->event] = $event->value;
+                    $eventCounters[$event->event] = 0;
                 }
 
                 $eventCounters[$event->event] += $event->value;
@@ -120,32 +41,34 @@ class RevenueStats implements Stats
     }
 
     /**
-     * @param array $allDisplayEvents
-     * @param array $eventCounters
+     * @param array $displayEvents
+     * @param array $revenueCounters
      * @param int $uniqUsersCount
      * @return array
      */
     public function getPercentages(
-        array $allDisplayEvents,
-        array $eventCounters,
+        array $displayEvents,
+        array $revenueCounters,
         int $uniqUsersCount
     ): array {
-        $eventPercentage = [];
-        foreach ($allDisplayEvents as $displayEvent) {
-            if (!isset($eventCounters[$displayEvent['event_name']])) {
-                $eventPercentage[$displayEvent['event_name']] = 0;
+        $revenuePercentage = [];
+
+        foreach ($displayEvents as $displayEvent) {
+            if (!isset($revenueCounters[$displayEvent])) {
+                $revenuePercentage[$displayEvent] = 0;
                 continue;
             }
 
-            $counter = $eventCounters[$displayEvent['event_name']];
+            $counter = $revenueCounters[$displayEvent];
 
             if ($uniqUsersCount === 0) {
-                $eventPercentage[$displayEvent['event_name']] = 0;
+                $revenuePercentage[$displayEvent] = 0;
                 continue;
             }
-            $eventPercentage[$displayEvent['event_name']] = intval(($counter / $uniqUsersCount) * 100);
+
+            $revenuePercentage[$displayEvent] = intval(($counter / $uniqUsersCount) * 100);
         }
 
-        return $eventPercentage;
+        return $revenuePercentage;
     }
 }

@@ -72,8 +72,10 @@ class SimpleStatsService
         $allRelatedUsers = $allUserEvents->pluck('relatedUsers')->flatten();
         
         $allDisplayEvents = $this->getDisplayEvents($statsQueryDTO->getOwnerId());
+        $displayEventsWithTypeSummarizable = $this->getDisplayEventsWithTypeSummarizable($allDisplayEvents);
         $referrers = $this->getReferrers($statsQueryDTO->getOwnerId());
-        
+        $allRevenue = $this->getAllRevenue($allUserEvents);
+
         $uniqUsersIds = $this->getUniqUsersIds($allUserEvents);
         $uniqRelatedUsersIds = $this->getUniqRelatedUsersIdsWithoutBinding($allRelatedUsers->all());
         $uniqUsers = $this->getFinalUniqUsers($uniqUsersIds, $uniqRelatedUsersIds);
@@ -99,13 +101,22 @@ class SimpleStatsService
                 true
             );
 
-        $eventRevenueValue = $this
+        $eventRevenueCounters = $this
             ->statsFactory
             ->getStatsMethod('revenue')
             ->getCounters(
                 $allUserEvents,
-                $uniqUsers,
-                $allDisplayEvents
+                [],
+                $displayEventsWithTypeSummarizable
+            );
+
+        $eventRevenuePercentage = $this
+            ->statsFactory
+            ->getStatsMethod('revenue')
+            ->getPercentages(
+                $displayEventsWithTypeSummarizable,
+                $eventRevenueCounters,
+                $allRevenue
             );
         
         $eventPercentages = $this
@@ -141,7 +152,8 @@ class SimpleStatsService
         return new StatsResultsDTO(
             $eventPercentages,
             $eventCounters,
-            $eventRevenueValue,
+            $eventRevenueCounters,
+            $eventRevenuePercentage,
             $referrerCounters,
             $referrerPercentage,
             $eventCountersWithDate
@@ -168,6 +180,20 @@ class SimpleStatsService
             ->eventsRepository
             ->getEventsByUser($ownerId)
             ->toArray();
+    }
+
+    protected function getDisplayEventsWithTypeSummarizable(array $displayEvents): array
+    {
+        return array_reduce($displayEvents,
+            function (array $acc, $displayEvent) {
+                if ($displayEvent['type'] === 'summarizable') {
+                    $acc[] = $displayEvent['event_name'];
+
+                    return $acc;
+                }
+
+                return $acc;
+            }, []);
     }
 
     protected function getReferrers(int $ownerId): array
@@ -260,5 +286,15 @@ class SimpleStatsService
 
             return $acc;
         }, []);
+    }
+
+    protected function getAllRevenue(Collection $allUserEvents) {
+        $revenue = $allUserEvents->reduce(function (array $acc, Event $event) {
+            $acc[] += $event->value;
+
+            return $acc;
+        }, []);
+
+        return array_sum($revenue);
     }
 }
