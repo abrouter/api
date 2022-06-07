@@ -56,24 +56,16 @@ class ExperimentStatsService extends SimpleStatsService
             ->userEventsRepository
             ->getWithOwnerByTagAndDate(
                 $statsQueryDTO->getOwnerId(),
-                $statsQueryDTO->getTag()
-            );
+                $statsQueryDTO->getTag(),
+                $date['date_from'],
+                $date['date_to']
+            )
+            ->load('relatedUsers');;
 
         $totalUsers = $this->getTotalUsers(
-            $allUserEvents,
             $statsQueryDTO->getOwnerId(),
             $statsQueryDTO->getExperimentId()
         );
-
-        $allUserEvents = $allUserEvents
-            ->whereBetween(
-                'created_at',
-                [
-                    $date['date_from'],
-                    $date['date_to']
-                ]
-            )
-            ->load('relatedUsers');
 
         $allRelatedUsers = $allUserEvents
             ->pluck('relatedUsers')
@@ -95,7 +87,7 @@ class ExperimentStatsService extends SimpleStatsService
         );
 
         $jointUsers = $this->getJointUsersFromEventsAndExperiment($experiment, $uniqUsers);
-        
+
         $eventCounters = [];
         $eventPercentages = [];
         $eventCountersWithDate = [];
@@ -128,7 +120,8 @@ class ExperimentStatsService extends SimpleStatsService
                 ->getCounters(
                     $allUserEvents,
                     [],
-                    $displayEventsWithTypeSummarizable
+                    $displayEventsWithTypeSummarizable,
+                    true
                 );
 
             $eventRevenuePercentage[$key] = $this
@@ -139,7 +132,7 @@ class ExperimentStatsService extends SimpleStatsService
                     $eventRevenueCounters[$key],
                     $allRevenue
                 );
-            
+
             $eventPercentages[$key] = $this
                 ->statsFactory
                 ->getStatsMethod('event')
@@ -147,7 +140,7 @@ class ExperimentStatsService extends SimpleStatsService
                     $allDisplayEvents,
                     $eventCounters[$key],
                     count($jointUser)
-            );
+                );
         }
 
         $interval = (new \DateTime())
@@ -241,10 +234,16 @@ class ExperimentStatsService extends SimpleStatsService
     }
 
     private function getTotalUsers(
-        Collection $allUserEvents,
         $owner,
         $experimentId
     ): int {
+        $allUserEvents = $this
+            ->userEventsRepository
+            ->getWithOwnerByTagAndDate(
+                $owner,
+                null
+            );
+
         $allRelatedUsers = $allUserEvents
             ->load('relatedUsers')
             ->pluck('relatedUsers')

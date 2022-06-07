@@ -399,7 +399,7 @@ class ExperimentsStatsCest
             $today->format('Y-m-d')
         );
 
-        $users = array_unique(collect($users)->flatten()->toArray());
+        $users = collect($users)->flatten()->unique()->values()->toArray();
 
         $I->haveConductedExperiments(
             $user['id'],
@@ -412,7 +412,11 @@ class ExperimentsStatsCest
         $I->haveHttpHeader('Accept', 'application/json');
         $I->amBearerAuthenticated($user['token']);
 
-        $I->sendGet('/experiments/stats?filter[experimentId]=' . $experiment['experimentId']);
+        $I->sendGet('/experiments/stats?filter[experimentId]=' . $experiment['experimentId'] .
+            '&filter[date_from]=' .
+            $today->format('m-d-Y') .
+            '&filter[date_to]=' . $yesterday->format('m-d-Y')
+        );
 
         $response = json_decode($I->grabResponse(), true);
 
@@ -428,22 +432,35 @@ class ExperimentsStatsCest
             ],
             'percentage' => [
                 'branch_first' => [
-                    'view_contact_form' => 50,
+                    'view_contact_form' => 100,
                     'visit_mainpage' => 100
                 ],
                 'branch_second' => [
-                    'view_contact_form' => 50,
+                    'view_contact_form' => 0,
                     'visit_mainpage' => 100
                 ]
             ],
             'counters' => [
                 'branch_first' => [
                     'view_contact_form' => 10,
-                    'visit_mainpage' => 20
+                    'visit_mainpage' => 10
                 ],
                 'branch_second' => [
-                    'view_contact_form' => 10,
-                    'visit_mainpage' => 20
+                    'visit_mainpage' => 10
+                ]
+            ],
+            'revenueCounters' => [
+                'branch_first' => [
+                    'revenue' =>[
+                        $yesterday->format('Y-m-d') => 300,
+                        $today->format('Y-m-d') => 500
+                    ]
+                ],
+                'branch_second' => [
+                    'revenue' =>[
+                        $yesterday->format('Y-m-d') => 300,
+                        $today->format('Y-m-d') => 500
+                    ]
                 ]
             ]
         ]);

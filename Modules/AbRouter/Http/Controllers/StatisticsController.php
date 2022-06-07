@@ -66,7 +66,7 @@ class StatisticsController
             $request->input('filter.date_from'),
             $request->input('filter.date_to')
         ));
-        
+
         return [
             'percentage' => $results->getPercentage(),
             'counters' => $results->getCounters(),
@@ -108,6 +108,8 @@ class StatisticsController
             'experiment' => $results->getExperiments(),
             'percentage' => $results->getPercentage(),
             'counters' => $results->getCounters(),
+            'revenueCounters' => $results->getRevenueCounters(),
+            'revenuePercentage' => $results->getRevenuePercentage(),
             'eventCountersWithDate' => $results->getEventCountersWithDate()
         ];
     }
