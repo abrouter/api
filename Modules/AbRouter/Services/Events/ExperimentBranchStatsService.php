@@ -14,6 +14,11 @@ use Modules\AbRouter\Services\Events\DTO\StatsResultsDTO;
 
 class ExperimentBranchStatsService extends SimpleStatsService
 {
+    /**
+     * @var ExperimentBranchUserRepository
+     */
+    private $experimentBranchUserRepository;
+
     function __construct(
         UserEventsRepository           $userEventsRepository,
         EventsRepository               $eventsRepository,
@@ -49,7 +54,8 @@ class ExperimentBranchStatsService extends SimpleStatsService
             ->flatten();
 
         $allDisplayEvents = $this->getDisplayEvents($statsQueryDTO->getOwnerId());
-
+        $displayEventsWithTypeSummarizable = $this->getDisplayEventsWithTypeSummarizable($allDisplayEvents);
+        $allRevenue = $this->getAllRevenue($allUserEvents);
         $uniqUsersIds = $this->getUniqUsersIds($allUserEvents);
         $uniqRelatedUsersIds = $this->getUniqRelatedUsersIds(...$allRelatedUsers->all());
         $uniqUsers = $this->getFinalUniqUsers($uniqUsersIds, $uniqRelatedUsersIds);
@@ -65,7 +71,25 @@ class ExperimentBranchStatsService extends SimpleStatsService
             ->getCounters(
                 $allUserEvents,
                 $jointUsers,
-                []
+                $displayEventsWithTypeSummarizable
+            );
+
+        $eventRevenueCounters = $this
+            ->statsFactory
+            ->getStatsMethod('revenue')
+            ->getCounters(
+                $allUserEvents,
+                [],
+                $displayEventsWithTypeSummarizable
+            );
+
+        $eventRevenuePercentage = $this
+            ->statsFactory
+            ->getStatsMethod('revenue')
+            ->getPercentages(
+                $displayEventsWithTypeSummarizable,
+                $eventRevenueCounters,
+                $allRevenue
             );
 
         $eventPercentages = $this
@@ -80,6 +104,8 @@ class ExperimentBranchStatsService extends SimpleStatsService
         return new StatsResultsDTO(
             $eventPercentages,
             $eventCounters,
+            $eventRevenueCounters,
+            $eventRevenuePercentage,
             [],
             [],
             []

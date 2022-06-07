@@ -81,14 +81,14 @@ class SimpleStatsService
         $uniqUsers = $this->getFinalUniqUsers($uniqUsersIds, $uniqRelatedUsersIds);
         
         $uniqUsersCount = count($uniqUsers);
-        
+
         $eventCounters = $this
             ->statsFactory
             ->getStatsMethod('event')
             ->getCounters(
                 $allUserEvents,
                 $uniqUsers,
-                $allDisplayEvents
+                $displayEventsWithTypeSummarizable
             );
 
         $eventCountersWithDate = $this
@@ -97,7 +97,7 @@ class SimpleStatsService
             ->getCounters(
                 $allUserEvents,
                 $uniqUsers,
-                $allDisplayEvents,
+                $displayEventsWithTypeSummarizable,
                 true
             );
 
@@ -107,7 +107,8 @@ class SimpleStatsService
             ->getCounters(
                 $allUserEvents,
                 [],
-                $displayEventsWithTypeSummarizable
+                $displayEventsWithTypeSummarizable,
+                true
             );
 
         $eventRevenuePercentage = $this
@@ -173,7 +174,7 @@ class SimpleStatsService
 
         return array_flip($usersFlip);
     }
-    
+
     protected function getDisplayEvents(int $ownerId): array
     {
         return $this

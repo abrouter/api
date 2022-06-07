@@ -31,6 +31,10 @@ class EventStats implements Stats
              * @var Event $event
              */
 
+            if (in_array($event->event, $allDisplayEvents)) {
+                continue;
+            }
+
             $relatedUsersIds = $event
                 ->relatedUsers
                 ->reduce(function (array $acc, RelatedUser $relatedUser) {
@@ -95,32 +99,6 @@ class EventStats implements Stats
             }
 
             $eventCounters[$event->event] ++;
-
-            $eventType = !empty($allDisplayEvents)
-                ? array_reduce($allDisplayEvents,
-                    function (array $acc, $allDisplayEvents) use ($event) {
-                        if ($allDisplayEvents['event_name'] === $event->event) {
-                           $acc['type'] = $allDisplayEvents['type'];
-                           return $acc;
-                        }
-                        $acc['type'] = '';
-                        return $acc;
-                    }, [])
-                : ['type' => ''];
-
-            if ($eventType['type'] === 'summarizable') {
-                if (!isset($eventCounters['summarization'][$event->event])) {
-                    is_numeric($event->value) ?
-                        $eventCounters['summarization'][$event->event] = $event->value
-                        : $eventCounters['summarization'][$event->event] = 0;
-
-                    continue;
-                }
-
-                $eventCounters['summarization'][$event->event] += is_numeric($event->value) ?
-                    $event->value
-                    : 0;
-            }
         }
 
         return $eventCounters;
@@ -139,6 +117,10 @@ class EventStats implements Stats
     ): array {
         $eventPercentage = [];
         foreach ($allDisplayEvents as $displayEvent) {
+            if ($displayEvent['type'] === 'summarizable') {
+                continue;
+            }
+
             if (!isset($eventCounters[$displayEvent['event_name']])) {
                 $eventPercentage[$displayEvent['event_name']] = 0;
                 continue;

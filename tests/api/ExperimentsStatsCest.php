@@ -352,22 +352,54 @@ class ExperimentsStatsCest
 
     public function showRevenueExperimentStatsForTwentyIncrementalEventsByExperimentIdWithTwoBranch(ApiTester $I)
     {
+        $users = [];
+
         $unsavedEvents = [
-            ['type' => 'incremental', 'event_name' => 'first_incremental_events'],
-            ['type' => 'incremental', 'event_name' => 'second_incremental_events'],
-            ['type' => 'summarizable', 'event_name' => 'summarizable_events']
+            ['type' => 'incremental', 'event_name' => 'view_contact_form'],
+            ['type' => 'incremental', 'event_name' => 'visit_mainpage'],
+            ['type' => 'summarizable', 'event_name' => 'revenue']
         ];
+        $today = (new \DateTime());
+        $yesterday = (new \DateTime())
+            ->add(new DateInterval('P1D'));
 
         $user = $I->haveUser($I);
         $experiment = $I->haveExperimentWithTwoBranch($user['id']);
-        $events = $I->haveSummarizationEvents($user['id'], $unsavedEvents);
 
-        $users = $I->createRevenueEventsWithRelatedUserAndUser(
+        $I->haveSummarizationEvents($user['id'], $unsavedEvents);
+
+        $users[] = $I->createEventsWithTypeIncremental($user['id'], $unsavedEvents[0]['event_name'], 10);
+        $users[] = $I->createEventsWithTypeIncremental($user['id'], $unsavedEvents[1]['event_name'], 20);
+        $users[] = $I->createEventsWithTypeSummarizable(
             $user['id'],
-            $events,
-            20,
-            'incremental'
+            $unsavedEvents[2]['event_name'],
+            1,
+            100,
+            $today->format('Y-m-d')
         );
+        $users[] = $I->createEventsWithTypeSummarizable(
+            $user['id'],
+            $unsavedEvents[2]['event_name'],
+            2,
+            100,
+            $yesterday->format('Y-m-d')
+        );
+        $users[] = $I->createEventsWithTypeSummarizable(
+            $user['id'],
+            $unsavedEvents[2]['event_name'],
+            2,
+            200,
+            $yesterday->format('Y-m-d')
+        );
+        $users[] = $I->createEventsWithTypeSummarizable(
+            $user['id'],
+            $unsavedEvents[2]['event_name'],
+            3,
+            400,
+            $today->format('Y-m-d')
+        );
+
+        $users = array_unique(collect($users)->flatten()->toArray());
 
         $I->haveConductedExperiments(
             $user['id'],
@@ -396,237 +428,24 @@ class ExperimentsStatsCest
             ],
             'percentage' => [
                 'branch_first' => [
-                    'first_incremental_events' => 50,
-                    'second_incremental_events' => 50
+                    'view_contact_form' => 50,
+                    'visit_mainpage' => 100
                 ],
                 'branch_second' => [
-                    'first_incremental_events' => 50,
-                    'second_incremental_events' => 50
+                    'view_contact_form' => 50,
+                    'visit_mainpage' => 100
                 ]
             ],
             'counters' => [
                 'branch_first' => [
-                    'first_incremental_events' => 5,
-                    'second_incremental_events' => 5
+                    'view_contact_form' => 10,
+                    'visit_mainpage' => 20
                 ],
                 'branch_second' => [
-                    'first_incremental_events' => 5,
-                    'second_incremental_events' => 5
+                    'view_contact_form' => 10,
+                    'visit_mainpage' => 20
                 ]
             ]
         ]);
-    }
-
-    public function showRevenueExperimentStatsForFourHundredSummarizableEventsByExperimentIdWithTwoBranch(ApiTester $I)
-    {
-        $unsavedEvents = [
-            ['type' => 'incremental', 'event_name' => 'first_incremental_events'],
-            ['type' => 'incremental', 'event_name' => 'second_incremental_events'],
-            ['type' => 'summarizable', 'event_name' => 'summarizable_events']
-        ];
-
-        $user = $I->haveUser($I);
-        $experiment = $I->haveExperimentWithTwoBranch($user['id']);
-        $events = $I->haveSummarizationEvents($user['id'], $unsavedEvents);
-
-        $users = $I->createRevenueEventsWithRelatedUserAndUser(
-            $user['id'],
-            $events,
-            400,
-            'summarizable'
-        );
-
-        $I->haveConductedExperiments(
-            $user['id'],
-            $experiment['decodeExperimentId'],
-            $experiment['decodeBranchId'],
-            $users
-        );
-
-        $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->haveHttpHeader('Accept', 'application/json');
-        $I->amBearerAuthenticated($user['token']);
-
-        $I->sendGet('/experiments/stats?filter[experimentId]=' . $experiment['experimentId']);
-
-        $response = json_decode($I->grabResponse(), true);
-
-        $I->seeResponseCodeIsSuccessful(201);
-
-        $I->seeResponseContainsJson([
-            'experiment' => [
-                'id' => $response['experiment']['id'],
-                'name' => $experiment['alias'],
-                'is_enabled' => true,
-                'days_running' => 0,
-                'total_users' => 400
-            ],
-            'percentage' => [
-                'branch_first' => [
-                    'summarizable_events' => 100,
-                ],
-                'branch_second' => [
-                    'summarizable_events' => 100,
-                ]
-            ],
-            'counters' => [
-                'branch_first' => [
-                    'summarizable_events' => 200,
-                    'summarization' => [
-                        'summarizable_events' => 200
-                    ]
-                ],
-                'branch_second' => [
-                    'summarizable_events' => 200,
-                    'summarization' => [
-                        'summarizable_events' => 200
-                    ]
-                ]
-            ]
-        ]);
-    }
-
-    public function showRevenueExperimentStatsForHundredSummarizableEventsByExperimentIdWithTwoBranchByOneUser(ApiTester $I)
-    {
-        $unsavedEvents = [
-            ['type' => 'incremental', 'event_name' => 'first_incremental_events'],
-            ['type' => 'incremental', 'event_name' => 'second_incremental_events'],
-            ['type' => 'summarizable', 'event_name' => 'summarizable_events']
-        ];
-
-        $user = $I->haveUser($I);
-        $experiment = $I->haveExperimentWithTwoBranch($user['id']);
-        $events = $I->haveSummarizationEvents($user['id'], $unsavedEvents);
-
-        $users = $I->createRevenueEventsWithRelatedUserAndUser(
-            $user['id'],
-            $events,
-            100,
-            'summarizable',
-            'user_' . uniqid(),
-            'temporary_user_' . uniqid()
-        );
-
-        $I->haveConductedExperiments(
-            $user['id'],
-            $experiment['decodeExperimentId'],
-            $experiment['decodeBranchId'],
-            $users
-        );
-
-        $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->haveHttpHeader('Accept', 'application/json');
-        $I->amBearerAuthenticated($user['token']);
-
-        $I->sendGet('/experiments/stats?filter[experimentId]=' . $experiment['experimentId']);
-
-        $response = json_decode($I->grabResponse(), true);
-
-        $I->seeResponseCodeIsSuccessful(201);
-
-        $I->seeResponseContainsJson([
-            'experiment' => [
-                'id' => $response['experiment']['id'],
-                'name' => $experiment['alias'],
-                'is_enabled' => true,
-                'days_running' => 0,
-                'total_users' => 1
-            ],
-            'percentage' => [
-                'branch_first' => [
-                    'summarizable_events' => 100,
-                ],
-                'branch_second' => [
-                    'summarizable_events' => 100,
-                ]
-            ],
-            'counters' => [
-                'branch_first' => [
-                    'summarizable_events' => 1,
-                    'summarization' => [
-                        'summarizable_events' => 1
-                    ]
-                ],
-                'branch_second' => [
-                    'summarizable_events' => 1,
-                    'summarization' => [
-                        'summarizable_events' => 1
-                    ]
-                ]
-            ]
-        ]);
-    }
-
-    public function showRevenueExperimentStatsForTwoHundredSummarizableEventsByExperimentIdWithTwoBranchByOneUser(ApiTester $I)
-    {
-        $unsavedEvents = [
-            ['type' => 'incremental', 'event_name' => 'first_incremental_events'],
-            ['type' => 'incremental', 'event_name' => 'second_incremental_events'],
-            ['type' => 'summarizable', 'event_name' => 'summarizable_events']
-        ];
-
-        $user = $I->haveUser($I);
-        $experiment = $I->haveExperimentWithTwoBranch($user['id']);
-        $events = $I->haveSummarizationEvents($user['id'], $unsavedEvents);
-
-        $users = $I->createRevenueEventsWithRelatedUserAndUser(
-            $user['id'],
-            $events,
-            200,
-            'summarizable',
-            'user_' . uniqid(),
-            'temporary_user_' . uniqid()
-        );
-
-        $I->haveConductedExperiments(
-            $user['id'],
-            $experiment['decodeExperimentId'],
-            $experiment['decodeBranchId'],
-            $users
-        );
-
-        $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->haveHttpHeader('Accept', 'application/json');
-        $I->amBearerAuthenticated($user['token']);
-
-        $I->sendGet('/experiments/stats?filter[experimentId]=' . $experiment['experimentId']);
-
-        $response = json_decode($I->grabResponse(), true);
-
-        $I->seeResponseCodeIsSuccessful(201);
-
-        foreach($response['eventCountersWithDate'] as $branch => $event) {
-            $I->seeResponseContainsJson([
-                'experiment' => [
-                    'id' => $response['experiment']['id'],
-                    'name' => $experiment['alias'],
-                    'is_enabled' => true,
-                    'days_running' => 0,
-                    'total_users' => 1
-                ],
-                'percentage' => [
-                    'branch_first' => [
-                        'summarizable_events' => 100,
-                    ],
-                    'branch_second' => [
-                        'summarizable_events' => 100,
-                    ]
-                ],
-                'counters' => [
-                    'branch_first' => [
-                        'summarizable_events' => 1,
-                        'summarization' => [
-                            'summarizable_events' => 1
-                        ]
-                    ],
-                    'branch_second' => [
-                        'summarizable_events' => 1,
-                        'summarization' => [
-                            'summarizable_events' => 1
-                        ]
-                    ]
-                ]
-            ]);
-        }
     }
 }

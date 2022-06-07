@@ -79,7 +79,9 @@ class ExperimentStatsService extends SimpleStatsService
             ->pluck('relatedUsers')
             ->flatten();
 
-        $eventsNames = $this->getDisplayEvents($statsQueryDTO->getOwnerId());
+        $allDisplayEvents = $this->getDisplayEvents($statsQueryDTO->getOwnerId());
+        $displayEventsWithTypeSummarizable = $this->getDisplayEventsWithTypeSummarizable($allDisplayEvents);
+        $allRevenue = $this->getAllRevenue($allUserEvents);
         $uniqUsersIds = $this->getUniqUsersIds($allUserEvents);
         $uniqRelatedUsersIds = $this
             ->getUniqRelatedUsersIds(
@@ -97,6 +99,8 @@ class ExperimentStatsService extends SimpleStatsService
         $eventCounters = [];
         $eventPercentages = [];
         $eventCountersWithDate = [];
+        $eventRevenueCounters = [];
+        $eventRevenuePercentage = [];
 
         foreach($jointUsers as $key => $jointUser) {
             $eventCounters[$key] = $this
@@ -105,7 +109,7 @@ class ExperimentStatsService extends SimpleStatsService
                 ->getCounters(
                     $allUserEvents,
                     $jointUser,
-                    $eventsNames
+                    $displayEventsWithTypeSummarizable
                 );
 
             $eventCountersWithDate[$key] = $this
@@ -114,15 +118,33 @@ class ExperimentStatsService extends SimpleStatsService
                 ->getCounters(
                     $allUserEvents,
                     $jointUser,
-                    [],
+                    $displayEventsWithTypeSummarizable,
                     true
+                );
+
+            $eventRevenueCounters[$key] = $this
+                ->statsFactory
+                ->getStatsMethod('revenue')
+                ->getCounters(
+                    $allUserEvents,
+                    [],
+                    $displayEventsWithTypeSummarizable
+                );
+
+            $eventRevenuePercentage[$key] = $this
+                ->statsFactory
+                ->getStatsMethod('revenue')
+                ->getPercentages(
+                    $displayEventsWithTypeSummarizable,
+                    $eventRevenueCounters[$key],
+                    $allRevenue
                 );
             
             $eventPercentages[$key] = $this
                 ->statsFactory
                 ->getStatsMethod('event')
                 ->getPercentages(
-                    $eventsNames,
+                    $allDisplayEvents,
                     $eventCounters[$key],
                     count($jointUser)
             );
@@ -141,6 +163,8 @@ class ExperimentStatsService extends SimpleStatsService
         return new StatsResultsDTO(
             $eventPercentages,
             $eventCounters,
+            $eventRevenueCounters,
+            $eventRevenuePercentage,
             [],
             [],
             $eventCountersWithDate,

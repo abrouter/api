@@ -29,11 +29,13 @@ class RevenueStats implements Stats
              */
 
             if (in_array($event->event, $displayEvents, true)) {
-                if (!isset($eventCounters[$event->event])) {
-                    $eventCounters[$event->event] = 0;
+                $convertDate = $event->created_at->format('Y-m-d');
+
+                if (!isset($eventCounters[$event->event][$convertDate])) {
+                    $eventCounters[$event->event][$convertDate] = 0;
                 }
 
-                $eventCounters[$event->event] += $event->value;
+                $eventCounters[$event->event][$convertDate] += $event->value;
             }
         }
 
@@ -59,7 +61,7 @@ class RevenueStats implements Stats
                 continue;
             }
 
-            $counter = $revenueCounters[$displayEvent];
+            $counter = array_sum(array_values($revenueCounters[$displayEvent]));
 
             if ($uniqUsersCount === 0) {
                 $revenuePercentage[$displayEvent] = 0;
