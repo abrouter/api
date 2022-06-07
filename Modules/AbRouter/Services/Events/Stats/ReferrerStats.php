@@ -124,6 +124,7 @@ class ReferrerStats implements Stats
         int $uniqUsersCount
     ): array {
         $referrerPercentage = [];
+
         foreach ($referrers as $referrer) {
             if (!isset($referrerCounters[$referrer])) {
                 $referrerPercentage[$referrer] = 0;

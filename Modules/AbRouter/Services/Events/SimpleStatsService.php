@@ -73,7 +73,7 @@ class SimpleStatsService
         
         $allDisplayEvents = $this->getDisplayEvents($statsQueryDTO->getOwnerId());
         $displayEventsWithTypeSummarizable = $this->getDisplayEventsWithTypeSummarizable($allDisplayEvents);
-        $referrers = $this->getReferrers($statsQueryDTO->getOwnerId());
+        $referrers = $this->getReferrers($statsQueryDTO->getOwnerId(), $displayEventsWithTypeSummarizable);
         $allRevenue = $this->getAllRevenue($allUserEvents);
 
         $uniqUsersIds = $this->getUniqUsersIds($allUserEvents);
@@ -197,12 +197,16 @@ class SimpleStatsService
             }, []);
     }
 
-    protected function getReferrers(int $ownerId): array
+    protected function getReferrers(int $ownerId, array $displayEvents): array
     {
-        return $this
+        $referrers = $this
             ->userEventsRepository
             ->getReferrersByOwner($ownerId)
-            ->reduce(function (array $acc, Event $event) {
+            ->reduce(function (array $acc, Event $event) use ($displayEvents) {
+                if (in_array($event->event, $displayEvents)) {
+                    return $acc;
+                }
+
                 $check = preg_match(
                     '/((http|https):\/\/([\w.]+\/?))|()/',
                     $event->referrer,
@@ -215,6 +219,8 @@ class SimpleStatsService
 
                 return $acc;
             }, []);
+
+        return array_unique($referrers);
     }
 
     protected function getUniqRelatedUsersIdsWithoutBinding(array $allRelatedUsers): array
