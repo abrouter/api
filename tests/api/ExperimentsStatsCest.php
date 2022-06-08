@@ -350,7 +350,7 @@ class ExperimentsStatsCest
         }
     }
 
-    public function showRevenueExperimentStatsForTwentyIncrementalEventsByExperimentIdWithTwoBranch(ApiTester $I)
+    public function showRevenueExperimentStats(ApiTester $I)
     {
         $users = [];
 
@@ -366,7 +366,7 @@ class ExperimentsStatsCest
         $user = $I->haveUser($I);
         $experiment = $I->haveExperimentWithTwoBranch($user['id']);
 
-        $I->haveSummarizationEvents($user['id'], $unsavedEvents);
+        $I->createEventWithSpecificType($user['id'], $unsavedEvents);
 
         $users[] = $I->createEventsWithTypeIncremental($user['id'], $unsavedEvents[0]['event_name'], 10);
         $users[] = $I->createEventsWithTypeIncremental($user['id'], $unsavedEvents[1]['event_name'], 20);
@@ -399,7 +399,11 @@ class ExperimentsStatsCest
             $today->format('Y-m-d')
         );
 
-        $users = collect($users)->flatten()->unique()->values()->toArray();
+        $users = collect($users)
+            ->flatten()
+            ->unique()
+            ->values()
+            ->toArray();
 
         $I->haveConductedExperiments(
             $user['id'],

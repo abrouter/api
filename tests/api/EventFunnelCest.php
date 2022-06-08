@@ -187,7 +187,7 @@ class EventFunnelCest
 
         $user = $I->haveUser($I);
 
-        $I->haveSummarizationEvents($user['id'], $unsavedEvents);
+        $I->createEventWithSpecificType($user['id'], $unsavedEvents);
 
         $I->createEventsWithTypeIncremental($user['id'], $unsavedEvents[0]['event_name'], 10);
         $I->createEventsWithTypeIncremental($user['id'], $unsavedEvents[1]['event_name'], 20);

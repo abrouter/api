@@ -39,7 +39,7 @@ class DisplayUserEvents extends Module implements DependsOnModule
         ];
     }
 
-    public function haveSummarizationEvents(int $ownerId, array $events)
+    public function createEventWithSpecificType(int $ownerId, array $events)
     {
         $date = (new \DateTime())->format('Y-m-d');
 

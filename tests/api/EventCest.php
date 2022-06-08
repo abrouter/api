@@ -81,7 +81,6 @@ class EventCest
                'temporary_user_id' => $temporaryUserId,
                'user_id' => $userId,
                'event' => $event['event_name'],
-               'value' => '',
                'tag' => $tag,
                'referrer' => $referrer,
                'ip' => $ip,

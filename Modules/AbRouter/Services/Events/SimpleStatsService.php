@@ -5,7 +5,6 @@ namespace Modules\AbRouter\Services\Events;
 
 use Exception;
 use Illuminate\Support\Collection;
-use Modules\AbRouter\Models\CustomizationEvent\DisplayUserEvent;
 use Modules\AbRouter\Models\Events\Event;
 use Modules\AbRouter\Models\RelatedUsers\RelatedUser;
 use Modules\AbRouter\Repositories\Events\EventsRepository;

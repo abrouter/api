@@ -11,7 +11,7 @@ class RevenueStats implements Stats
     /**
      * @param Collection $eventsList
      * @param array $uniqUsers
-     * @param array $allDisplayEvents
+     * @param array $displayEvents
      * @param bool $enableDateCounter
      * @return array
      */
@@ -21,7 +21,7 @@ class RevenueStats implements Stats
         array $displayEvents,
         bool $enableDateCounter = false
     ): array {
-        $eventCounters = [];
+        $revenueCounters = [];
 
         foreach ($eventsList as $event) {
             /**
@@ -31,15 +31,15 @@ class RevenueStats implements Stats
             if (in_array($event->event, $displayEvents, true)) {
                 $convertDate = $event->created_at->format('Y-m-d');
 
-                if (!isset($eventCounters[$event->event][$convertDate])) {
-                    $eventCounters[$event->event][$convertDate] = 0;
+                if (!isset($revenueCounters[$event->event][$convertDate])) {
+                    $revenueCounters[$event->event][$convertDate] = 0;
                 }
 
-                $eventCounters[$event->event][$convertDate] += $event->value;
+                $revenueCounters[$event->event][$convertDate] += $event->value;
             }
         }
 
-        return $eventCounters;
+        return $revenueCounters;
     }
 
     /**
