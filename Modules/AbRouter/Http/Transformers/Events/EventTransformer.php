@@ -31,6 +31,7 @@ class EventTransformer
             $request->input('data.attributes.temporary_user_id'),
             $request->input('data.attributes.user_id'),
             $request->input('data.attributes.event'),
+            $request->input('data.attributes.value') ?? '',
             $request->input('data.attributes.tag'),
             $request->input('data.attributes.referrer'),
             (array) $request->input('data.attributes.meta'),

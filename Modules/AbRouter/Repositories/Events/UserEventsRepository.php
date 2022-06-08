@@ -34,7 +34,7 @@ class UserEventsRepository extends BaseRepository
     {
         return $this
             ->query()
-            ->select('referrer')
+            ->select('referrer', 'event')
             ->where('owner_id', $owner)
             ->distinct()
             ->get();
