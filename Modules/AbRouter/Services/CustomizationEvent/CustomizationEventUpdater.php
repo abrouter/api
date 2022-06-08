@@ -16,9 +16,10 @@ class CustomizationEventUpdater
 
         DisplayUserEvent
             ::where('id', $customizationEventUpdateDTO->getId())
-            ->update(['user_id' => $customizationEventUpdateDTO->getUserId(),
-                                  'event_name' => $customizationEventUpdateDTO->getEventName()
-                                ]);
+            ->update([
+                'user_id' => $customizationEventUpdateDTO->getUserId(),
+                'event_name' => $customizationEventUpdateDTO->getEventName(),
+            ]);
         
         return DisplayUserEvent
             ::find(
