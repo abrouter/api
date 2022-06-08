@@ -65,7 +65,7 @@ class ExperimentBranchStatsService extends SimpleStatsService
         );
         $uniqUsersCount = count($jointUsers);
 
-        $eventCounters = $this
+        $incrementalCounters = $this
             ->statsFactory
             ->getStatsMethod('event')
             ->getCounters(
@@ -74,7 +74,7 @@ class ExperimentBranchStatsService extends SimpleStatsService
                 $displayEventsWithTypeSummarizable
             );
 
-        $eventRevenueCounters = $this
+        $summarizationCounters = $this
             ->statsFactory
             ->getStatsMethod('revenue')
             ->getCounters(
@@ -83,29 +83,19 @@ class ExperimentBranchStatsService extends SimpleStatsService
                 $displayEventsWithTypeSummarizable
             );
 
-        $eventRevenuePercentage = $this
-            ->statsFactory
-            ->getStatsMethod('revenue')
-            ->getPercentages(
-                $displayEventsWithTypeSummarizable,
-                $eventRevenueCounters,
-                $allRevenue
-            );
-
         $eventPercentages = $this
             ->statsFactory
             ->getStatsMethod('event')
             ->getPercentages(
                 $allDisplayEvents,
-                $eventCounters,
+                $incrementalCounters,
                 $uniqUsersCount
             );
 
         return new StatsResultsDTO(
             $eventPercentages,
-            $eventCounters,
-            $eventRevenueCounters,
-            $eventRevenuePercentage,
+            $incrementalCounters,
+            $summarizationCounters,
             [],
             [],
             []

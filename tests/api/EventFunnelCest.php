@@ -174,7 +174,7 @@ class EventFunnelCest
         ]);
     }
 
-    public function showStatsRevenue(ApiTester $I)
+    public function showStatsByIncrementalAndSummarizableEvents(ApiTester $I)
     {
         $unsavedEvents = [
             ['type' => 'incremental', 'event_name' => 'view_contact_form'],
@@ -235,9 +235,7 @@ class EventFunnelCest
             ],
             'counters' => [
                 'view_contact_form' => 10,
-                'visit_mainpage' => 20
-            ],
-            'revenueCounters' => [
+                'visit_mainpage' => 20,
                 'revenue' => [
                     $today->format('Y-m-d') => 500,
                     $yesterday->format('Y-m-d') => 300

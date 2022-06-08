@@ -81,7 +81,7 @@ class SimpleStatsService
         
         $uniqUsersCount = count($uniqUsers);
 
-        $eventCounters = $this
+        $incrementalCounters = $this
             ->statsFactory
             ->getStatsMethod('event')
             ->getCounters(
@@ -100,7 +100,7 @@ class SimpleStatsService
                 true
             );
 
-        $eventRevenueCounters = $this
+        $summarizationCounters = $this
             ->statsFactory
             ->getStatsMethod('revenue')
             ->getCounters(
@@ -109,22 +109,13 @@ class SimpleStatsService
                 $displayEventsWithTypeSummarizable,
                 true
             );
-
-        $eventRevenuePercentage = $this
-            ->statsFactory
-            ->getStatsMethod('revenue')
-            ->getPercentages(
-                $displayEventsWithTypeSummarizable,
-                $eventRevenueCounters,
-                $allRevenue
-            );
         
         $eventPercentages = $this
             ->statsFactory
             ->getStatsMethod('event')
             ->getPercentages(
                 $allDisplayEvents,
-                $eventCounters,
+                $incrementalCounters,
                 $uniqUsersCount
             );
 
@@ -151,9 +142,8 @@ class SimpleStatsService
 
         return new StatsResultsDTO(
             $eventPercentages,
-            $eventCounters,
-            $eventRevenueCounters,
-            $eventRevenuePercentage,
+            $incrementalCounters,
+            $summarizationCounters,
             $referrerCounters,
             $referrerPercentage,
             $eventCountersWithDate

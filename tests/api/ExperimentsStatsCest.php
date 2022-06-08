@@ -350,7 +350,7 @@ class ExperimentsStatsCest
         }
     }
 
-    public function showRevenueExperimentStats(ApiTester $I)
+    public function showExperimentStatsByIncrementalAndSummarizableEvents(ApiTester $I)
     {
         $users = [];
 
@@ -447,20 +447,14 @@ class ExperimentsStatsCest
             'counters' => [
                 'branch_first' => [
                     'view_contact_form' => 10,
-                    'visit_mainpage' => 10
-                ],
-                'branch_second' => [
-                    'visit_mainpage' => 10
-                ]
-            ],
-            'revenueCounters' => [
-                'branch_first' => [
+                    'visit_mainpage' => 10,
                     'revenue' =>[
                         $yesterday->format('Y-m-d') => 300,
                         $today->format('Y-m-d') => 500
                     ]
                 ],
                 'branch_second' => [
+                    'visit_mainpage' => 10,
                     'revenue' =>[
                         $yesterday->format('Y-m-d') => 300,
                         $today->format('Y-m-d') => 500

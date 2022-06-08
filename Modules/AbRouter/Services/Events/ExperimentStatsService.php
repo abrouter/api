@@ -88,14 +88,13 @@ class ExperimentStatsService extends SimpleStatsService
 
         $jointUsers = $this->getJointUsersFromEventsAndExperiment($experiment, $uniqUsers);
 
-        $eventCounters = [];
+        $incrementalCounters = [];
         $eventPercentages = [];
         $eventCountersWithDate = [];
-        $eventRevenueCounters = [];
-        $eventRevenuePercentage = [];
+        $summarizationCounters = [];
 
         foreach($jointUsers as $key => $jointUser) {
-            $eventCounters[$key] = $this
+            $incrementalCounters[$key] = $this
                 ->statsFactory
                 ->getStatsMethod('event')
                 ->getCounters(
@@ -114,7 +113,7 @@ class ExperimentStatsService extends SimpleStatsService
                     true
                 );
 
-            $eventRevenueCounters[$key] = $this
+            $summarizationCounters[$key] = $this
                 ->statsFactory
                 ->getStatsMethod('revenue')
                 ->getCounters(
@@ -124,21 +123,12 @@ class ExperimentStatsService extends SimpleStatsService
                     true
                 );
 
-            $eventRevenuePercentage[$key] = $this
-                ->statsFactory
-                ->getStatsMethod('revenue')
-                ->getPercentages(
-                    $displayEventsWithTypeSummarizable,
-                    $eventRevenueCounters[$key],
-                    $allRevenue
-                );
-
             $eventPercentages[$key] = $this
                 ->statsFactory
                 ->getStatsMethod('event')
                 ->getPercentages(
                     $allDisplayEvents,
-                    $eventCounters[$key],
+                    $incrementalCounters[$key],
                     count($jointUser)
                 );
         }
@@ -155,9 +145,8 @@ class ExperimentStatsService extends SimpleStatsService
 
         return new StatsResultsDTO(
             $eventPercentages,
-            $eventCounters,
-            $eventRevenueCounters,
-            $eventRevenuePercentage,
+            $incrementalCounters,
+            $summarizationCounters,
             [],
             [],
             $eventCountersWithDate,

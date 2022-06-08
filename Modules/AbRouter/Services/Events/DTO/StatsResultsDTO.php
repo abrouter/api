@@ -11,21 +11,16 @@ class StatsResultsDTO
      * @var array
      */
     private $percentage;
-    
-    /**
-     * @var array
-     */
-    private $counters;
 
     /**
      * @var array
      */
-    private $revenueCounters;
+    private $incrementalCounters;
 
     /**
      * @var array
      */
-    private $revenuePercentage;
+    private $summarizationCounters;
 
     /**
      * @var array
@@ -49,18 +44,16 @@ class StatsResultsDTO
 
     public function __construct(
         array $percentage,
-        array $counters,
-        array $revenueCounters,
-        array $revenuePercentage,
+        array $incrementalCounters,
+        array $summarizationCounters,
         array $referrersCounters,
         array $referrersPercentage,
         array $eventCountersWithDate,
         Experiment $experiments = null
     ) {
         $this->percentage = $percentage;
-        $this->counters = $counters;
-        $this->revenueCounters = $revenueCounters;
-        $this->revenuePercentage = $revenuePercentage;
+        $this->incrementalCounters = $incrementalCounters;
+        $this->summarizationCounters = $summarizationCounters;
         $this->referrersCounters = $referrersCounters;
         $this->referrersPercentage = $referrersPercentage;
         $this->eventCountersWithDate = $eventCountersWithDate;
@@ -70,9 +63,17 @@ class StatsResultsDTO
     /**
      * @return array
      */
-    public function getCounters(): array
+    public function getIncrementalCounters(): array
     {
-        return $this->counters;
+        return $this->incrementalCounters;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSummarizationCounters(): array
+    {
+        return $this->summarizationCounters;
     }
     
     /**
@@ -89,22 +90,6 @@ class StatsResultsDTO
     public function getReferrersCounters(): array
     {
         return $this->referrersCounters;
-    }
-
-    /**
-     * @return array
-     */
-    public function getRevenueCounters(): array
-    {
-        return $this->revenueCounters;
-    }
-
-    /**
-     * @return array
-     */
-    public function getRevenuePercentage(): array
-    {
-        return $this->revenuePercentage;
     }
 
     /**
