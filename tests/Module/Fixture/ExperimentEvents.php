@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Tests\Module\Fixture;
 
-use ApiTester;
 use Codeception\Module\Laravel;
 use Modules\Core\EntityId\EntityEncoder;
 use Codeception\Lib\Interfaces\DependsOnModule;
@@ -112,36 +111,38 @@ class ExperimentEvents extends Module implements DependsOnModule
                 'updated_at' => $date
             ];
     
-            $branchId[] = $this->laravel->haveRecord(self::TABLE_EXPERIMENT_BRANCHES, $recordBranch);
-            $encodeExperimentBranchId[] = (new EntityEncoder())->encode($branchId[$i], 'experiment_branches');
+            $idBranch = $this->laravel->haveRecord(self::TABLE_EXPERIMENT_BRANCHES, $recordBranch);
+            $encodeExperimentBranchId[] = (new EntityEncoder())->encode($idBranch, 'experiment_branches');
             $this->laravel->seeRecord(self::TABLE_EXPERIMENT_BRANCHES, $recordBranch);
         }
         
         return [
             'alias' => $experimentName,
             'experimentId' => $encodeExperimentId,
-            'decodeExperimentId' => $experimentId,
             'idBranch' => $encodeExperimentBranchId,
-            'decodeBranchId' => $branchId,
             'branchName' => $branchName
         ];
     }
 
-    public function runExperiments(ApiTester $I, string $token, string $experimentAlias, array $users)
-    {
-        $result = [];
+    public function runExperiments(\ApiTester $I, $token, $experimentAlias, $users)
+    {   
+        $branchesId = [];
 
-        foreach ($users as $userKey => $user) {
+        for ($i = 0, $n = 0; $i < 190; $i++, $n++) {
+            if($n === 4) {
+                $n = 0;
+            } 
 
             $I->haveHttpHeader('Content-Type', 'application/json');
             $I->haveHttpHeader('Accept', 'application/json');
             $I->amBearerAuthenticated($token);
 
+
             $payload = [
                 'data' => [
                     'type' => 'experiment-run',
                     'attributes' => [
-                        'userSignature' => $user
+                        'userSignature' => $users[$n]
                     ],
                     'relationships' => [
                         'experiment' => [
@@ -157,8 +158,6 @@ class ExperimentEvents extends Module implements DependsOnModule
             $I->sendPost('/experiment/run', $payload);
 
             $response = json_decode($I->grabResponse(), true);
-            $branch = $response['included'][0]['attributes']['name'];
-            $userId = $response['data']['relationships']['experiment_user']['data']['id'];
 
             $I->seeResponseCodeIsSuccessful(201);
 
@@ -166,39 +165,8 @@ class ExperimentEvents extends Module implements DependsOnModule
                 $branchesId[$response['included'][0]['id']] = $response['included'][0]['id'];
             }
         }
+
         return $branchesId;
-    }
-
-    public function haveConductedExperiments(
-        int $ownerId,
-        int $experimentId,
-        array $experimentBranchesIds,
-        array $users
-    ) {
-        $i = 0;
-        $usersCount = count($users);
-
-        foreach ($users as $userKey => $user) {
-            if ($userKey === $usersCount/2) {
-                $i++;
-            }
-
-            $recordExperimentUsers = [
-                'user_signature' => $user,
-                'owner_id' => $ownerId,
-                'config' => '{}'
-            ];
-
-            $userId = $this->laravel->haveRecord(self::TABLE_EXPERIMENT_USERS, $recordExperimentUsers);
-
-            $recordExperimentUserBranches = [
-                'experiment_user_id' => $userId,
-                'experiment_id' => $experimentId,
-                'experiment_branch_id' => $experimentBranchesIds[$i]
-            ];
-
-            $this->laravel->haveRecord(self::TABLE_EXPERIMENT_USER_BRANCHES, $recordExperimentUserBranches);
-        }
     }
 
     public function experimentsHaveUsers(

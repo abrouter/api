@@ -28,7 +28,6 @@ class EventSchema extends DocumentSchema
         return new Attributes([
             'user_id' => $this->activeData->user_id,
             'event' => $this->activeData->event,
-            'value' => $this->activeData->value,
             'tag' => $this->activeData->tag,
             'referrer' => $this->activeData->referrer,
             'ip' => $this->activeData->ip,

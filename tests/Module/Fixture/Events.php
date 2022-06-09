@@ -24,7 +24,7 @@ class Events extends Module implements DependsOnModule
         $this->laravel = $laravel;
     }
 
-    public function haveEvents(int $ownerId)
+    public function haveEvents(int $owner)
     {
         $events = [];
         $tags = [
@@ -41,13 +41,13 @@ class Events extends Module implements DependsOnModule
             $event = 'event_' . uniqid();
             $tag = $tags[random_int(0,4)];
             $referrer = '';
-            $ip = $this->getRandomIpAddress();
+            $ip = random_int(1, 255) . '.' . random_int(1, 255) . '.' . random_int(1, 255) . '.' . random_int(1, 255);
             $meta = '[]';
             $createdAt = (new \DateTime())->format('Y-m-d');
             $updatedAt = (new \DateTime())->format('Y-m-d');
 
             $recordEvents = [
-                'owner_id' => $ownerId,
+                'owner_id' => $owner,
                 'temporary_user_id' => $temporaryUserId,
                 'user_id' => $userId,
                 'event' => $event,
@@ -60,6 +60,7 @@ class Events extends Module implements DependsOnModule
             ];
 
             $eventId = $this->laravel->haveRecord(self::TABLE_EVENTS, $recordEvents);
+            $this->laravel->seeRecord(self::TABLE_EVENTS, $recordEvents);
 
             $events[] = array_merge($recordEvents, ['eventId' => $eventId]);
         }
@@ -67,7 +68,7 @@ class Events extends Module implements DependsOnModule
         return $events;
     }
 
-    public function createEventsWithUserId(int $ownerId, array $events)
+    public function createEventsWithUserId(int $owner, array $events)
     {   
         $users = [];
 
@@ -90,13 +91,13 @@ class Events extends Module implements DependsOnModule
 
             $tag = 'test';
             $referrer = '';
-            $ip = $this->getRandomIpAddress();
+            $ip = random_int(1, 255) . '.' . random_int(1, 255) . '.' . random_int(1, 255) . '.' . random_int(1, 255);
             $meta = '[]';
             $createdAt = (new \DateTime())->format('Y-m-d');
             $updatedAt = (new \DateTime())->format('Y-m-d');
 
             $recordEvents = [
-                'owner_id' => $ownerId,
+                'owner_id' => $owner,
                 'temporary_user_id' => '',
                 'user_id' => $users[$m],
                 'event' => $events[$c],
@@ -109,9 +110,10 @@ class Events extends Module implements DependsOnModule
             ];
 
             $eventId = $this->laravel->haveRecord(self::TABLE_EVENTS, $recordEvents);
+            $this->laravel->seeRecord(self::TABLE_EVENTS, $recordEvents);
 
             $recordRelatedUsers = [
-                'owner_id' => $ownerId,
+                'owner_id' => $owner,
                 'event_id' => $eventId,
                 'user_id' => $users[$m],
                 'related_user_id' => '',
@@ -125,7 +127,7 @@ class Events extends Module implements DependsOnModule
         return $users;
     }
 
-    public function createEventsWithTemporaryUserId(int $ownerId, array $events)
+    public function createEventsWithTemporaryUserId(int $owner, array $events)
     {
         $temporaryUsers = [];
 
@@ -149,13 +151,13 @@ class Events extends Module implements DependsOnModule
 
             $tag = 'test';
             $referrer = '';
-            $ip = $this->getRandomIpAddress();
+            $ip = random_int(1, 255) . '.' . random_int(1, 255) . '.' . random_int(1, 255) . '.' . random_int(1, 255);
             $meta = '[]';
             $createdAt = (new \DateTime())->format('Y-m-d');
             $updatedAt = (new \DateTime())->format('Y-m-d');
 
             $recordEvents = [
-                'owner_id' => $ownerId,
+                'owner_id' => $owner,
                 'temporary_user_id' => $temporaryUsers[$m],
                 'user_id' => '',
                 'event' => $events[$c],
@@ -168,9 +170,10 @@ class Events extends Module implements DependsOnModule
             ];
 
             $eventId = $this->laravel->haveRecord(self::TABLE_EVENTS, $recordEvents);
+            $this->laravel->seeRecord(self::TABLE_EVENTS, $recordEvents);
 
             $recordRelatedUsers = [
-                'owner_id' => $ownerId,
+                'owner_id' => $owner,
                 'event_id' => $eventId,
                 'user_id' => '',
                 'related_user_id' => $temporaryUsers[$m],
@@ -178,12 +181,13 @@ class Events extends Module implements DependsOnModule
             ];
             
             $this->laravel->haveRecord(self::TABLE_RELATED_USERS, $recordRelatedUsers);
+            $this->laravel->seeRecord(self::TABLE_RELATED_USERS, $recordRelatedUsers);
         }
 
         return $temporaryUsers;
     }
 
-    public function createEventsWithTemporaryUserAndUser(int $ownerId, array $events)
+    public function createEventsWithTemporaryUserAndUser(int $owner, array $events)
     {
         $c = 0;
 
@@ -208,13 +212,13 @@ class Events extends Module implements DependsOnModule
             
             $tag = 'test';
             $referrer = '';
-            $ip = $this->getRandomIpAddress();
+            $ip = random_int(1, 255) . '.' . random_int(1, 255) . '.' . random_int(1, 255) . '.' . random_int(1, 255);
             $meta = '[]';
             $createdAt = (new \DateTime())->format('Y-m-d');
             $updatedAt = (new \DateTime())->format('Y-m-d');
 
             $recordEvents = [
-                'owner_id' => $ownerId,
+                'owner_id' => $owner,
                 'temporary_user_id' => $temporaryUserId ?? '',
                 'user_id' => $userId ?? '',
                 'event' => $events[$c],
@@ -227,9 +231,10 @@ class Events extends Module implements DependsOnModule
             ];
 
             $eventId = $this->laravel->haveRecord(self::TABLE_EVENTS, $recordEvents);
+            $this->laravel->seeRecord(self::TABLE_EVENTS, $recordEvents);
 
             $recordRelatedUsers = [
-                'owner_id' => $ownerId,
+                'owner_id' => $owner,
                 'event_id' => $eventId,
                 'user_id' => $userId ?? '',
                 'related_user_id' => $temporaryUserId ?? '',
@@ -237,13 +242,14 @@ class Events extends Module implements DependsOnModule
             ];
             
             $this->laravel->haveRecord(self::TABLE_RELATED_USERS, $recordRelatedUsers);
+            $this->laravel->seeRecord(self::TABLE_RELATED_USERS, $recordRelatedUsers);
 
             unset($userId);
             unset($temporaryUserId);
         }
     }
 
-    public function createEventsWithRelatedUserAndUser(int $ownerId, array $events)
+    public function createEventsWithRelatedUserAndUser(int $owner, array $events)
     {
         $c = 0;
 
@@ -260,20 +266,22 @@ class Events extends Module implements DependsOnModule
 
             if($m % 3 === 0) {
                 $userId = (new EntityEncoder())->encode($m, 'users');
+                $temporaryUserId = '';
             } else {
+                $userId = '';
                 $temporaryUserId = substr(md5('user_' . $m), 0, 13);
             }
             
             
             $tag = 'test';
             $referrer = '';
-            $ip = $this->getRandomIpAddress();
+            $ip = random_int(1, 255) . '.' . random_int(1, 255) . '.' . random_int(1, 255) . '.' . random_int(1, 255);
             $meta = '[]';
             $createdAt = (new \DateTime())->format('Y-m-d');
             $updatedAt = (new \DateTime())->format('Y-m-d');
 
             $recordEvents = [
-                'owner_id' => $ownerId,
+                'owner_id' => $owner,
                 'temporary_user_id' => $temporaryUserId ?? '',
                 'user_id' => $userId ?? '',
                 'event' => $events[$c],
@@ -286,16 +294,18 @@ class Events extends Module implements DependsOnModule
             ];
 
             $eventId = $this->laravel->haveRecord(self::TABLE_EVENTS, $recordEvents);
+            $this->laravel->seeRecord(self::TABLE_EVENTS, $recordEvents);
 
             $recordRelatedUsers = [
-                'owner_id' => $ownerId,
+                'owner_id' => $owner,
                 'event_id' => $eventId,
                 'user_id' => $userId ?? '',
                 'related_user_id' => $temporaryUserId ?? '',
                 'created_at' => $createdAt,
             ];
-
+            
             $this->laravel->haveRecord(self::TABLE_RELATED_USERS, $recordRelatedUsers);
+            $this->laravel->seeRecord(self::TABLE_RELATED_USERS, $recordRelatedUsers);
 
             $users[] = $userId ?? $temporaryUserId;
             unset($userId);
@@ -303,99 +313,7 @@ class Events extends Module implements DependsOnModule
         }
     }
 
-    public function createEventsWithTypeIncremental(
-        int $ownerId,
-        string $eventName,
-        int $eventsCount
-    ) {
-        $users = [];
-
-        for ($i = 0; $i < $eventsCount; $i++) {
-            $userId = (new EntityEncoder())->encode($i, 'users');
-            $temporaryUserId = substr(md5('user_' . $i), 0, 13);
-            $tag = 'test';
-            $referrer = '';
-            $ip = $this->getRandomIpAddress();
-            $meta = '[]';
-            $createdAt = (new \DateTime())->format('Y-m-d');
-            $updatedAt = (new \DateTime())->format('Y-m-d');
-
-            $recordEvents = [
-                'owner_id' => $ownerId,
-                'temporary_user_id' => $temporaryUserId,
-                'user_id' => $userId,
-                'event' => $eventName,
-                'tag' => $tag,
-                'referrer' => $referrer,
-                'ip' => $ip,
-                'meta' => $meta,
-                'created_at' => $createdAt,
-                'updated_at' => $updatedAt
-            ];
-
-            $eventId = $this->laravel->haveRecord(self::TABLE_EVENTS, $recordEvents);
-
-            $recordRelatedUsers = [
-                'owner_id' => $ownerId,
-                'event_id' => $eventId,
-                'user_id' => $userId,
-                'related_user_id' => $temporaryUserId,
-                'created_at' => $createdAt,
-            ];
-
-            $this->laravel->haveRecord(self::TABLE_RELATED_USERS, $recordRelatedUsers);
-
-            $users[] = $userId;
-        }
-
-        return $users;
-    }
-
-    public function createEventsWithTypeSummarizable(
-        int $ownerId,
-        string $eventName,
-        int $userId,
-        int $value,
-        string $createdAt
-    ) {
-        $userId = (new EntityEncoder())->encode($userId, 'users');
-        $temporaryUserId = substr(md5('user_' . $userId), 0, 13);
-        $tag = 'test';
-        $referrer = '';
-        $ip = $this->getRandomIpAddress();
-        $meta = '[]';
-        $updatedAt = (new \DateTime())->format('Y-m-d');
-
-        $recordEvents = [
-            'owner_id' => $ownerId,
-            'temporary_user_id' => $temporaryUserId,
-            'user_id' => $userId,
-            'event' => $eventName,
-            'value' => $value,
-            'tag' => $tag,
-            'referrer' => $referrer,
-            'ip' => $ip,
-            'meta' => $meta,
-            'created_at' => $createdAt,
-            'updated_at' => $updatedAt
-        ];
-
-        $eventId = $this->laravel->haveRecord(self::TABLE_EVENTS, $recordEvents);
-
-        $recordRelatedUsers = [
-            'owner_id' => $ownerId,
-            'event_id' => $eventId,
-            'user_id' => $userId,
-            'related_user_id' => $temporaryUserId,
-            'created_at' => $createdAt,
-        ];
-
-        $this->laravel->haveRecord(self::TABLE_RELATED_USERS, $recordRelatedUsers);
-
-        return $userId;
-    }
-
-    public function createEventsWithRelatedUserAndUserForExperimentStats(int $ownerId, array $events)
+    public function createEventsWithRelatedUserAndUserForExperimentStats(int $owner, array $events)
     {
         $c = 0;
 
@@ -409,31 +327,34 @@ class Events extends Module implements DependsOnModule
                 $n = 0;
                 $c++;
 
-                if($c === 10) {
+                if($c === 4) {
                     $c = 0;
                 }
             }
 
             if($m % 3 === 0) {
+                //something went wrong here
+//              $temporaryUserId = '';
                 $userId = (new EntityEncoder())->encode($m, 'users');
             } else {
+                //something went wrong here
+//              $userId = '';
                 $temporaryUserId = substr(md5('user_' . $m), 0, 13);
             }
             
             
             $tag = 'test';
             $referrer = '';
-            $ip = $this->getRandomIpAddress();
+            $ip = random_int(1, 255) . '.' . random_int(1, 255) . '.' . random_int(1, 255) . '.' . random_int(1, 255);
             $meta = '[]';
             $createdAt = (new \DateTime())->format('Y-m-d');
             $updatedAt = (new \DateTime())->format('Y-m-d');
 
             $recordEvents = [
-                'owner_id' => $ownerId,
+                'owner_id' => $owner,
                 'temporary_user_id' => $temporaryUserId ?? '',
                 'user_id' => $userId ?? '',
                 'event' => $events[$c],
-                'value' => mt_rand(0,100),
                 'tag' => $tag,
                 'referrer' => $referrer,
                 'ip' => $ip,
@@ -443,9 +364,10 @@ class Events extends Module implements DependsOnModule
             ];
 
             $eventId = $this->laravel->haveRecord(self::TABLE_EVENTS, $recordEvents);
+            $this->laravel->seeRecord(self::TABLE_EVENTS, $recordEvents);
 
             $recordRelatedUsers = [
-                'owner_id' => $ownerId,
+                'owner_id' => $owner,
                 'event_id' => $eventId,
                 'user_id' => $userId ?? '',
                 'related_user_id' => $temporaryUserId ?? '',
@@ -453,6 +375,7 @@ class Events extends Module implements DependsOnModule
             ];
             
             $this->laravel->haveRecord(self::TABLE_RELATED_USERS, $recordRelatedUsers);
+            $this->laravel->seeRecord(self::TABLE_RELATED_USERS, $recordRelatedUsers);
 
             $users[] = $userId ?? $temporaryUserId;
             unset($userId);
@@ -460,11 +383,6 @@ class Events extends Module implements DependsOnModule
         }
         
         return $users;
-    }
-
-    public function getRandomIpAddress()
-    {
-        return mt_rand(1, 255) . '.' . mt_rand(1, 255) . '.' . mt_rand(1, 255) . '.' . mt_rand(1, 255);
     }
 
     /**

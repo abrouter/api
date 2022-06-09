@@ -8,30 +8,22 @@ use Modules\AbRouter\Repositories\Events\EventsRepository;
 use Modules\AbRouter\Repositories\Events\UserEventsRepository;
 use Modules\AbRouter\Repositories\RelatedUser\RelatedUserRepository;
 use Modules\AbRouter\Repositories\Experiments\ExperimentBranchUserRepository;
-use Modules\AbRouter\Services\Events\Stats\StatsFactory;
 use Modules\AbRouter\Services\Events\DTO\StatsQueryDTO;
 use Modules\AbRouter\Services\Events\DTO\StatsResultsDTO;
 
 class ExperimentBranchStatsService extends SimpleStatsService
 {
-    /**
-     * @var ExperimentBranchUserRepository
-     */
-    private $experimentBranchUserRepository;
-
     function __construct(
         UserEventsRepository           $userEventsRepository,
         EventsRepository               $eventsRepository,
         RelatedUserRepository          $relatedUserRepository,
-        ExperimentBranchUserRepository $experimentBranchUserRepository,
-        StatsFactory                   $statsFactory
+        ExperimentBranchUserRepository $experimentBranchUserRepository
     )
     {
         parent::__construct(
             $userEventsRepository,
             $eventsRepository,
-            $relatedUserRepository,
-            $statsFactory
+            $relatedUserRepository
         );
 
         $this->experimentBranchUserRepository = $experimentBranchUserRepository;
@@ -53,9 +45,8 @@ class ExperimentBranchStatsService extends SimpleStatsService
             ->pluck('relatedUsers')
             ->flatten();
 
-        $allDisplayEvents = $this->getDisplayEvents($statsQueryDTO->getOwnerId());
-        $displayEventsWithTypeSummarizable = $this->getDisplayEventsWithTypeSummarizable($allDisplayEvents);
-        $allRevenue = $this->getAllRevenue($allUserEvents);
+        $eventsNames = $this->getDisplayEvents($statsQueryDTO->getOwnerId());
+
         $uniqUsersIds = $this->getUniqUsersIds($allUserEvents);
         $uniqRelatedUsersIds = $this->getUniqRelatedUsersIds(...$allRelatedUsers->all());
         $uniqUsers = $this->getFinalUniqUsers($uniqUsersIds, $uniqRelatedUsersIds);
@@ -65,37 +56,21 @@ class ExperimentBranchStatsService extends SimpleStatsService
         );
         $uniqUsersCount = count($jointUsers);
 
-        $incrementalCounters = $this
-            ->statsFactory
-            ->getStatsMethod('event')
-            ->getCounters(
-                $allUserEvents,
-                $jointUsers,
-                $displayEventsWithTypeSummarizable
-            );
+        $eventCounters = $this->getCounters(
+            $allUserEvents,
+            $jointUsers,
+            'event'
+        );
 
-        $summarizationCounters = $this
-            ->statsFactory
-            ->getStatsMethod('revenue')
-            ->getCounters(
-                $allUserEvents,
-                [],
-                $displayEventsWithTypeSummarizable
-            );
-
-        $eventPercentages = $this
-            ->statsFactory
-            ->getStatsMethod('event')
-            ->getPercentages(
-                $allDisplayEvents,
-                $incrementalCounters,
-                $uniqUsersCount
-            );
+        $eventPercentages = $this->getPercentages(
+            $eventsNames,
+            $eventCounters,
+            $uniqUsersCount
+        );
 
         return new StatsResultsDTO(
             $eventPercentages,
-            $incrementalCounters,
-            $summarizationCounters,
+            $eventCounters,
             [],
             [],
             []
