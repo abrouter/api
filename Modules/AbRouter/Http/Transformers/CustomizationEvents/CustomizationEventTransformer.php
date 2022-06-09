@@ -26,7 +26,6 @@ class CustomizationEventTransformer
         return new CustomizationEventDTO(
             $this->encoder->decode($request->input('data.relationships.user.data.id'), 'users'),
             $request->input('data.attributes.event_name'),
-            $request->input('data.attributes.event_type'),
             '0'
         );
     }

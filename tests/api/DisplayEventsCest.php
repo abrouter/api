@@ -7,38 +7,21 @@ class DisplayEventsCest
     }
 
     public function createEvents(ApiTester $I)
-    {
+    {   
         $user = $I->haveUser($I);
-
-        $events = [
-            'visit_mainpage',
-            'open_contact_form',
-            'visited_book_call',
-            'fill_form_later',
-            'form_filler_complete',
-            'visited_nutrionists_page',
-            'skip_call_booking',
-            'thankyou_page',
-            'leave',
-            'sign up'
-            ];
-
-        $type = ['incremental', 'summarizable'];
+        $events = $I->haveUserEvents();
 
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->haveHttpHeader('Accept', 'application/json');
         $I->amBearerAuthenticated($user['token']);
 
         foreach($events as $event) {
-            $eventType = $type[mt_rand(0,1)];
-
             $I->sendPost('/user-events', [
                 'data' => [
                     'type' => 'display_user_events',
                     'attributes' => [
                         'id' => null,
-                        'event_name' => $event,
-                        'event_type' => $eventType
+                        'event_name' => $event
                     ],
                     'relationships' => [
                         'user' => [
@@ -52,29 +35,22 @@ class DisplayEventsCest
             ]);
     
             $response = json_decode($I->grabResponse(), true);
-            $entry = $response['data'];
+            $eventName = $response['data']['attributes']['event_name'];
 
-            $I->seeRecord(
-                'display_user_events',
-                [
-                    'event_name' => $event,
-                    'type' => $eventType,
-                    'user_id' => $user['id']
-                ]);
+            $I->seeRecord('display_user_events', ['event_name' => $eventName, 'user_id' => $user['id']]);
             
             $I->seeResponseCodeIsSuccessful(201);
             $I->seeResponseContainsJson([
                 'data' => [
-                    'id' => $entry['id'],
+                    'id' => $response['data']['id'],
                     'type' => 'display_user_events',
                     'attributes' => [
-                        'event_name' => $event,
-                        'event_type' => $eventType
+                        'event_name' => $eventName
                     ],
                     'relationships' => [
                         'user_id' => [
                             'data' => [
-                                'id' => $entry['relationships']['user_id']['data']['id'],
+                                'id' => $response['data']['relationships']['user_id']['data']['id'],
                                 'type' => 'users'
                             ]
                         ]
@@ -87,80 +63,27 @@ class DisplayEventsCest
     public function getEvents(ApiTester $I)
     {
         $user = $I->haveUser($I);
-        $events = $I->haveUserEvents($user['id']);
-        $savedEvents = $I->saveUserEvents($user['id'], $events);
-
-        $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->haveHttpHeader('Accept', 'application/json');
-        $I->amBearerAuthenticated($user['token']);
-
-        $I->sendGet('/user-events');
-        
-        $I->seeResponseCodeIsSuccessful(201);
-        
-        foreach($savedEvents as $event) {
-            $I->seeResponseContainsJson([
-                'data' => [
-                    [
-                        'id' => $event['id'],
-                        'type' => 'display_user_events',
-                        'attributes' => [
-                            'event_name' => $event['event_name'],
-                            'event_type' => 'incremental'
-                        ],
-                        'relationships' => [
-                            'user_id' => [
-                                'data' => [
-                                    'id' => $user['encodeId'],
-                                    'type' => 'users'
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
-            ]);
-        }
-    }
-
-    public function updateEvents(ApiTester $I)
-    {
-        $user = $I->haveUser($I);
-        $events = $I->haveUserEvents($user['id']);
-        $savedEvents = $I->saveUserEvents($user['id'], $events);
+        $events = $I->haveUserEvents();
+        $saveEvents = $I->saveUserEvents($user['id'], $events);
         $n = 0;
 
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->haveHttpHeader('Accept', 'application/json');
         $I->amBearerAuthenticated($user['token']);
 
-        foreach($savedEvents as $event) {
-            $newEvent = 'event_' . $n . uniqid();
+        $I->sendGet('/user-events');
 
-            $I->sendPatch('/user-events/' . $event['id'], [
-                'data' => [
-                    'type' => 'display_user_events',
-                    'attributes' => [
-                        'id' => $event['id'],
-                        'event_name' => $newEvent
-                    ],
-                    'relationships' => [
-                        'user' => [
-                            'data' => [
-                                'id' => $user['encodeId'],
-                                'type' => 'users'
-                            ]
-                        ]
-                    ]
-                ]
-            ]);
-            
-            $I->seeResponseCodeIsSuccessful(201);
+        $response = json_decode($I->grabResponse(), true);
+        
+        $I->seeResponseCodeIsSuccessful(201);
+        
+        foreach($saveEvents['events'] as $event) {
             $I->seeResponseContainsJson([
                 'data' => [
-                    'id' => $event['id'],
+                    'id' => $response['data'][$n]['id'],
                     'type' => 'display_user_events',
                     'attributes' => [
-                        'event_name' => $newEvent
+                        'event_name' => $event
                     ],
                     'relationships' => [
                         'user_id' => [
@@ -172,26 +95,31 @@ class DisplayEventsCest
                     ]
                 ]
             ]);
+
+            $n++;
         }
     }
 
-    public function deleteEvents(ApiTester $I)
+    public function updateEvents(ApiTester $I)
     {
         $user = $I->haveUser($I);
-        $events = $I->haveUserEvents($user['id']);
-        $savedEvents = $I->saveUserEvents($user['id'], $events);
+        $events = $I->haveUserEvents();
+        $saveEvents = $I->saveUserEvents($user['id'], $events);
+        $n = 0;
 
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->haveHttpHeader('Accept', 'application/json');
         $I->amBearerAuthenticated($user['token']);
 
-        foreach($savedEvents as $event) {
-            $I->sendDelete('/user-events/' . $event['id'], [
+        foreach($saveEvents['eventsId'] as $id) {
+            $event = 'event_' . $n . uniqid();
+
+            $I->sendPatch('/user-events/' . $id, [
                 'data' => [
                     'type' => 'display_user_events',
                     'attributes' => [
-                        'id' => $event['id'],
-                        'event_name' => $event['event_name']
+                        'id' => $id,
+                        'event_name' => $event
                     ],
                     'relationships' => [
                         'user' => [
@@ -203,8 +131,68 @@ class DisplayEventsCest
                     ]
                 ]
             ]);
+    
+            $response = json_decode($I->grabResponse(), true);
             
-            $I->seeResponseCodeIsSuccessful(200);
+            $I->seeResponseCodeIsSuccessful(201);
+            $I->seeResponseContainsJson([
+                'data' => [
+                    'id' => $id,
+                    'type' => 'display_user_events',
+                    'attributes' => [
+                        'event_name' => $event
+                    ],
+                    'relationships' => [
+                        'user_id' => [
+                            'data' => [
+                                'id' => $user['encodeId'],
+                                'type' => 'users'
+                            ]
+                        ]
+                    ]
+                ]
+            ]);
+
+            $n++;
+        }
+    }
+
+    public function deleteEvents(ApiTester $I)
+    {
+        $user = $I->haveUser($I);
+        $events = $I->haveUserEvents();
+        $saveEvents = $I->saveUserEvents($user['id'], $events);
+        $n = 0;
+
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->haveHttpHeader('Accept', 'application/json');
+        $I->amBearerAuthenticated($user['token']);
+
+        foreach($saveEvents['eventsId'] as $id) {
+
+            $I->sendDelete('/user-events/' . $id, [
+                'data' => [
+                    'type' => 'display_user_events',
+                    'attributes' => [
+                        'id' => $id,
+                        'event_name' => $saveEvents['events'][$n]
+                    ],
+                    'relationships' => [
+                        'user' => [
+                            'data' => [
+                                'id' => $user['encodeId'],
+                                'type' => 'users'
+                            ]
+                        ]
+                    ]
+                ]
+            ]);
+    
+            $response = json_decode($I->grabResponse(), true);
+            
+            $I->seeResponseCodeIsSuccessful(201);
+
+            $n++;
         }
     }
 }

@@ -76,7 +76,8 @@ class CustomizationEventController extends Controller
      * Remove the specified resource from storage.
      * @param CustomizationEventUpdateRequests $request
      * @param CustomizationEventUpdateTransformer $transformer
-     * @param CustomizationEventDeleterService $customizationEventDeleter
+     * @param CustomizationEventDelete $customizationEventDeleter
+     * @return DisplayUserEvent
      */
     public function delete(
         CustomizationEventUpdateRequests $request,
@@ -84,6 +85,6 @@ class CustomizationEventController extends Controller
         CustomizationEventDeleterService $customizationEventDeleter
     ): void {
         $customizationEventDeleteDTO = $transformer->transform($request);
-        $customizationEventDeleter->delete($customizationEventDeleteDTO);
+        $deleteCustomEvent = $customizationEventDeleter->delete($customizationEventDeleteDTO);
     }
 }

@@ -20,7 +20,6 @@ use Modules\Core\EntityId\IdTrait;
  * @property string temporary_user_id
  * @property string user_id
  * @property string event
- * @property string value
  * @property string tag
  * @property string ip
  * @property string referrer
@@ -41,7 +40,6 @@ class Event extends Model
         'temporary_user_id' => 'string',
         'user_id' => 'string',
         'event' => 'string',
-        'value' => 'string',
         'tag' => 'string',
         'referrer' => 'string',
         'ip'=> 'string',
@@ -56,7 +54,6 @@ class Event extends Model
         'temporary_user_id',
         'user_id',
         'event',
-        'value',
         'tag',
         'referrer',
         'meta',

@@ -10,7 +10,7 @@ use Modules\Core\EntityId\EntityEncoder;
 
 class DisplayUserEvents extends Module implements DependsOnModule
 {
-    public const TABLE_DISPLAY_USER_EVENTS = 'display_user_events';
+    public const TABLE_DISPLAYY_USER_EVENTS = 'display_user_events';
 
     /**
      * @var Laravel
@@ -25,7 +25,7 @@ class DisplayUserEvents extends Module implements DependsOnModule
 
     public function haveUserEvents()
     {
-        return [
+        $events = [
             'visit_mainpage',
             'open_contact_form',
             'visited_book_call',
@@ -37,54 +37,37 @@ class DisplayUserEvents extends Module implements DependsOnModule
             'leave',
             'sign up'
         ];
-    }
-
-    public function createEventWithSpecificType(int $ownerId, array $events)
-    {
-        $date = (new \DateTime())->format('Y-m-d');
-
-        foreach($events as $event) {
-            $this->laravel->haveRecord(
-                self::TABLE_DISPLAY_USER_EVENTS,
-                [
-                    'user_id' => $ownerId,
-                    'event_name' => $event['event_name'],
-                    'type' => $event['type'],
-                    'order' => 0,
-                    'created_at' => $date,
-                    'updated_at' => $date
-                ]
-            );
-        }
 
         return $events;
     }
 
-    public function saveUserEvents(int $ownerId, array $events)
+    public function haveUserEventsForExperimentStats()
     {
-        $savedEvents = [];
+        $events = [
+            'visit_mainpage',
+            'open_contact_form',
+            'visited_book_call',
+            'fill_form_later',
+        ];
+
+        return $events;
+    }
+
+    public function saveUserEvents(int $owner, array $events)
+    {
+        $eventsId = [];
         $date = (new \DateTime())->format('Y-m-d');
 
         foreach($events as $event) {
-            $eventId = $this
-                ->laravel
-                ->haveRecord(
-                    self::TABLE_DISPLAY_USER_EVENTS,
-                    [
-                        'user_id' => $ownerId,
-                        'event_name' => $event,
-                        'type' => 'incremental',
-                        'order' => 0,
-                        'created_at' => $date,
-                        'updated_at' => $date
-                ]);
+            $eventId = $this->laravel->haveRecord(self::TABLE_DISPLAYY_USER_EVENTS, ['user_id' => $owner, 'event_name' => $event, 'order' => 0, 'created_at' => $date, 'updated_at' => $date]);
+            $this->laravel->seeRecord(self::TABLE_DISPLAYY_USER_EVENTS, ['user_id' => $owner, 'event_name' => $event, 'order' => 0, 'created_at' => $date, 'updated_at' => $date]);
             $encodeEventId = (new EntityEncoder())->encode($eventId, 'display_user_events');
-            $savedEvents[] = ['event_name' => $event, 'id' => $encodeEventId];
+            $eventsId[] = $encodeEventId;
         }
 
-        return $savedEvents;
+        return ['events' => $events, 'eventsId' => $eventsId];
     }
-
+    
     /**
      * {@inheritdoc}
      */

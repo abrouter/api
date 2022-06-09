@@ -6,42 +6,34 @@ namespace Modules\AbRouter\Services\CustomizationEvent\DTO;
 class CustomizationEventDTO
 {
     /**
-     * @var int
+     * @var string
      */
     private $userId;
     
     /**
      * @var string
      */
-    private $eventName;
-
-    /**
-     * @var string
-     */
-    private $eventType;
+    private $event_name;
 
     /**
      * @var string
      */
     private $order;
-
+    
     /**
      * CustomizationEventDTO constructor.
      *
-     * @param int $userId
-     * @param string $eventName
-     * @param string $eventType
+     * @param string $userId
+     * @param string $event_name
      * @param string $order
      */
     public function __construct(
         int $userId,
         string $eventName,
-        string $eventType,
         string $order
     ) {
         $this->userId = $userId;
         $this->eventName = $eventName;
-        $this->eventType = $eventType;
         $this->order = $order;
     }
     
@@ -59,14 +51,6 @@ class CustomizationEventDTO
     public function getEventName(): string
     {
         return $this->eventName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getEventType(): string
-    {
-        return $this->eventType;
     }
     
     /**
