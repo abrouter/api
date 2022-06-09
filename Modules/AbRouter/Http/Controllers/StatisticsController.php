@@ -66,13 +66,10 @@ class StatisticsController
             $request->input('filter.date_from'),
             $request->input('filter.date_to')
         ));
-
+        
         return [
             'percentage' => $results->getPercentage(),
-            'counters' => array_merge(
-                $results->getIncrementalCounters(),
-                $results->getSummarizationCounters()
-            ),
+            'counters' => $results->getCounters(),
             'referrersCounters' => $results->getReferrersCounters(),
             'referrersPercentage' => $results->getReferrersPercentage(),
             'eventCountersWithDate' => $results->getEventCountersWithDate()
@@ -91,10 +88,7 @@ class StatisticsController
         
         return [
             'percentage' => $results->getPercentage(),
-            'counters' => array_merge(
-                $results->getIncrementalCounters(),
-                $results->getSummarizationCounters()
-            )
+            'counters' => $results->getCounters(),
         ];
     }
 
@@ -107,14 +101,10 @@ class StatisticsController
             ->getStatsByExperiment(
                 $experimentStatsTransformer->transform($request)
             );
-
+        
         return [
             'experiment' => $results->getExperiments(),
             'percentage' => $results->getPercentage(),
-            'counters' => array_merge_recursive(
-                $results->getIncrementalCounters(),
-                $results->getSummarizationCounters()
-            ),
             'eventCountersWithDate' => $results->getEventCountersWithDate()
         ];
     }

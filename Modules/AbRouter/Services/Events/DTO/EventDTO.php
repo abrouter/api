@@ -24,11 +24,6 @@ class EventDTO
      * @var string
      */
     private $event;
-
-    /**
-     * @var string
-     */
-    private $value;
     
     /**
      * @var string
@@ -64,10 +59,9 @@ class EventDTO
      * EventDTO constructor.
      *
      * @param int         $ownerId
-     * @param string|null $temporaryUserId
+     * @param string      $temporaryUserId
      * @param string      $userId
      * @param string      $event
-     * @param string      $value
      * @param string      $tag
      * @param string      $referrer
      * @param array       $meta
@@ -80,7 +74,6 @@ class EventDTO
         ?string $temporaryUserId,
         string $userId,
         string $event,
-        string $value,
         string $tag,
         string $referrer,
         array $meta,
@@ -92,7 +85,6 @@ class EventDTO
         $this->temporaryUserId = $temporaryUserId;
         $this->userId = $userId;
         $this->event = $event;
-        $this->value = $value;
         $this->tag = $tag;
         $this->referrer = $referrer;
         $this->meta = $meta;
@@ -132,15 +124,7 @@ class EventDTO
     {
         return $this->event;
     }
-
-    /**
-     * @return string
-     */
-    public function getValue(): string
-    {
-        return $this->value;
-    }
-
+    
     /**
      * @return string
      */
