@@ -28,6 +28,7 @@ class DisplayUserEventSchema extends DocumentSchema
     {
         return new Attributes([
             'event_name' => $this->activeData->event_name,
+            'event_type' => $this->activeData->type,
         ]);
     }
 

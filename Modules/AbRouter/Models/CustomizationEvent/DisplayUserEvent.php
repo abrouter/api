@@ -16,6 +16,7 @@ use Modules\Core\EntityId\IdTrait;
  * @property int id
  * @property string user_id
  * @property string event_name
+ * @property string type
  * @property string order
  * @property Carbon created_at
  * @property Carbon updated_at
@@ -29,6 +30,7 @@ class DisplayUserEvent extends Model
         'id' => 'int',
         'user_id' => 'int',
         'event_name' => 'string',
+        'type' => 'string',
         'order' => 'int',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
@@ -37,6 +39,7 @@ class DisplayUserEvent extends Model
     protected $fillable = [
         'user_id',
         'event_name',
+        'type',
         'order',
     ];
 

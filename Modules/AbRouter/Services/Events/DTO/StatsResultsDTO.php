@@ -11,11 +11,16 @@ class StatsResultsDTO
      * @var array
      */
     private $percentage;
-    
+
     /**
      * @var array
      */
-    private $counters;
+    private $incrementalCounters;
+
+    /**
+     * @var array
+     */
+    private $summarizationCounters;
 
     /**
      * @var array
@@ -39,14 +44,16 @@ class StatsResultsDTO
 
     public function __construct(
         array $percentage,
-        array $counters,
+        array $incrementalCounters,
+        array $summarizationCounters,
         array $referrersCounters,
         array $referrersPercentage,
         array $eventCountersWithDate,
         Experiment $experiments = null
     ) {
         $this->percentage = $percentage;
-        $this->counters = $counters;
+        $this->incrementalCounters = $incrementalCounters;
+        $this->summarizationCounters = $summarizationCounters;
         $this->referrersCounters = $referrersCounters;
         $this->referrersPercentage = $referrersPercentage;
         $this->eventCountersWithDate = $eventCountersWithDate;
@@ -56,9 +63,17 @@ class StatsResultsDTO
     /**
      * @return array
      */
-    public function getCounters(): array
+    public function getIncrementalCounters(): array
     {
-        return $this->counters;
+        return $this->incrementalCounters;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSummarizationCounters(): array
+    {
+        return $this->summarizationCounters;
     }
     
     /**
