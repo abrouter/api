@@ -3,7 +3,6 @@ declare(strict_types =1);
 
 namespace Modules\AbRouter\Services\Events;
 
-use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Modules\AbRouter\Repositories\Events\EventsRepository;
 use Modules\AbRouter\Repositories\Events\UserEventsRepository;
@@ -13,6 +12,7 @@ use Modules\AbRouter\Repositories\Experiments\ExperimentsRepository;
 use Modules\AbRouter\Services\Events\DTO\StatsQueryDTO;
 use Modules\AbRouter\Services\Events\DTO\StatsResultsDTO;
 use Modules\AbRouter\Models\Experiments\Experiment;
+use Modules\AbRouter\Services\Events\Stats\StatsFactory;
 
 class ExperimentStatsService extends SimpleStatsService
 {
@@ -31,12 +31,14 @@ class ExperimentStatsService extends SimpleStatsService
         EventsRepository $eventsRepository,
         RelatedUserRepository $relatedUserRepository,
         ExperimentBranchUserRepository $experimentBranchUserRepository,
-        ExperimentsRepository $experimentsRepository
+        ExperimentsRepository $experimentsRepository,
+        StatsFactory $statsFactory
     ) {
         parent::__construct(
             $userEventsRepository,
             $eventsRepository,
-            $relatedUserRepository
+            $relatedUserRepository,
+            $statsFactory
         );
 
         $this->experimentBranchUserRepository = $experimentBranchUserRepository;
@@ -54,30 +56,23 @@ class ExperimentStatsService extends SimpleStatsService
             ->userEventsRepository
             ->getWithOwnerByTagAndDate(
                 $statsQueryDTO->getOwnerId(),
-                $statsQueryDTO->getTag()
-            );
+                $statsQueryDTO->getTag(),
+                $date['date_from'],
+                $date['date_to']
+            )
+            ->load('relatedUsers');;
 
         $totalUsers = $this->getTotalUsers(
-            $allUserEvents,
             $statsQueryDTO->getOwnerId(),
             $statsQueryDTO->getExperimentId()
         );
-
-        $allUserEvents = $allUserEvents
-            ->whereBetween(
-                'created_at',
-                [
-                    $date['date_from'],
-                    $date['date_to']
-                ]
-            )
-            ->load('relatedUsers');
 
         $allRelatedUsers = $allUserEvents
             ->pluck('relatedUsers')
             ->flatten();
 
-        $eventsNames = $this->getDisplayEvents($statsQueryDTO->getOwnerId());
+        $allDisplayEvents = $this->getDisplayEvents($statsQueryDTO->getOwnerId());
+        $displayEventsWithTypeSummarizable = $this->getDisplayEventsWithTypeSummarizable($allDisplayEvents);
         $uniqUsersIds = $this->getUniqUsersIds($allUserEvents);
         $uniqRelatedUsersIds = $this
             ->getUniqRelatedUsersIds(
@@ -91,30 +86,50 @@ class ExperimentStatsService extends SimpleStatsService
         );
 
         $jointUsers = $this->getJointUsersFromEventsAndExperiment($experiment, $uniqUsers);
-        
-        $eventCounters = [];
+
+        $incrementalCounters = [];
         $eventPercentages = [];
         $eventCountersWithDate = [];
+        $summarizationCounters = [];
 
         foreach($jointUsers as $key => $jointUser) {
-            $eventCounters[$key] = $this->getCounters(
-                $allUserEvents,
-                $jointUser,
-                'event'
-            );
+            $incrementalCounters[$key] = $this
+                ->statsFactory
+                ->getStatsMethod('event')
+                ->getCounters(
+                    $allUserEvents,
+                    $jointUser,
+                    $displayEventsWithTypeSummarizable
+                );
 
-            $eventCountersWithDate[$key] = $this->getCounters(
-                $allUserEvents,
-                $jointUser,
-                'event',
-                true
-            );
-            
-            $eventPercentages[$key] = $this->getPercentages(
-                $eventsNames,
-                $eventCounters[$key],
-                count($jointUser)
-            );
+            $eventCountersWithDate[$key] = $this
+                ->statsFactory
+                ->getStatsMethod('event')
+                ->getCounters(
+                    $allUserEvents,
+                    $jointUser,
+                    $displayEventsWithTypeSummarizable,
+                    true
+                );
+
+            $summarizationCounters[$key] = $this
+                ->statsFactory
+                ->getStatsMethod('revenue')
+                ->getCounters(
+                    $allUserEvents,
+                    [],
+                    $displayEventsWithTypeSummarizable,
+                    true
+                );
+
+            $eventPercentages[$key] = $this
+                ->statsFactory
+                ->getStatsMethod('event')
+                ->getPercentages(
+                    $allDisplayEvents,
+                    $incrementalCounters[$key],
+                    count($jointUser)
+                );
         }
 
         $interval = (new \DateTime())
@@ -129,7 +144,8 @@ class ExperimentStatsService extends SimpleStatsService
 
         return new StatsResultsDTO(
             $eventPercentages,
-            $eventCounters,
+            $incrementalCounters,
+            $summarizationCounters,
             [],
             [],
             $eventCountersWithDate,
@@ -206,10 +222,16 @@ class ExperimentStatsService extends SimpleStatsService
     }
 
     private function getTotalUsers(
-        Collection $allUserEvents,
         $owner,
         $experimentId
     ): int {
+        $allUserEvents = $this
+            ->userEventsRepository
+            ->getWithOwnerByTagAndDate(
+                $owner,
+                null
+            );
+
         $allRelatedUsers = $allUserEvents
             ->load('relatedUsers')
             ->pluck('relatedUsers')
