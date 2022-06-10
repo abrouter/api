@@ -73,8 +73,6 @@ class SimpleStatsService
         $allDisplayEvents = $this->getDisplayEvents($statsQueryDTO->getOwnerId());
         $displayEventsWithTypeSummarizable = $this->getDisplayEventsWithTypeSummarizable($allDisplayEvents);
         $referrers = $this->getReferrers($statsQueryDTO->getOwnerId(), $displayEventsWithTypeSummarizable);
-        $allRevenue = $this->getAllRevenue($allUserEvents);
-
         $uniqUsersIds = $this->getUniqUsersIds($allUserEvents);
         $uniqRelatedUsersIds = $this->getUniqRelatedUsersIdsWithoutBinding($allRelatedUsers->all());
         $uniqUsers = $this->getFinalUniqUsers($uniqUsersIds, $uniqRelatedUsersIds);
@@ -282,15 +280,5 @@ class SimpleStatsService
 
             return $acc;
         }, []);
-    }
-
-    protected function getAllRevenue(Collection $allUserEvents) {
-        $revenue = $allUserEvents->reduce(function (array $acc, Event $event) {
-            $acc[] += $event->value;
-
-            return $acc;
-        }, []);
-
-        return array_sum($revenue);
     }
 }
