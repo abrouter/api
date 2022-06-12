@@ -6,7 +6,58 @@ class EventCest
     {
     }
 
-   public function createEvents(ApiTester $I)
+    public function createShortEventWithUserId(ApiTester $I)
+    {
+        $user = $I->haveUser($I);
+
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->haveHttpHeader('Accept', 'application/json');
+        $I->amBearerAuthenticated($user['token']);
+
+        $userId = uniqid();
+
+        $I->sendPost('/event', [
+            'data' => [
+                'type' => 'events',
+                'attributes' => [
+                    'user_id' => $userId,
+                    'event' => 'test',
+                ],
+            ]
+        ]);
+
+        $response = json_decode($I->grabResponse(), true);
+
+        $I->seeResponseCodeIsSuccessful(201);
+        $I->seeResponseContainsJson([
+            'data' => [
+                'id' => $response['data']['id'],
+                'type' => 'events',
+                'attributes' => [
+                    'user_id' => $userId,
+                    'event' => 'test',
+                ],
+                'relationships' => [
+                    'owner' => [
+                        'data' => [
+                            'id' => $user['encodeId'],
+                            'type' => 'users'
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+
+        $recordEvents = [
+            'user_id' => $userId,
+            'event' => 'test',
+        ];
+
+        $I->seeRecord('events', $recordEvents);
+    }
+
+
+        public function createEvents(ApiTester $I)
    {
        $user = $I->haveUser($I);
        $events = $I->haveUserEvents();
