@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d2f1eb0270be770dafe829a8f273f3ea",
+    "content-hash": "38cc184d3a7de3989bebe8ba0fd27a1e",
     "packages": [
         {
             "name": "abrouter/laravel-json-api-formatter",
