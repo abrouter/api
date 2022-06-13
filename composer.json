@@ -10,7 +10,7 @@
     "require": {
         "php": "^7.4",
         "ext-json": "*",
-        "abrouter/laravel-json-api-formatter": "0.0.12",
+        "abrouter/laravel-json-api-formatter": "0.0.17",
         "fideloper/proxy": "^4.0",
         "google/apiclient": "^2.12",
         "laravel/framework": "^6.2",
@@ -73,11 +73,5 @@
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
         ]
-    },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "git@github.com:abrouter/laravel-json-api.git"
-        }
-    ]
+    }
 }

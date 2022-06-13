@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Tests\Module\Fixture;
 
+use ApiTester;
 use Codeception\Module\Laravel;
 use Modules\Core\EntityId\EntityEncoder;
 use Codeception\Lib\Interfaces\DependsOnModule;

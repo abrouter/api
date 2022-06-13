@@ -724,14 +724,14 @@ class ExperimentsStatsCest
                 'branch_first' => [
                     'view_contact_form' => 10,
                     'visit_mainpage' => 10,
-                    'revenue' =>[
+                    'revenue' => [
                         $yesterday->format('Y-m-d') => 300,
                         $today->format('Y-m-d') => 500
                     ]
                 ],
                 'branch_second' => [
                     'visit_mainpage' => 10,
-                    'revenue' =>[
+                    'revenue' => [
                         $yesterday->format('Y-m-d') => 300,
                         $today->format('Y-m-d') => 500
                     ]
