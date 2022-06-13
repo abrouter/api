@@ -25,8 +25,6 @@ class Experiment extends Module implements DependsOnModule
     }
 
     /**
-     * @deprecated creates the branches, but it doesn't need here and unexpected
-     * @todo replace it and rewrite the tests
      * @param int $owner
      * @return array
      * @throws \Exception
@@ -34,10 +32,9 @@ class Experiment extends Module implements DependsOnModule
     public function haveExperiment(int $owner)
     {
         $experimentName = 'experiment_' . uniqid();
-        $branchName = 'branch_' . uniqid();
         $config = '[]';
-        $percent = random_int(1, 100);
         $date = (new \DateTime())->format('Y-m-d');
+
         $recordExperiment = [
             'owner_id' => $owner,
             'name' => $experimentName,
@@ -54,29 +51,40 @@ class Experiment extends Module implements DependsOnModule
         $this->laravel->seeRecord(self::TABLE_EXPERIMENTS, $recordExperiment);
         
         $encodeExperimentId = (new EntityEncoder())->encode($experimentId, 'experiments');
+        
+        return [
+            'encode_experiment_id' => $encodeExperimentId,
+            'experiment_id' => $experimentId,
+            'name' => $experimentName,
+            'alias' => $experimentName
+        ];
+    }
+
+    public function haveExperimentBranch (
+        int $experimentId,
+        string $branchName,
+        int $percent
+    ) {
+        $date = (new \DateTime())->format('Y-m-d');
 
         $recordBranch = [
             'experiment_id' => $experimentId,
             'name' => $branchName,
-            'config' => $config,
+            'config' => '[]',
             'percent' => $percent,
             'uid' => $branchName,
             'created_at' => $date,
             'updated_at' => $date
         ];
 
-        $idBranch = $this->laravel->haveRecord(self::TABLE_EXPERIMENT_BRANCHES, $recordBranch);
-        $encodeExperimentBranchId = (new EntityEncoder())->encode($idBranch, 'experiment_branches');
+        $branchId = $this->laravel->haveRecord(self::TABLE_EXPERIMENT_BRANCHES, $recordBranch);
         $this->laravel->seeRecord(self::TABLE_EXPERIMENT_BRANCHES, $recordBranch);
-        
+
+        $encodeBranchId = (new EntityEncoder())->encode($branchId, 'experiment_branches');
+
         return [
-            'encodeExperimentId' => $encodeExperimentId,
-            'experimentId' => $experimentId,
-            'name' => $experimentName,
-            'alias' => $experimentName,
-            'idBranch' => $encodeExperimentBranchId,
-            'decodeBranchId' => $idBranch,
-            'branchName' => $branchName,
+            'branch_id' => $branchId,
+            'encode_branch_id' => $encodeBranchId
         ];
     }
     

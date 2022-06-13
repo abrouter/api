@@ -101,11 +101,14 @@ class FeatureToggleCest
         $response = json_decode($I->grabResponse(), true);
 
         $featureToggleId = (new EntityEncoder())->decode($response['data']['id'], 'experiments');
-        $alias = $response['data']['attributes']['alias'];
-        $config = $response['data']['attributes']['config'];
-        $isEnabled = $response['data']['attributes']['is_enabled'];
-        $isFeatureToggle = $response['data']['attributes']['is_feature_toggle'];
-        $recordExperiment = ['name' => $featureToggleName, 'alias' => $alias, 'is_enabled' => $isEnabled, 'is_feature_toggle' => $isFeatureToggle, 'owner_id' => $user['id']];
+
+        $recordExperiment = [
+            'name' => $featureToggleName,
+            'alias' => $featureToggleName,
+            'is_enabled' => true,
+            'is_feature_toggle' => true,
+            'owner_id' => $user['id']
+        ];
 
         $I->seeResponseCodeIsSuccessful(201);
         $I->seeResponseContainsJson([
@@ -114,15 +117,15 @@ class FeatureToggleCest
                 'type' => 'experiments',
                 'attributes' => [
                     'name' => $featureToggleName,
-                    'alias' => $alias,
-                    'config' => $config,
-                    'is_enabled' => $isEnabled,
-                    'is_feature_toggle' => $isFeatureToggle
+                    'alias' => $featureToggleName,
+                    'config' => [],
+                    'is_enabled' => true,
+                    'is_feature_toggle' => true
                 ],
                 'relationships' => [
                     'owner' => [
                         'data' => [
-                            'id' => $response['data']['relationships']['owner']['data']['id'],
+                            'id' => $user['encodeId'],
                             'type' => 'users'
                         ]
                     ],
@@ -471,8 +474,6 @@ class FeatureToggleCest
                 ]
             ]
         ]);
-    
-        $response = json_decode($I->grabResponse(), true);
 
         $recordExperiment = ['name' => $featureToggle['name'], 'owner_id' => $user['id']];
 

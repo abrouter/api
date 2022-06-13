@@ -13,6 +13,13 @@ class RuningExperimentsByAliasCest
     {
         $user = $I->haveUser($I);
         $experiment = $I->haveExperiment($user['id']);
+        $experimentBranches = [];
+
+        $experimentBranches[] = $I
+            ->haveExperimentBranch($experiment['experiment_id'], 'button-color-red', 0);
+        $experimentBranches[] = $I
+            ->haveExperimentBranch($experiment['experiment_id'], 'button-color-blue', 100);
+
         $userSignature = 'user_' . uniqid();
 
         $I->haveHttpHeader('Content-Type', 'application/json');
@@ -37,16 +44,16 @@ class RuningExperimentsByAliasCest
         ]);
 
         $response = json_decode($I->grabResponse(), true);
-        
+
         $I->seeResponseCodeIsSuccessful(201);
         $I->seeResponseContainsJson([
             'data' => [
                 'type' => 'experiment_branch_users',
                 'id' => $response['data']['id'],
                 'attributes' => [
-                    'run-uid' => $response['data']['attributes']['run-uid'],
-                    'branch-uid' => $response['data']['attributes']['branch-uid'],
-                    'experiment-uid' => $response['data']['attributes']['experiment-uid']
+                    'run-uid' => $experiment['name'] . '-' . 'button-color-blue',
+                    'branch-uid' => 'button-color-blue',
+                    'experiment-uid' => $experiment['name']
                 ],
                 'relationships' => [
                     'experiment_user' => [
@@ -74,29 +81,34 @@ class RuningExperimentsByAliasCest
                     'type' => 'experiment_branches',
                     'id' => $response['included'][0]['id'],
                     'attributes' => [
-                        "name" => $response['included'][0]['attributes']['name'],
-                        "uid" => $response['included'][0]['attributes']['uid'],
-                        "percent" => $response['included'][0]['attributes']['percent']
+                        'name' => 'button-color-blue',
+                        'uid' => 'button-color-blue',
+                        'percent' => 100
                     ],
                     'relationships' => [
                         'experiment' => [
                             'data' => [
                                 'type' => 'users',
                                 'id' => $response['included'][0]['relationships']['experiment']['data']['id']
-                            ]       
+                            ]
                         ]
                     ]
                 ]
             ]
         ]);
 
-        $experimentUserId = (new EntityEncoder())->decode($response['data']['relationships']['experiment_user']['data']['id'], 'experiment_users');
-        $experimentId = $experiment['experimentId'];
-        $experimentBranchId = (new EntityEncoder())->decode($response['data']['relationships']['experiment_branch_id']['data']['id'], 'experiment_branches');
-        $recordBranchUsers = ['experiment_user_id' => $experimentUserId, 'experiment_id' => $experimentId, 'experiment_branch_id' => $experimentBranchId];
-        $recordExperimentUsers = ['owner_id' => $user['id'], 'user_signature' => $userSignature];
+        $recordExperimentUsers = [
+            'owner_id' => $user['id'],
+            'user_signature' => $userSignature
+        ];
+
+        $I->seeRecord('experiment_users', $recordExperimentUsers);
+
+        $recordBranchUsers = [
+            'experiment_id' => $experiment['experiment_id'],
+            'experiment_branch_id' => $experimentBranches[1]['branch_id']
+        ];
 
         $I->seeRecord('experiment_user_branches', $recordBranchUsers);
-        $I->seeRecord('experiment_users', $recordExperimentUsers);
     }
 }

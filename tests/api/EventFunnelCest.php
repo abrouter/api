@@ -253,20 +253,17 @@ class EventFunnelCest
 
         $I->amBearerAuthenticated($user['token']);
 
-        $I->sendGet('/statistics/user/' . $temporaryUsersIds[mt_rand(0,9)]);
-
-        $response = json_decode($I->grabResponse(), true);
-        $entry = $response['data'];
+        $I->sendGet('/statistics/user/' . $temporaryUsersIds[0]);
 
         $I->seeResponseCodeIsSuccessful(200);
 
-        for ($i = 0; $i < count($response); $i++) {
+        for ($i = 0; $i < count($events); $i++) {
             $I->seeResponseContainsJson([
                 'data' => [
                     [
                         'type' => 'events',
                         'attributes' => [
-                            'event' => $entry[$i]['attributes']['event']
+                            'event' => $events[$i]
                         ]
                     ]
                 ]
@@ -283,7 +280,7 @@ class EventFunnelCest
 
         $I->amBearerAuthenticated($user['token']);
 
-        $I->sendGet('/statistics/user/' . $usersIds[mt_rand(0,19)]);
+        $I->sendGet('/statistics/user/' . $usersIds[0]);
 
         $response = json_decode($I->grabResponse(), true);
         $entry = $response['data'];
