@@ -95,7 +95,7 @@ class ExperimentScheme extends DocumentSchema
     public function getAllowedSearchFields(): array
     {
         return [
-            'alias',
+//            'alias',
         ];
     }
 }
