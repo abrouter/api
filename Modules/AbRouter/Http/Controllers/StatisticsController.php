@@ -69,7 +69,7 @@ class StatisticsController
 
         return [
             'percentage' => $results->getPercentage(),
-            'counters' => array_merge(
+            'counters' => array_merge_recursive(
                 $results->getIncrementalCounters(),
                 $results->getSummarizationCounters()
             ),
