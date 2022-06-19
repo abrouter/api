@@ -25,7 +25,6 @@ class EventStats implements Stats
         $uniqUsers = array_flip($uniqUsers);
         $eventCounters = [];
         $userEventAdded = [];
-        $n = 0;
 
         foreach ($eventsList as $event) {
             /**
