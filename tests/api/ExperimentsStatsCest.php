@@ -440,7 +440,6 @@ class ExperimentsStatsCest
                     'visit_mainpage' => 100
                 ],
                 'branch_second' => [
-                    'view_contact_form' => 0,
                     'visit_mainpage' => 100
                 ]
             ],

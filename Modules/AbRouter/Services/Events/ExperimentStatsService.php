@@ -73,6 +73,7 @@ class ExperimentStatsService extends SimpleStatsService
 
         $allDisplayEvents = $this->getDisplayEvents($statsQueryDTO->getOwnerId());
         $displayEventsWithTypeSummarizable = $this->getDisplayEventsWithTypeSummarizable($allDisplayEvents);
+        $displayEventsWithTypeIncremental = $this->getDisplayEventsWithTypeIncremental($allDisplayEvents);
         $uniqUsersIds = $this->getUniqUsersIds($allUserEvents);
         $uniqRelatedUsersIds = $this
             ->getUniqRelatedUsersIds(
@@ -99,7 +100,7 @@ class ExperimentStatsService extends SimpleStatsService
                 ->getCounters(
                     $allUserEvents,
                     $jointUser,
-                    $displayEventsWithTypeSummarizable
+                    $displayEventsWithTypeIncremental
                 );
 
             $eventCountersWithDate[$key] = $this
@@ -108,7 +109,7 @@ class ExperimentStatsService extends SimpleStatsService
                 ->getCounters(
                     $allUserEvents,
                     $jointUser,
-                    $displayEventsWithTypeSummarizable,
+                    $displayEventsWithTypeIncremental,
                     true
                 );
 
