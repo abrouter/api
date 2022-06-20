@@ -31,11 +31,13 @@ class RevenueStats implements Stats
             if (in_array($event->event, $displayEvents, true)) {
                 $convertDate = $event->created_at->format('Y-m-d');
 
-                if (!isset($revenueCounters[$event->event][$convertDate])) {
-                    $revenueCounters[$event->event][$convertDate] = 0;
-                }
+                if (is_numeric($event->value)) {
+                    if (!isset($revenueCounters[$event->event][$convertDate])) {
+                        $revenueCounters[$event->event][$convertDate] = 0;
+                    }
 
-                $revenueCounters[$event->event][$convertDate] += $event->value;
+                    $revenueCounters[$event->event][$convertDate] += $event->value;
+                }
             }
         }
 

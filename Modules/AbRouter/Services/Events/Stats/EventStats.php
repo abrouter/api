@@ -31,7 +31,7 @@ class EventStats implements Stats
              * @var Event $event
              */
 
-            if (in_array($event->event, $allDisplayEvents)) {
+            if (!in_array($event->event, $allDisplayEvents)) {
                 continue;
             }
 
@@ -122,7 +122,6 @@ class EventStats implements Stats
             }
 
             if (!isset($eventCounters[$displayEvent['event_name']])) {
-                $eventPercentage[$displayEvent['event_name']] = 0;
                 continue;
             }
 

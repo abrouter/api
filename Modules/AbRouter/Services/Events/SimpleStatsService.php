@@ -72,6 +72,7 @@ class SimpleStatsService
         
         $allDisplayEvents = $this->getDisplayEvents($statsQueryDTO->getOwnerId());
         $displayEventsWithTypeSummarizable = $this->getDisplayEventsWithTypeSummarizable($allDisplayEvents);
+        $displayEventsWithTypeIncremental = $this->getDisplayEventsWithTypeIncremental($allDisplayEvents);
         $referrers = $this->getReferrers($statsQueryDTO->getOwnerId(), $displayEventsWithTypeSummarizable);
         $uniqUsersIds = $this->getUniqUsersIds($allUserEvents);
         $uniqRelatedUsersIds = $this->getUniqRelatedUsersIdsWithoutBinding($allRelatedUsers->all());
@@ -85,7 +86,7 @@ class SimpleStatsService
             ->getCounters(
                 $allUserEvents,
                 $uniqUsers,
-                $displayEventsWithTypeSummarizable
+                $displayEventsWithTypeIncremental
             );
 
         $eventCountersWithDate = $this
@@ -94,7 +95,7 @@ class SimpleStatsService
             ->getCounters(
                 $allUserEvents,
                 $uniqUsers,
-                $displayEventsWithTypeSummarizable,
+                $displayEventsWithTypeIncremental,
                 true
             );
 
@@ -175,6 +176,20 @@ class SimpleStatsService
         return array_reduce($displayEvents,
             function (array $acc, $displayEvent) {
                 if ($displayEvent['type'] === 'summarizable') {
+                    $acc[] = $displayEvent['event_name'];
+
+                    return $acc;
+                }
+
+                return $acc;
+            }, []);
+    }
+
+    protected function getDisplayEventsWithTypeIncremental(array $displayEvents): array
+    {
+        return array_reduce($displayEvents,
+            function (array $acc, $displayEvent) {
+                if ($displayEvent['type'] === 'incremental') {
                     $acc[] = $displayEvent['event_name'];
 
                     return $acc;
