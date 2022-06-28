@@ -5,6 +5,7 @@ Route::get('/v1/experiment/run', 'ExperimentsController@runSimple');
 
 Route::middleware(['api', 'auth:api'])->group(function () {
     Route::get('/v1/api-info/{ip}', 'IpInfoController');
+    Route::get('/v1/user-info/{id}', 'UserInfoController');
 
     Route::post('/v1/experiments/', 'ExperimentsController@createOrUpdate');
     Route::patch('/v1/experiments/{id}', 'ExperimentsController@createOrUpdate');
