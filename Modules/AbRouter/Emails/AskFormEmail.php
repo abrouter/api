@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Modules\AbRouter\Emails;
 
@@ -10,12 +11,9 @@ class AskFormEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    /**
-     * @var
-     */
-    public $name;
-    public $email;
-    public $message;
+    public string $name;
+    public string $email;
+    public string $message;
 
     public function __construct($name, $email, $message)
     {
@@ -24,17 +22,13 @@ class AskFormEmail extends Mailable
         $this->message = $message;
     }
 
-    /**
-     * @return AskFormEmail
-     */
-    public function build()
+    public function build(): AskFormEmail
     {
-        return $this->from($this->email)
-            ->subject('Ask Form')
-            ->view('abrouter::mail/askForm', [
+        return $this->subject('Ask Form')
+            ->markdown('abrouter::mail/askForm', [
                 'name' => $this->name,
                 'email' => $this->email,
-                'test' => $this->message
+                'message' => $this->message
             ]);
     }
 }

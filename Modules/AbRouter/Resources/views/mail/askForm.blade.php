@@ -1,7 +1,15 @@
-<div>
-Name: {{ $name }}
+@component('mail::message')
+## Name:
+{{$name}}
 
-E-mail: {{ $email }}
+## E-mail:
+{{$email}}
 
-Message: {{ $test }}
-</div>
+## Message:
+{{$message}}
+
+@component('mail::button', ['url' => 'https://abrouter.com/'])
+AbRouter
+@endcomponent
+
+@endcomponent
