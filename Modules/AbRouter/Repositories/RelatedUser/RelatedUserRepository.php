@@ -57,8 +57,12 @@ class RelatedUserRepository extends BaseRepository
      *
      * @return Collection
      */
-    public function getAllEventsIdWithOwnersByRelatedIdOrUserId(int $owner, string $id): Collection
-    {
+    public function getAllEventsIdWithOwnersByRelatedIdOrUserId(
+        int $owner,
+        string $id,
+        string $dateFrom,
+        string $dateTo
+    ): Collection {
         /**
          * @var Collection $collection
          */
@@ -69,6 +73,7 @@ class RelatedUserRepository extends BaseRepository
                 $query->where('user_id', $id)
                     ->orWhere('related_user_id', $id);
             })
+            ->whereBetween('created_at', [$dateFrom, $dateTo])
             ->with('event')
             ->get()
             ->pluck('event');

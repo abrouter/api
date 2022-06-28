@@ -142,7 +142,12 @@ class StatisticsController
         string $userId
     ) {
         $owner = $this->authDecorator->get()->getId();
-        $allEventsDTO = $transformer->transform($owner, $userId);
+        $allEventsDTO = $transformer->transform(
+            $owner,
+            $userId,
+            $request->input('filter.date_from'),
+            $request->input('filter.date_to')
+        );
         $allEvents = $allEventsServices->getAllEventsWithOwnerByRelatedIdOrUserId($allEventsDTO);
 
         return (new EventSchema(new SimpleDataProvider($allEvents)))->toArray();
