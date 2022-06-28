@@ -24,8 +24,6 @@ class AllEventsServices
             $allEventsDTO->getUserId()
         );
 
-        return $allEventsId
-            ->load('event')
-            ->pluck('event');
+        return $allEventsId;
     }
 }

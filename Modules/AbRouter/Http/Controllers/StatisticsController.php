@@ -136,6 +136,7 @@ class StatisticsController
     }
 
     public function getAllStatisticsEventsByUserId(
+        Request $request,
         AllEventsTransformer $transformer,
         AllEventsServices $allEventsServices,
         string $userId
@@ -144,6 +145,6 @@ class StatisticsController
         $allEventsDTO = $transformer->transform($owner, $userId);
         $allEvents = $allEventsServices->getAllEventsWithOwnerByRelatedIdOrUserId($allEventsDTO);
 
-        return new EventSchema(new SimpleDataProvider($allEvents));
+        return (new EventSchema(new SimpleDataProvider($allEvents)))->toArray();
     }
 }

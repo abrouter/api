@@ -69,7 +69,9 @@ class RelatedUserRepository extends BaseRepository
                 $query->where('user_id', $id)
                     ->orWhere('related_user_id', $id);
             })
-            ->get();
+            ->with('event')
+            ->get()
+            ->pluck('event');
 
         return $collection;
     }
