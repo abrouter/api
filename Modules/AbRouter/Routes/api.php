@@ -2,6 +2,7 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/v1/experiment/run', 'ExperimentsController@runSimple');
+Route::post('/v1/ask-form', 'AskFormController@askForm');
 
 Route::middleware(['api', 'auth:api'])->group(function () {
     Route::get('/v1/api-info/{ip}', 'IpInfoController');
