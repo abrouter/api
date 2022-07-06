@@ -34,6 +34,7 @@ class ExperimentBranchUserScheme extends DocumentSchema
             'run-uid' => $uid,
             'branch-uid' => $this->activeData->experimentBranch->uid,
             'experiment-uid' => $this->activeData->experiment->alias,
+            'created_at' => $this->activeData->created_at,
         ]);
     }
 

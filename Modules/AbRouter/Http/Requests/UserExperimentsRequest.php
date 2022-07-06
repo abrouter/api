@@ -6,7 +6,7 @@ namespace Modules\AbRouter\Http\Requests;
 use Illuminate\Validation\Rule;
 use Modules\Core\Http\Requests\FormRequest;
 
-class AddUserToExperimentRequest extends FormRequest
+class UserExperimentsRequest extends FormRequest
 {
     public function authorize()
     {
