@@ -13,12 +13,12 @@ class UserInfoTransformer
 {
     public function transform(?Event $userInfo,  Collection $experimentsIds): UserInfoEntity
     {
-        $meta = !empty($userInfo->meta) ?? json_decode($userInfo->meta) ?? null;
+        $meta = !empty($userInfo->meta) ? (array) json_decode($userInfo->meta) : null;
         $encodeExperimentsIds = $experimentsIds
             ->reduce(function (array $acc, ExperimentBranchUser $experimentBranchUser) {
                 $acc[] = (new EntityEncoder())
                     ->encode(
-                        $experimentBranchUser->experiment_id, 'experiment_branch_users'
+                        $experimentBranchUser->experiment_id, 'experiments'
                     );
 
                 return $acc;

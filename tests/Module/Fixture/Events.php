@@ -24,6 +24,39 @@ class Events extends Module implements DependsOnModule
         $this->laravel = $laravel;
     }
 
+    public function haveEvent(
+        int $ownerId,
+        string $temporaryUserId,
+        string $userId,
+        string $eventName,
+        string $tag,
+        string $referrer,
+        string $ip,
+        array $meta,
+        string $countryCode,
+        string $createdAt,
+        string $updatedAt
+    )
+    {
+        $recordEvents = [
+            'owner_id' => $ownerId,
+            'temporary_user_id' => $temporaryUserId,
+            'user_id' => $userId,
+            'event' => $eventName,
+            'tag' => $tag,
+            'referrer' => $referrer,
+            'ip' => $ip,
+            'meta' => json_encode($meta),
+            'country_code' => $countryCode,
+            'created_at' => $createdAt,
+            'updated_at' => $updatedAt
+        ];
+
+        $eventId = $this->laravel->haveRecord(self::TABLE_EVENTS, $recordEvents);
+
+        return array_merge($recordEvents, ['eventId' => $eventId]);
+    }
+
     public function haveEvents(int $ownerId)
     {
         $events = [];
