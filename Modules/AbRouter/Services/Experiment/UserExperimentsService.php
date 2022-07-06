@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Modules\AbRouter\Services\Experiment;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Modules\AbRouter\Models\Experiments\Experiment;
 use Modules\AbRouter\Models\Experiments\ExperimentBranches;
 use Modules\AbRouter\Models\Experiments\ExperimentBranchUser;
 use Modules\AbRouter\Models\Experiments\ExperimentUsers;
@@ -13,7 +12,6 @@ use Modules\AbRouter\Repositories\Experiments\ExperimentUsersRepository;
 use Modules\AbRouter\Managers\Experiments\ExperimentBranchUserManager;
 use Modules\AbRouter\Services\Experiment\DTO\UserExperimentsDTO;
 use Modules\Core\EntityId\EntityEncoder;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class UserExperimentsService
 {
@@ -126,7 +124,7 @@ class UserExperimentsService
             ->get();
 
         if ($usersId->isEmpty()) {
-            throw new NotFoundHttpException('Failed to find an user');;
+            throw new ModelNotFoundException('Failed to find an user');;
         }
 
         (new ExperimentBranchUser())
