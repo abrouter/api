@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Modules\AbRouter\Services\Experiment\DTO;
 
-class AddUserToExperimentDTO
+class UserExperimentsDTO
 {
     /**
      * @var int

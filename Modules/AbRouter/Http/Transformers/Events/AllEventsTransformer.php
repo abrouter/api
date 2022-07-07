@@ -7,11 +7,17 @@ use Modules\AbRouter\Services\Events\DTO\AllEventsDTO;
 
 class AllEventsTransformer
 {
-    public function transform(int $owner, string $userId): AllEventsDTO
-    {
+    public function transform(
+        int $owner,
+        string $userId,
+        ?string $dateFrom,
+        ?string $dateTo
+    ): AllEventsDTO {
         return new AllEventsDTO(
             $owner,
-            $userId
+            $userId,
+            $dateFrom,
+            $dateTo
         );
     }
 }

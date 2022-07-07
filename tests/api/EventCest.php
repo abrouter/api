@@ -57,7 +57,7 @@ class EventCest
     }
 
 
-        public function createEvents(ApiTester $I)
+    public function createEvents(ApiTester $I)
    {
        $user = $I->haveUser($I);
        $events = $I->haveUserEvents();
