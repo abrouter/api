@@ -129,8 +129,6 @@ class ExperimentEvents extends Module implements DependsOnModule
 
     public function runExperiments(ApiTester $I, string $token, string $experimentAlias, array $users)
     {
-        $result = [];
-
         foreach ($users as $userKey => $user) {
 
             $I->haveHttpHeader('Content-Type', 'application/json');

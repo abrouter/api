@@ -136,14 +136,20 @@ class StatisticsController
     }
 
     public function getAllStatisticsEventsByUserId(
+        Request $request,
         AllEventsTransformer $transformer,
         AllEventsServices $allEventsServices,
         string $userId
     ) {
         $owner = $this->authDecorator->get()->getId();
-        $allEventsDTO = $transformer->transform($owner, $userId);
+        $allEventsDTO = $transformer->transform(
+            $owner,
+            $userId,
+            $request->input('filter.date_from'),
+            $request->input('filter.date_to')
+        );
         $allEvents = $allEventsServices->getAllEventsWithOwnerByRelatedIdOrUserId($allEventsDTO);
 
-        return new EventSchema(new SimpleDataProvider($allEvents));
+        return (new EventSchema(new SimpleDataProvider($allEvents)))->toArray();
     }
 }

@@ -32,7 +32,8 @@ class EventSchema extends DocumentSchema
             'tag' => $this->activeData->tag,
             'referrer' => $this->activeData->referrer,
             'ip' => $this->activeData->ip,
-            'meta' => $this->activeData->meta,
+            'meta' => json_decode($this->activeData->meta),
+            'country_code' =>$this->activeData->country_code,
             'created_at' => $this->activeData->created_at
         ]);
     }

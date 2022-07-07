@@ -3,15 +3,17 @@ declare(strict_types=1);
 
 namespace Modules\AbRouter\Services\Experiment;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Modules\AbRouter\Models\Experiments\ExperimentBranches;
 use Modules\AbRouter\Models\Experiments\ExperimentBranchUser;
+use Modules\AbRouter\Models\Experiments\ExperimentUsers;
 use Modules\AbRouter\Repositories\Experiments\ExperimentBranchUserRepository;
 use Modules\AbRouter\Repositories\Experiments\ExperimentUsersRepository;
 use Modules\AbRouter\Managers\Experiments\ExperimentBranchUserManager;
-use Modules\AbRouter\Services\Experiment\DTO\AddUserToExperimentDTO;
+use Modules\AbRouter\Services\Experiment\DTO\UserExperimentsDTO;
 use Modules\Core\EntityId\EntityEncoder;
 
-class AddUserToExperimentService
+class UserExperimentsService
 {
     /**
      * @var ExperimentUsersRepository
@@ -46,17 +48,17 @@ class AddUserToExperimentService
     }
 
     /**
-     * @param AddUserToExperimentDTO $addUserToExperimentDTO
+     * @param UserExperimentsDTO $userExperimentDTO
      * @return ExperimentBranchUser
      * @throws \Exception
      */
-    public function addUserToExperiment(AddUserToExperimentDTO $addUserToExperimentDTO): ExperimentBranchUser
+    public function addUserToExperiment(UserExperimentsDTO $userExperimentDTO): ExperimentBranchUser
     {
         $experiment = $this
             ->idResolver
             ->getExperimentsByResolvedId(
-                $addUserToExperimentDTO->getExperimentId(),
-                $addUserToExperimentDTO->getOwner()
+                $userExperimentDTO->getExperimentId(),
+                $userExperimentDTO->getOwner()
             );
 
         /**
@@ -66,23 +68,23 @@ class AddUserToExperimentService
             ->branches()
             ->where(
                 'id',
-                (new EntityEncoder())->decode($addUserToExperimentDTO->getExperimentBranchId(), 'experiment_branches')
+                (new EntityEncoder())->decode($userExperimentDTO->getExperimentBranchId(), 'experiment_branches')
             )
             ->firstOrFail();
 
         $experimentUser = $this
             ->experimentUsersRepository
             ->getExperimentsByUserSignatureAndOwner(
-                $addUserToExperimentDTO->getUserSignature(),
-                $addUserToExperimentDTO->getOwner()
+                $userExperimentDTO->getUserSignature(),
+                $userExperimentDTO->getOwner()
             );
 
         if (empty($experimentUser)) {
             $experimentUser = $this
                 ->experimentUsersRepository
                 ->createExperimentUser(
-                    $addUserToExperimentDTO->getOwner(),
-                    $addUserToExperimentDTO->getUserSignature(),
+                    $userExperimentDTO->getOwner(),
+                    $userExperimentDTO->getUserSignature(),
                 );
         }
 
@@ -104,5 +106,32 @@ class AddUserToExperimentService
         }
 
         return $experimentBranchUser;
+    }
+
+    public function deleteUserFromExperiment(UserExperimentsDTO $userExperimentDTO):void
+    {
+        $experimentId = (new EntityEncoder())
+            ->decode($userExperimentDTO->getExperimentId(), 'experiments');
+
+        $branchId = (new EntityEncoder())
+            ->decode($userExperimentDTO->getExperimentBranchId(), 'experiment_branches');
+
+        $usersId = (new ExperimentUsers())
+            ->newQuery()
+            ->select('id')
+            ->where('user_signature', $userExperimentDTO->getUserSignature())
+            ->where('owner_id', $userExperimentDTO->getOwner())
+            ->get();
+
+        if ($usersId->isEmpty()) {
+            throw new ModelNotFoundException('Failed to find an user');;
+        }
+
+        (new ExperimentBranchUser())
+            ->newQuery()
+            ->where('experiment_user_id', $usersId[0]->id)
+            ->where('experiment_branch_id', $branchId)
+            ->where('experiment_id', $experimentId)
+            ->delete();
     }
 }

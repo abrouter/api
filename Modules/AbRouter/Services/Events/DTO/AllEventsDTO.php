@@ -16,17 +16,33 @@ class AllEventsDTO
     private $userId;
 
     /**
+     * @var ?string
+     */
+    private $dateFrom;
+
+    /**
+     * @var ?string
+     */
+    private $dateTo;
+
+    /**
      * AllEventsDTO constructor.
      *
      * @param int    $ownerId
      * @param string $userId
+     * @param ?string $dateFrom
+     * @param ?string $dateTo
      */
     public function __construct(
         int $ownerId,
-        string $userId
+        string $userId,
+        ?string $dateFrom,
+        ?string $dateTo
     ) {
         $this->ownerId = $ownerId;
         $this->userId = $userId;
+        $this->dateFrom = $dateFrom;
+        $this->dateTo = $dateTo;
     }
 
     /**
@@ -43,5 +59,21 @@ class AllEventsDTO
     public function getUserId(): string
     {
         return $this->userId;
+    }
+
+    /**
+     * @return ?string
+     */
+    public function getDateFrom(): ?string
+    {
+        return $this->dateFrom;
+    }
+
+    /**
+     * @return ?string
+     */
+    public function getDateTo(): ?string
+    {
+        return $this->dateTo;
     }
 }

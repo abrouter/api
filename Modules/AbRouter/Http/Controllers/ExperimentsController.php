@@ -8,22 +8,21 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\AbRouter\Http\Requests\ExperimentRequest;
 use Modules\AbRouter\Http\Requests\ExperimentRunRequest;
-use Modules\AbRouter\Http\Requests\AddUserToExperimentRequest;
+use Modules\AbRouter\Http\Requests\UserExperimentsRequest;
 use Modules\AbRouter\Http\Resources2\Experiment\ExperimentScheme;
 use Modules\AbRouter\Http\Resources2\ExperimentBranchUser\ExperimentBranchUserScheme;
 use Modules\AbRouter\Http\Transformers\Experiments\ExperimentTransformer;
 use Modules\AbRouter\Http\Transformers\Experiments\ExperimentDeleteTransformer;
 use Modules\AbRouter\Http\Transformers\Experiments\RunExperimentTransformer;
 use Modules\AbRouter\Http\Transformers\Experiments\SimpleRunTransformer;
-use Modules\AbRouter\Http\Transformers\Experiments\AddUserToExperimentTransformer;
+use Modules\AbRouter\Http\Transformers\Experiments\UserExperimentsTransformer;
 use Modules\AbRouter\Models\Experiments\Experiment;
 use Modules\AbRouter\Repositories\Experiments\ExperimentBranchUserRepository;
-use Modules\AbRouter\Repositories\Experiments\ExperimentsRepository;
 use Modules\AbRouter\Services\Experiment\ExperimentService;
 use Modules\AbRouter\Services\Experiment\ExperimentDeleteService;
 use Modules\AbRouter\Services\Experiment\RunService;
 use Modules\AbRouter\Services\Experiment\SimpleRunService;
-use Modules\AbRouter\Services\Experiment\AddUserToExperimentService;
+use Modules\AbRouter\Services\Experiment\UserExperimentsService;
 use Modules\Auth\Exposable\AuthDecorator;
 
 class ExperimentsController extends Controller
@@ -109,7 +108,7 @@ class ExperimentsController extends Controller
      * @param string $userId
      * @return ExperimentBranchUserScheme
      */
-    public function getExperimentsHaveUsers(
+    public function getUserExperiments(
         AuthDecorator $authDecorator,
         ExperimentBranchUserRepository $experimentsRepository,
         string $userId
@@ -125,20 +124,31 @@ class ExperimentsController extends Controller
     }
 
     /**
-     * @param AddUserToExperimentRequest $request
-     * @param AddUserToExperimentTransformer $addUserToExperimentTransformer
-     * @param AddUserToExperimentService $experimentService
+     * @param UserExperimentsRequest $request
+     * @param UserExperimentsTransformer $addUserToExperimentTransformer
+     * @param UserExperimentsService $experimentService
      * @return ExperimentBranchUserScheme
      */
     public function addUserToExperiment(
-        AddUserToExperimentRequest $request,
-        AddUserToExperimentTransformer $addUserToExperimentTransformer,
-        AddUserToExperimentService $experimentService
+        UserExperimentsRequest $request,
+        UserExperimentsTransformer $addUserToExperimentTransformer,
+        UserExperimentsService $experimentService
     ) {
         $addUserToExperimentDTO = $addUserToExperimentTransformer->transform($request);
         $experimentUser = $experimentService->addUserToExperiment($addUserToExperimentDTO);
 
         return (new ExperimentBranchUserScheme(new SimpleDataProvider($experimentUser)))
             ->addInclude('experiment_branch_user');
+    }
+
+    public function deleteUserFromExperiment(
+        UserExperimentsRequest $request,
+        UserExperimentsTransformer $addUserToExperimentTransformer,
+        UserExperimentsService $experimentService
+    ) {
+        $addUserToExperimentDTO = $addUserToExperimentTransformer->transform($request);
+        $experimentService->deleteUserFromExperiment($addUserToExperimentDTO);
+
+        return response()->noContent();
     }
 }
