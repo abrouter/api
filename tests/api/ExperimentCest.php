@@ -15,9 +15,9 @@ class ExperimentCest
         $branchNameFirst = 'branch_' . uniqid();
         $branchNameSecond = 'branch_' . uniqid();
         $branchNameThird = 'branch_' . uniqid();
-        $percentFirst = random_int(1,100);
-        $percentSecond = random_int(1,100);
-        $percentThird = random_int(1,100);
+        $percentFirst = 50;
+        $percentSecond = 10;
+        $percentThird = 40;
 
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->haveHttpHeader('Accept', 'application/json');
@@ -296,7 +296,7 @@ class ExperimentCest
         $experimentId = $experiment['encodeExperimentId'];
         $experimentName = 'experiment_' . uniqid();
         $branchName = 'branch_' . uniqid();
-        $percent = random_int(1,100);
+        $percent = 100;
 
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->haveHttpHeader('Accept', 'application/json');
