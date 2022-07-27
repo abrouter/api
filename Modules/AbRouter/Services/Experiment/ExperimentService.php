@@ -103,7 +103,7 @@ class ExperimentService
 
             $branchModel->fill([
                 'experiment_id' => $experiment->id,
-                'name' => $branchDTO->getUid(),
+                'name' => $branchDTO->getName(),
                 'uid' => $branchDTO->getUid(),
                 'config' => json_encode($branchDTO->getConfig()),
                 'percent' => $branchDTO->getPercent(),
