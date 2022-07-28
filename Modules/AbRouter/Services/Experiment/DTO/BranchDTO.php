@@ -11,6 +11,11 @@ class BranchDTO
     private $uid;
 
     /**
+     * @var string
+     */
+    private $name;
+
+    /**
      * @var int
      */
     private $percent;
@@ -30,13 +35,22 @@ class BranchDTO
      */
     private $id;
 
-    public function __construct(?string $id, string $uid, int $percent, string $owner, array $config)
+    public function __construct(?string $id, string $name, string $uid, int $percent, string $owner, array $config)
     {
         $this->id = $id;
+        $this->name = $name;
         $this->uid = $uid;
         $this->percent = $percent;
         $this->config = $config;
         $this->owner = $owner;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
     }
 
     /**
