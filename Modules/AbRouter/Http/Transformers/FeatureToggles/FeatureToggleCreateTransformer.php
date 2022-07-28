@@ -23,6 +23,7 @@ class FeatureToggleCreateTransformer
 
             $acc[] = new BranchDTO(
                 $branch['id'] ?? '',
+                $branch['attributes']['name'],
                 $branch['attributes']['uid'],
                 (int) $branch['attributes']['percent'],
                 $branch['relationships']['owner']['data']['id'],
