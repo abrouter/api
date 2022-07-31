@@ -8,6 +8,7 @@ use Modules\AbRouter\Models\Experiments\ExperimentBranches;
 use Modules\AbRouter\Models\Experiments\ExperimentBranchUser;
 use Modules\AbRouter\Models\Experiments\ExperimentUsers;
 use Modules\AbRouter\Repositories\Experiments\ExperimentsRepository;
+use Modules\AbRouter\Repositories\RelatedUser\RelatedUserRepository;
 use Modules\AbRouter\Services\Experiment\DTO\RunExperimentDTO;
 use Modules\AbRouter\Services\Marketing\PaywallService;
 use Modules\AbRouter\Services\Experiment\ExperimentIdResolver;
@@ -23,6 +24,11 @@ class RunService
      * @var ExperimentsRepository
      */
     private $experimentsRepository;
+
+    /**
+     * @var RelatedUserRepository
+     */
+    private $relatedUserRepository;
 
     /**
      * @var UniqueUsersCountManager
@@ -44,13 +50,15 @@ class RunService
         ExperimentsRepository $experimentsRepository,
         UniqueUsersCountManager $uniqueUsersCountManager,
         PaywallService $paywallService,
-        ExperimentIdResolver $idResolver
+        ExperimentIdResolver $idResolver,
+        RelatedUserRepository $relatedUserRepository
     ) {
         $this->diceService = $diceService;
         $this->experimentsRepository = $experimentsRepository;
         $this->uniqueUsersCountManager = $uniqueUsersCountManager;
         $this->paywallService = $paywallService;
         $this->idResolver = $idResolver;
+        $this->relatedUserRepository = $relatedUserRepository;
     }
 
     public function run(RunExperimentDTO $runExperimentDTO): ExperimentBranchUser
@@ -62,10 +70,16 @@ class RunService
                 $runExperimentDTO->getOwnerId()
             );
 
+        $userIds = $this
+            ->getRelatedUserIds(
+                $runExperimentDTO->getOwnerId(),
+                $runExperimentDTO->getUserSignature()
+            );
+
         $user = (new ExperimentUsers())
             ->newQuery()
-            ->where('user_signature', $runExperimentDTO->getUserSignature())
             ->where('owner_id', $runExperimentDTO->getOwnerId())
+            ->whereIn('user_signature', $userIds)
             ->first();
 
         if (empty($user)) {
@@ -106,5 +120,29 @@ class RunService
         $experimentBranchUser->save();
 
         return $experimentBranchUser;
+    }
+
+    public function getRelatedUserIds(int $ownerId, string $userId): array
+    {
+        $userIds = $this
+            ->relatedUserRepository
+            ->getAllUserIdAndRelatedUserIdByOwnerIdAndUserId(
+                $ownerId,
+                $userId
+            );
+
+        $ids = [];
+
+        foreach ($userIds as $item) {
+            if (isset($item['user_id'])) {
+                $ids[] = $item['user_id'];
+            }
+
+            if (isset($item['related_user_id'])) {
+                $ids[] = $item['related_user_id'];
+            }
+        }
+
+        return array_unique($ids);
     }
 }

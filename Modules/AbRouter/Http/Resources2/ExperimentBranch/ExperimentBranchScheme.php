@@ -26,7 +26,7 @@ class ExperimentBranchScheme extends DocumentSchema
     public function getAttributes(): Attributes
     {
         return new Attributes([
-            'name' => $this->activeData->uid,
+            'name' => $this->activeData->name,
             'uid' => $this->activeData->uid,
             'percent' => $this->activeData->percent,
             'config' => json_decode($this->activeData->config, true),

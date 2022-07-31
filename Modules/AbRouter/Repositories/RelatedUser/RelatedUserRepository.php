@@ -81,6 +81,30 @@ class RelatedUserRepository extends BaseRepository
         return $collection;
     }
 
+    /**
+     * @param int $ownerId
+     * @param string $userId
+     */
+    public function getAllUserIdAndRelatedUserIdByOwnerIdAndUserId(
+        int $ownerId,
+        string $userId
+    ) {
+        $ids = $this
+            ->query()
+            ->select(['user_id', 'related_user_id'])
+            ->where('owner_id', $ownerId)
+            ->where(function($query) use ($userId) {
+                $query
+                    ->where('user_id', $userId)
+                    ->orWhere('related_user_id', $userId);
+            })
+            ->distinct()
+            ->get()
+            ->toArray();
+
+        return $ids;
+    }
+
     protected function getModel(): RelatedUser
     {
         return new RelatedUser();
