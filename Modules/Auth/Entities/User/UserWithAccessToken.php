@@ -20,10 +20,16 @@ class UserWithAccessToken
      */
     private $accessToken;
 
-    public function __construct(User $user, AccessToken $accessToken)
+    /**
+     * @var bool $isNew
+     */
+    private bool $isNew;
+
+    public function __construct(User $user, AccessToken $accessToken, bool $isNew)
     {
         $this->user = $user;
         $this->accessToken = $accessToken;
+        $this->isNew = $isNew;
     }
 
     /**
@@ -45,6 +51,14 @@ class UserWithAccessToken
     public function getEntityId(): string
     {
         return $this->accessToken->getEntityId();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNew(): bool
+    {
+        return $this->isNew;
     }
 
     public static function getType(): string

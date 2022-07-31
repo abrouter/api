@@ -15,8 +15,8 @@ use Modules\Auth\Services\Auth\DTO\GooglePayloadDTO;
 class GooglePayloadTransformer extends BaseTransformer
 {
     /**
-     * @param CheckIdToken $request
-     * @return GoogleResponseDTO
+     * @param array $request
+     * @return GooglePayloadDTO
      */
     public function transform($request): GooglePayloadDTO
     {

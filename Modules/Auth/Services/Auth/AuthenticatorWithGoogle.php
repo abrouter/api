@@ -39,6 +39,7 @@ class AuthenticatorWithGoogle
     {
         $user = $this->userRepository->hasUserWithUsername($googlePayloadDTO->getUsername());
 
+        $isNew = false;
         if (!$user) {
             $user = new User([
                 'username' => $googlePayloadDTO->getUsername(),
@@ -47,9 +48,16 @@ class AuthenticatorWithGoogle
             ]);
 
             $user->saveOrFail();
+            $isNew = true;
 
-        } else $user = $this->userRepository->getOneByUsername($googlePayloadDTO->getUsername());
+        } else {
+            $user = $this->userRepository->getOneByUsername($googlePayloadDTO->getUsername());
+        }
 
-        return new UserWithAccessToken($user, new AccessToken($user->createToken('default')));
+        return new UserWithAccessToken(
+            $user,
+            new AccessToken($user->createToken('default')),
+            $isNew
+        );
     }
 }

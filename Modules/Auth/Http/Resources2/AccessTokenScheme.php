@@ -7,6 +7,7 @@ use AbRouter\JsonApiFormatter\Document\Collections\RelationshipsCollection;
 use AbRouter\JsonApiFormatter\Document\Schema\DocumentSchema;
 use AbRouter\JsonApiFormatter\Document\Sections\Attributes;
 use AbRouter\JsonApiFormatter\Document\Sections\Identifier;
+use AbRouter\JsonApiFormatter\Document\Sections\Meta;
 use AbRouter\JsonApiFormatter\Document\Sections\Relationship;
 use Modules\Auth\Entities\User\UserWithAccessToken;
 
@@ -42,5 +43,12 @@ class AccessTokenScheme extends DocumentSchema
                 )
             )
         );
+    }
+
+    public function getMeta(): Meta
+    {
+        return new Meta([
+            'isNew' => $this->activeData->isNew(),
+        ]);
     }
 }

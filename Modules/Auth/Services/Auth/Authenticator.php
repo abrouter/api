@@ -35,6 +35,10 @@ class Authenticator
             throw new AccessDeniedHttpException('Password mismatch');
         }
 
-        return new UserWithAccessToken($user, new AccessToken($user->createToken('default')));
+        return new UserWithAccessToken(
+            $user,
+            new AccessToken($user->createToken('default')),
+            false
+        );
     }
 }

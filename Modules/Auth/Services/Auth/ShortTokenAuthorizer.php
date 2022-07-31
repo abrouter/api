@@ -48,7 +48,11 @@ class ShortTokenAuthorizer
             throw new AuthorizationException('Failed to authorize short token');
         }
         
-        $bearer = new UserWithAccessToken($user, new AccessToken($user->createToken('default')));
+        $bearer = new UserWithAccessToken(
+            $user,
+            new AccessToken($user->createToken('default')),
+            false
+        );
         return $bearer;
     }
 }

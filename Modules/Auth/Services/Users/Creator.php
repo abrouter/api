@@ -41,6 +41,6 @@ class Creator
         $user->saveOrFail();
 
         $token = new AccessToken($user->createToken('default'));
-        return new UserWithAccessToken($user, $token);
+        return new UserWithAccessToken($user, $token, true);
     }
 }
