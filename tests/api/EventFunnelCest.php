@@ -244,6 +244,66 @@ class EventFunnelCest
         ]);
     }
 
+    public function showStatsBySummarizableEvents(ApiTester $I)
+    {
+        $unsavedEvents = [
+            ['type' => 'summarizable', 'event_name' => 'revenue']
+        ];
+        $today = (new \DateTime());
+        $yesterday = (new \DateTime())
+            ->add(new DateInterval('P1D'));
+
+        $user = $I->haveUser($I);
+
+        $I->createEventWithSpecificType($user['id'], $unsavedEvents);
+
+        $I->createEventsWithTypeSummarizable(
+            $user['id'],
+            $unsavedEvents[0]['event_name'],
+            1,
+            null,
+            $today->format('Y-m-d')
+        );
+        $I->createEventsWithTypeSummarizable(
+            $user['id'],
+            $unsavedEvents[0]['event_name'],
+            2,
+            '',
+            $yesterday->format('Y-m-d')
+        );
+        $I->createEventsWithTypeSummarizable(
+            $user['id'],
+            $unsavedEvents[0]['event_name'],
+            2,
+            '00321',
+            $yesterday->format('Y-m-d')
+        );
+        $I->createEventsWithTypeSummarizable(
+            $user['id'],
+            $unsavedEvents[0]['event_name'],
+            3,
+            '400',
+            $today->format('Y-m-d')
+        );
+
+        $I->amBearerAuthenticated($user['token']);
+
+        $I->sendPost('/event/funnel?filter[date_from]=' .
+            $today->format('m-d-Y') .
+            '&filter[date_to]=' . $yesterday->format('m-d-Y')
+        );
+
+        $I->seeResponseCodeIsSuccessful(200);
+        $I->seeResponseContainsJson([
+            'counters' => [
+                'revenue' => [
+                    $today->format('Y-m-d') => 400,
+                    $yesterday->format('Y-m-d') => 321
+                ]
+            ]
+        ]);
+    }
+
     public function getAllEventsWithOwnerByRelatedId(ApiTester $I)
     {
         $user = $I->haveUser($I);
