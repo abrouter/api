@@ -95,7 +95,10 @@ class UserExperimentsService
                 $experimentUser->id
             );
 
-        $experimentBranchUser->delete();
+        if ($experimentBranchUser) {
+            $experimentBranchUser->delete();
+        }
+
         $experimentBranchUser = $this
             ->branchUserManager
             ->createExperimentBranchUser(
