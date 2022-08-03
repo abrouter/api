@@ -25,7 +25,8 @@ class UserExperimentsTransformer
             $this->authDecorator->get()->getId(),
             $request->getAttribute('user_signature'),
             $request->input('data.relationships.experiments.data.id'),
-            $request->input('data.relationships.branches.data.id')
+            $request->input('data.relationships.branches.data.id'),
+            $request->getAttribute('forced', false)
         );
     }
 }

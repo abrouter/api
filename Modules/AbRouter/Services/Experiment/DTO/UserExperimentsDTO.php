@@ -25,16 +25,23 @@ class UserExperimentsDTO
      */
     private $experimentBranchId;
 
+    /**
+     * @var bool $force
+     */
+    private bool $force;
+
     public function __construct(
         int $owner,
         string $userSignature,
         string $experimentId,
-        string $experimentBranchId
+        string $experimentBranchId,
+        bool $force
     ) {
         $this->owner = $owner;
         $this->userSignature = $userSignature;
         $this->experimentId = $experimentId;
         $this->experimentBranchId = $experimentBranchId;
+        $this->force = $force;
     }
 
     /**
@@ -64,5 +71,13 @@ class UserExperimentsDTO
     public function getExperimentBranchId(): string
     {
         return $this->experimentBranchId;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isForce(): bool
+    {
+        return $this->force;
     }
 }

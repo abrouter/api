@@ -95,7 +95,7 @@ class UserExperimentsService
                 $experimentUser->id
             );
 
-        if ($experimentBranchUser) {
+        if ($experimentBranchUser && $userExperimentDTO->isForce()) {
             $experimentBranchUser->delete();
         }
 
