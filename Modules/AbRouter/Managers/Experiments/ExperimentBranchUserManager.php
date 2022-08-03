@@ -7,12 +7,21 @@ use Modules\AbRouter\Models\Experiments\ExperimentBranchUser;
 
 class ExperimentBranchUserManager
 {
+    /**
+     * @param int $experimentId
+     * @param int $experimentBranchId
+     * @param int $experimentUserId
+     * @return ExperimentBranchUser
+     */
     public function createExperimentBranchUser(
         int $experimentId,
         int $experimentBranchId,
         int $experimentUserId
     ) {
-        return ExperimentBranchUser
+        /**
+         * @var ExperimentBranchUser $experimentUserBranch
+         */
+        $experimentUserBranch =  ExperimentBranchUser
             ::query()
             ->create([
                 'experiment_id' => $experimentId,
@@ -20,5 +29,6 @@ class ExperimentBranchUserManager
                 'experiment_user_id' => $experimentUserId
             ]);
 
+        return $experimentUserBranch;
     }
 }

@@ -75,6 +75,7 @@ class RelatedUserRepository extends BaseRepository
             })
             ->whereBetween('created_at', [$dateFrom, $dateTo])
             ->with('event')
+            ->orderByDesc('id')
             ->get()
             ->pluck('event');
 
