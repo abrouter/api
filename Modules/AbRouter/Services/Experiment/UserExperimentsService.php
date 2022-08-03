@@ -99,13 +99,15 @@ class UserExperimentsService
             $experimentBranchUser->delete();
         }
 
-        $experimentBranchUser = $this
-            ->branchUserManager
-            ->createExperimentBranchUser(
-                $experiment->id,
-                $experimentBranch->id,
-                $experimentUser->id
-            );
+        if (!$experimentBranchUser) {
+            $experimentBranchUser = $this
+                ->branchUserManager
+                ->createExperimentBranchUser(
+                    $experiment->id,
+                    $experimentBranch->id,
+                    $experimentUser->id
+                );
+        }
 
         return $experimentBranchUser;
     }
