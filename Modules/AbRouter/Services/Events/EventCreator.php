@@ -8,6 +8,7 @@ use Modules\AbRouter\Repositories\IpInfo\IpInfoWithCacheRepository;
 use Modules\AbRouter\Services\Events\DTO\EventDTO;
 use Modules\AbRouter\Services\RelatedUser\DTO\RelatedUserDTO;
 use Modules\AbRouter\Services\RelatedUser\RelatedUserCreator;
+use Carbon\Carbon;
 
 class EventCreator
 {
@@ -42,7 +43,7 @@ class EventCreator
             'tag' => $eventDTO->getTag(),
             'referrer' => $eventDTO->getReferrer(),
             'meta' => json_encode($this->getMetadata($eventDTO)),
-            'created_at' => $eventDTO->getCreatedAt() ?? (new \DateTime())->format('Y-m-d'),
+            'created_at' => $this->getValidDate($eventDTO->getCreatedAt()),
             'country_code' => strtoupper($this->getCountryCode($eventDTO)),
         ]);
 
@@ -80,5 +81,16 @@ class EventCreator
         }
 
         return $meta;
+    }
+
+    public function getValidDate(?string $date)
+    {
+        if (is_null($date)) {
+            return (new \DateTime())->format('Y-m-d H:i:s');
+        }
+
+        $d = \DateTime::createFromFormat('Y-m-d H:i:s', $date);
+
+        return $d ? $date : (new \DateTime())->format('Y-m-d H:i:s');
     }
 }

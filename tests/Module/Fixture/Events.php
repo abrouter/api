@@ -388,7 +388,7 @@ class Events extends Module implements DependsOnModule
         int $ownerId,
         string $eventName,
         int $userId,
-        int $value,
+        ?string $value,
         string $createdAt
     ) {
         $userId = (new EntityEncoder())->encode($userId, 'users');

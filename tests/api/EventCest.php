@@ -135,11 +135,183 @@ class EventCest
                'tag' => $tag,
                'referrer' => $referrer,
                'ip' => $ip,
-               'owner_id' => $user['id'],
-               'created_at' => $date
+               'owner_id' => $user['id']
            ];
 
            $I->seeRecord('events', $recordEvents);
        }
    }
+
+    public function createEventWithDateAndTime(ApiTester $I)
+    {
+        $user = $I->haveUser($I);
+
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->haveHttpHeader('Accept', 'application/json');
+        $I->amBearerAuthenticated($user['token']);
+
+        $temporaryUserId = uniqid();
+        $userId = uniqid();
+        $event = 'test_created_at';
+        $tag = 'tags_' . uniqid();
+        $referrer = '';
+        $ip = $I->getRandomIpAddress();
+        $meta = [];
+        $date = (new \DateTime())->format('Y-m-d H:i:s');
+
+        $I->sendPost('/event', [
+            'data' => [
+                'type' => 'events',
+                'attributes' => [
+                    'temporary_user_id' => $temporaryUserId,
+                    'user_id' => $userId,
+                    'event' => 'test_created_at',
+                    'tag' => $tag,
+                    'referrer' => $referrer,
+                    'ip' => $ip,
+                    'country_code' => 'ua',
+                    'meta' => $meta,
+                    'created_at' => $date
+                ],
+                'relationships' => [
+                    'owner' => [
+                        'data' => [
+                            'id' => $user['encodeId'],
+                            'type' => 'users'
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+
+        $response = json_decode($I->grabResponse(), true);
+        $responseDate = (new \DateTime($response['data']['attributes']['created_at']))
+            ->format('Y-m-d H:i:s');
+
+        $d = $responseDate === $date ? $response['data']['attributes']['created_at'] : false;
+
+        $I->seeResponseCodeIsSuccessful(201);
+        $I->seeResponseContainsJson([
+            'data' => [
+                'id' => $response['data']['id'],
+                'type' => 'events',
+                'attributes' => [
+                    'user_id' => $userId,
+                    'event' => $event,
+                    'tag' => $tag,
+                    'referrer' => $referrer,
+                    'ip' => $ip,
+                    'meta' => $response['data']['attributes']['meta'],
+                    'created_at' => $d
+                ],
+                'relationships' => [
+                    'owner' => [
+                        'data' => [
+                            'id' => $user['encodeId'],
+                            'type' => 'users'
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+
+        $recordEvents = [
+            'temporary_user_id' => $temporaryUserId,
+            'user_id' => $userId,
+            'event' => $event,
+            'tag' => $tag,
+            'referrer' => $referrer,
+            'ip' => $ip,
+            'owner_id' => $user['id'],
+            'created_at' => $d
+        ];
+
+        $I->seeRecord('events', $recordEvents);
+    }
+
+    public function createEventWithoutDate(ApiTester $I)
+    {
+        $user = $I->haveUser($I);
+
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->haveHttpHeader('Accept', 'application/json');
+        $I->amBearerAuthenticated($user['token']);
+
+        $temporaryUserId = uniqid();
+        $userId = uniqid();
+        $event = 'test_created_at';
+        $tag = 'tags_' . uniqid();
+        $referrer = '';
+        $ip = $I->getRandomIpAddress();
+        $meta = [];
+        $date = (new \DateTime())->format('Y-m-d H:i:s');
+
+        $I->sendPost('/event', [
+            'data' => [
+                'type' => 'events',
+                'attributes' => [
+                    'temporary_user_id' => $temporaryUserId,
+                    'user_id' => $userId,
+                    'event' => 'test_created_at',
+                    'tag' => $tag,
+                    'referrer' => $referrer,
+                    'ip' => $ip,
+                    'country_code' => 'ua',
+                    'meta' => $meta,
+                ],
+                'relationships' => [
+                    'owner' => [
+                        'data' => [
+                            'id' => $user['encodeId'],
+                            'type' => 'users'
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+
+        $response = json_decode($I->grabResponse(), true);
+        $responseDate = (new \DateTime($response['data']['attributes']['created_at']))
+            ->format('Y-m-d H:i:s');
+
+        $d = $responseDate === $date ? $response['data']['attributes']['created_at'] : false;
+
+        $I->seeResponseCodeIsSuccessful(201);
+        $I->seeResponseContainsJson([
+            'data' => [
+                'id' => $response['data']['id'],
+                'type' => 'events',
+                'attributes' => [
+                    'user_id' => $userId,
+                    'event' => $event,
+                    'tag' => $tag,
+                    'referrer' => $referrer,
+                    'ip' => $ip,
+                    'meta' => $response['data']['attributes']['meta'],
+                    'created_at' => $d
+                ],
+                'relationships' => [
+                    'owner' => [
+                        'data' => [
+                            'id' => $user['encodeId'],
+                            'type' => 'users'
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+
+        $recordEvents = [
+            'temporary_user_id' => $temporaryUserId,
+            'user_id' => $userId,
+            'event' => $event,
+            'tag' => $tag,
+            'referrer' => $referrer,
+            'ip' => $ip,
+            'owner_id' => $user['id'],
+            'created_at' => $d
+        ];
+
+        $I->seeRecord('events', $recordEvents);
+    }
 }

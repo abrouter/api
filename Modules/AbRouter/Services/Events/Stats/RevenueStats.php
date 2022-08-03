@@ -36,7 +36,7 @@ class RevenueStats implements Stats
                         $revenueCounters[$event->event][$convertDate] = 0;
                     }
 
-                    $revenueCounters[$event->event][$convertDate] += $event->value;
+                    $revenueCounters[$event->event][$convertDate] += intval($event->value);
                 }
             }
         }
