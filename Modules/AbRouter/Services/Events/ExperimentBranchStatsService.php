@@ -55,6 +55,7 @@ class ExperimentBranchStatsService extends SimpleStatsService
 
         $allDisplayEvents = $this->getDisplayEvents($statsQueryDTO->getOwnerId());
         $displayEventsWithTypeSummarizable = $this->getDisplayEventsWithTypeSummarizable($allDisplayEvents);
+        $displayEventsWithTypeIncrementalUnique = $this->getDisplayEventsWithTypeIncrementalUnique($allDisplayEvents);
         $displayEventsWithTypeIncremental = $this->getDisplayEventsWithTypeIncremental($allDisplayEvents);
         $uniqUsersIds = $this->getUniqUsersIds($allUserEvents);
         $uniqRelatedUsersIds = $this->getUniqRelatedUsersIds(...$allRelatedUsers->all());
@@ -74,6 +75,15 @@ class ExperimentBranchStatsService extends SimpleStatsService
                 $displayEventsWithTypeIncremental
             );
 
+        $incrementalUniqueCounters = $this
+            ->statsFactory
+            ->getStatsMethod('event-unique')
+            ->getCounters(
+                $allUserEvents,
+                $jointUsers,
+                $displayEventsWithTypeIncrementalUnique
+            );
+
         $summarizationCounters = $this
             ->statsFactory
             ->getStatsMethod('revenue')
@@ -85,20 +95,20 @@ class ExperimentBranchStatsService extends SimpleStatsService
 
         $eventPercentages = $this
             ->statsFactory
-            ->getStatsMethod('event')
+            ->getStatsMethod('event-unique')
             ->getPercentages(
                 $allDisplayEvents,
-                $incrementalCounters,
+                $incrementalUniqueCounters,
                 $uniqUsersCount
             );
 
         return new StatsResultsDTO(
             $eventPercentages,
             $incrementalCounters,
+            $incrementalUniqueCounters,
             $summarizationCounters,
             [],
             [],
-            []
         );
     }
 

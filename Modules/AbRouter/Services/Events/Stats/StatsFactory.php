@@ -9,6 +9,8 @@ class StatsFactory
     public function getStatsMethod(string $action): Stats
     {
         switch ($action) {
+            case 'event-unique':
+                return new EventUniqueStats();
             case 'event':
                 return new EventStats();
             case 'referrer':

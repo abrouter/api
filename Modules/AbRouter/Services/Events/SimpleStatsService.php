@@ -72,6 +72,7 @@ class SimpleStatsService
         
         $allDisplayEvents = $this->getDisplayEvents($statsQueryDTO->getOwnerId());
         $displayEventsWithTypeSummarizable = $this->getDisplayEventsWithTypeSummarizable($allDisplayEvents);
+        $displayEventsWithTypeIncrementalUnique = $this->getDisplayEventsWithTypeIncrementalUnique($allDisplayEvents);
         $displayEventsWithTypeIncremental = $this->getDisplayEventsWithTypeIncremental($allDisplayEvents);
         $referrers = $this->getReferrers($statsQueryDTO->getOwnerId(), $displayEventsWithTypeSummarizable);
         $uniqUsersIds = $this->getUniqUsersIds($allUserEvents);
@@ -79,6 +80,15 @@ class SimpleStatsService
         $uniqUsers = $this->getFinalUniqUsers($uniqUsersIds, $uniqRelatedUsersIds);
         
         $uniqUsersCount = count($uniqUsers);
+
+        $incrementalUniqueCounters = $this
+            ->statsFactory
+            ->getStatsMethod('event-unique')
+            ->getCounters(
+                $allUserEvents,
+                $uniqUsers,
+                $displayEventsWithTypeIncrementalUnique
+            );
 
         $incrementalCounters = $this
             ->statsFactory
@@ -89,32 +99,21 @@ class SimpleStatsService
                 $displayEventsWithTypeIncremental
             );
 
-        $eventCountersWithDate = $this
-            ->statsFactory
-            ->getStatsMethod('event')
-            ->getCounters(
-                $allUserEvents,
-                $uniqUsers,
-                $displayEventsWithTypeIncremental,
-                true
-            );
-
         $summarizationCounters = $this
             ->statsFactory
             ->getStatsMethod('revenue')
             ->getCounters(
                 $allUserEvents,
                 [],
-                $displayEventsWithTypeSummarizable,
-                true
+                $displayEventsWithTypeSummarizable
             );
         
         $eventPercentages = $this
             ->statsFactory
-            ->getStatsMethod('event')
+            ->getStatsMethod('event-unique')
             ->getPercentages(
                 $allDisplayEvents,
-                $incrementalCounters,
+                $incrementalUniqueCounters,
                 $uniqUsersCount
             );
 
@@ -142,10 +141,10 @@ class SimpleStatsService
         return new StatsResultsDTO(
             $eventPercentages,
             $incrementalCounters,
+            $incrementalUniqueCounters,
             $summarizationCounters,
             $referrerCounters,
-            $referrerPercentage,
-            $eventCountersWithDate
+            $referrerPercentage
         );
     }
     
@@ -176,6 +175,20 @@ class SimpleStatsService
         return array_reduce($displayEvents,
             function (array $acc, $displayEvent) {
                 if ($displayEvent['type'] === 'summarizable') {
+                    $acc[] = $displayEvent['event_name'];
+
+                    return $acc;
+                }
+
+                return $acc;
+            }, []);
+    }
+
+    protected function getDisplayEventsWithTypeIncrementalUnique(array $displayEvents): array
+    {
+        return array_reduce($displayEvents,
+            function (array $acc, $displayEvent) {
+                if ($displayEvent['type'] === 'incremental-unique') {
                     $acc[] = $displayEvent['event_name'];
 
                     return $acc;

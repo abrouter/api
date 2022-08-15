@@ -10,14 +10,12 @@ interface Stats
      * @param Collection $eventsList
      * @param array $uniqUsers
      * @param array $allDisplayEvents
-     * @param bool $date
      * @return array
      */
     public function getCounters(
         Collection $eventsList,
         array $uniqUsers,
-        array $allDisplayEvents,
-        bool $date = false
+        array $allDisplayEvents
     ): array;
 
     /**

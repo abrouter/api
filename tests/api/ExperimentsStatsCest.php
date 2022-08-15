@@ -43,16 +43,18 @@ class ExperimentsStatsCest
                     'sign up' => $response['percentage']['sign up']
                 ],
                 'counters' => [
-                    'visit_mainpage' => $response['counters']['visit_mainpage'],
-                    'open_contact_form' => $response['counters']['open_contact_form'],
-                    'visited_book_call' => $response['counters']['visited_book_call'],
-                    'fill_form_later' => $response['counters']['fill_form_later'],
-                    'form_filler_complete' => $response['counters']['form_filler_complete'],
-                    'visited_nutrionists_page' => $response['counters']['visited_nutrionists_page'],
-                    'skip_call_booking' => $response['counters']['skip_call_booking'],
-                    'thankyou_page' => $response['counters']['thankyou_page'],
-                    'leave' => $response['counters']['leave'],
-                    'sign up' => $response['counters']['sign up']
+                    'incrementalUnique' => [
+                        'visit_mainpage' => $response['counters']['incrementalUnique']['visit_mainpage'],
+                        'open_contact_form' => $response['counters']['incrementalUnique']['open_contact_form'],
+                        'visited_book_call' => $response['counters']['incrementalUnique']['visited_book_call'],
+                        'fill_form_later' => $response['counters']['incrementalUnique']['fill_form_later'],
+                        'form_filler_complete' => $response['counters']['incrementalUnique']['form_filler_complete'],
+                        'visited_nutrionists_page' => $response['counters']['incrementalUnique']['visited_nutrionists_page'],
+                        'skip_call_booking' => $response['counters']['incrementalUnique']['skip_call_booking'],
+                        'thankyou_page' => $response['counters']['incrementalUnique']['thankyou_page'],
+                        'leave' => $response['counters']['incrementalUnique']['leave'],
+                        'sign up' => $response['counters']['incrementalUnique']['sign up']
+                    ]
                 ]
             ]);
         }
@@ -95,16 +97,18 @@ class ExperimentsStatsCest
                     'sign up' => $response['percentage']['sign up']
                 ],
                 'counters' => [
-                    'visit_mainpage' => $response['counters']['visit_mainpage'],
-                    'open_contact_form' => $response['counters']['open_contact_form'],
-                    'visited_book_call' => $response['counters']['visited_book_call'],
-                    'fill_form_later' => $response['counters']['fill_form_later'],
-                    'form_filler_complete' => $response['counters']['form_filler_complete'],
-                    'visited_nutrionists_page' => $response['counters']['visited_nutrionists_page'],
-                    'skip_call_booking' => $response['counters']['skip_call_booking'],
-                    'thankyou_page' => $response['counters']['thankyou_page'],
-                    'leave' => $response['counters']['leave'],
-                    'sign up' => $response['counters']['sign up']
+                    'incrementalUnique' => [
+                        'visit_mainpage' => $response['counters']['incrementalUnique']['visit_mainpage'],
+                        'open_contact_form' => $response['counters']['incrementalUnique']['open_contact_form'],
+                        'visited_book_call' => $response['counters']['incrementalUnique']['visited_book_call'],
+                        'fill_form_later' => $response['counters']['incrementalUnique']['fill_form_later'],
+                        'form_filler_complete' => $response['counters']['incrementalUnique']['form_filler_complete'],
+                        'visited_nutrionists_page' => $response['counters']['incrementalUnique']['visited_nutrionists_page'],
+                        'skip_call_booking' => $response['counters']['incrementalUnique']['skip_call_booking'],
+                        'thankyou_page' => $response['counters']['incrementalUnique']['thankyou_page'],
+                        'leave' => $response['counters']['incrementalUnique']['leave'],
+                        'sign up' => $response['counters']['incrementalUnique']['sign up']
+                    ]
                 ]
             ]);
         }
@@ -132,7 +136,7 @@ class ExperimentsStatsCest
 
         $I->seeResponseCodeIsSuccessful(201);
 
-        foreach($response['eventCountersWithDate'] as $branch => $event) {
+        foreach($response['counters']['incrementalUnique'] as $branch => $event) {
             $I->seeResponseContainsJson([
                 'experiment' => [
                     'id' => $response['experiment']['id'],
@@ -155,18 +159,20 @@ class ExperimentsStatsCest
                         'sign up' => $response['percentage'][$branch]['sign up']
                     ]
                 ],
-                'eventCountersWithDate' => [
-                    $branch => [
-                        'visit_mainpage' => $response['eventCountersWithDate'][$branch]['visit_mainpage'],
-                        'open_contact_form' => $response['eventCountersWithDate'][$branch]['open_contact_form'],
-                        'visited_book_call' => $response['eventCountersWithDate'][$branch]['visited_book_call'],
-                        'fill_form_later' => $response['eventCountersWithDate'][$branch]['fill_form_later'],
-                        'form_filler_complete' => $response['eventCountersWithDate'][$branch]['form_filler_complete'],
-                        'visited_nutrionists_page' => $response['eventCountersWithDate'][$branch]['visited_nutrionists_page'],
-                        'skip_call_booking' => $response['eventCountersWithDate'][$branch]['skip_call_booking'],
-                        'thankyou_page' => $response['eventCountersWithDate'][$branch]['thankyou_page'],
-                        'leave' => $response['eventCountersWithDate'][$branch]['leave'],
-                        'sign up' => $response['eventCountersWithDate'][$branch]['sign up']
+                'counters' => [
+                    'incrementalUnique' => [
+                        $branch => [
+                            'visit_mainpage' => $response['counters']['incrementalUnique'][$branch]['visit_mainpage'],
+                            'open_contact_form' => $response['counters']['incrementalUnique'][$branch]['open_contact_form'],
+                            'visited_book_call' => $response['counters']['incrementalUnique'][$branch]['visited_book_call'],
+                            'fill_form_later' => $response['counters']['incrementalUnique'][$branch]['fill_form_later'],
+                            'form_filler_complete' => $response['counters']['incrementalUnique'][$branch]['form_filler_complete'],
+                            'visited_nutrionists_page' => $response['counters']['incrementalUnique'][$branch]['visited_nutrionists_page'],
+                            'skip_call_booking' => $response['counters']['incrementalUnique'][$branch]['skip_call_booking'],
+                            'thankyou_page' => $response['counters']['incrementalUnique'][$branch]['thankyou_page'],
+                            'leave' => $response['counters']['incrementalUnique'][$branch]['leave'],
+                            'sign up' => $response['counters']['incrementalUnique'][$branch]['sign up']
+                        ]
                     ]
                 ]
             ]);
@@ -195,7 +201,7 @@ class ExperimentsStatsCest
 
         $I->seeResponseCodeIsSuccessful(201);
 
-        foreach($response['eventCountersWithDate'] as $branch => $event) {
+        foreach($response['counters']['incrementalUnique'] as $branch => $event) {
             $I->seeResponseContainsJson([
                 'experiment' => [
                     'id' => $response['experiment']['id'],
@@ -218,18 +224,20 @@ class ExperimentsStatsCest
                         'sign up' => $response['percentage'][$branch]['sign up']
                     ]
                 ],
-                'eventCountersWithDate' => [
-                    $branch => [
-                        'visit_mainpage' => $response['eventCountersWithDate'][$branch]['visit_mainpage'],
-                        'open_contact_form' => $response['eventCountersWithDate'][$branch]['open_contact_form'],
-                        'visited_book_call' => $response['eventCountersWithDate'][$branch]['visited_book_call'],
-                        'fill_form_later' => $response['eventCountersWithDate'][$branch]['fill_form_later'],
-                        'form_filler_complete' => $response['eventCountersWithDate'][$branch]['form_filler_complete'],
-                        'visited_nutrionists_page' => $response['eventCountersWithDate'][$branch]['visited_nutrionists_page'],
-                        'skip_call_booking' => $response['eventCountersWithDate'][$branch]['skip_call_booking'],
-                        'thankyou_page' => $response['eventCountersWithDate'][$branch]['thankyou_page'],
-                        'leave' => $response['eventCountersWithDate'][$branch]['leave'],
-                        'sign up' => $response['eventCountersWithDate'][$branch]['sign up']
+                'counters' => [
+                    'incrementalUnique' => [
+                        $branch => [
+                            'visit_mainpage' => $response['counters']['incrementalUnique'][$branch]['visit_mainpage'],
+                            'open_contact_form' => $response['counters']['incrementalUnique'][$branch]['open_contact_form'],
+                            'visited_book_call' => $response['counters']['incrementalUnique'][$branch]['visited_book_call'],
+                            'fill_form_later' => $response['counters']['incrementalUnique'][$branch]['fill_form_later'],
+                            'form_filler_complete' => $response['counters']['incrementalUnique'][$branch]['form_filler_complete'],
+                            'visited_nutrionists_page' => $response['counters']['incrementalUnique'][$branch]['visited_nutrionists_page'],
+                            'skip_call_booking' => $response['counters']['incrementalUnique'][$branch]['skip_call_booking'],
+                            'thankyou_page' => $response['counters']['incrementalUnique'][$branch]['thankyou_page'],
+                            'leave' => $response['counters']['incrementalUnique'][$branch]['leave'],
+                            'sign up' => $response['counters']['incrementalUnique'][$branch]['sign up']
+                        ]
                     ]
                 ]
             ]);
@@ -258,7 +266,7 @@ class ExperimentsStatsCest
 
         $I->seeResponseCodeIsSuccessful(201);
 
-        foreach($response['eventCountersWithDate'] as $branch => $event) {
+        foreach($response['counters']['incrementalUnique'] as $branch => $event) {
             $I->seeResponseContainsJson([
                 'experiment' => [
                     'id' => $response['experiment']['id'],
@@ -281,18 +289,20 @@ class ExperimentsStatsCest
                         'sign up' => $response['percentage'][$branch]['sign up']
                     ]
                 ],
-                'eventCountersWithDate' => [
-                    $branch => [
-                        'visit_mainpage' => $response['eventCountersWithDate'][$branch]['visit_mainpage'],
-                        'open_contact_form' => $response['eventCountersWithDate'][$branch]['open_contact_form'],
-                        'visited_book_call' => $response['eventCountersWithDate'][$branch]['visited_book_call'],
-                        'fill_form_later' => $response['eventCountersWithDate'][$branch]['fill_form_later'],
-                        'form_filler_complete' => $response['eventCountersWithDate'][$branch]['form_filler_complete'],
-                        'visited_nutrionists_page' => $response['eventCountersWithDate'][$branch]['visited_nutrionists_page'],
-                        'skip_call_booking' => $response['eventCountersWithDate'][$branch]['skip_call_booking'],
-                        'thankyou_page' => $response['eventCountersWithDate'][$branch]['thankyou_page'],
-                        'leave' => $response['eventCountersWithDate'][$branch]['leave'],
-                        'sign up' => $response['eventCountersWithDate'][$branch]['sign up']
+                'counters' => [
+                    'incrementalUnique' => [
+                        $branch => [
+                            'visit_mainpage' => $response['counters']['incrementalUnique'][$branch]['visit_mainpage'],
+                            'open_contact_form' => $response['counters']['incrementalUnique'][$branch]['open_contact_form'],
+                            'visited_book_call' => $response['counters']['incrementalUnique'][$branch]['visited_book_call'],
+                            'fill_form_later' => $response['counters']['incrementalUnique'][$branch]['fill_form_later'],
+                            'form_filler_complete' => $response['counters']['incrementalUnique'][$branch]['form_filler_complete'],
+                            'visited_nutrionists_page' => $response['counters']['incrementalUnique'][$branch]['visited_nutrionists_page'],
+                            'skip_call_booking' => $response['counters']['incrementalUnique'][$branch]['skip_call_booking'],
+                            'thankyou_page' => $response['counters']['incrementalUnique'][$branch]['thankyou_page'],
+                            'leave' => $response['counters']['incrementalUnique'][$branch]['leave'],
+                            'sign up' => $response['counters']['incrementalUnique'][$branch]['sign up']
+                        ]
                     ]
                 ]
             ]);
@@ -321,7 +331,7 @@ class ExperimentsStatsCest
 
         $I->seeResponseCodeIsSuccessful(201);
 
-        foreach($response['eventCountersWithDate'] as $branch => $event) {
+        foreach($response['counters']['incrementalUnique'] as $branch => $event) {
             $I->seeResponseContainsJson([
                 'experiment' => [
                     'id' => $response['experiment']['id'],
@@ -338,25 +348,27 @@ class ExperimentsStatsCest
                         'fill_form_later' => $response['percentage'][$branch]['fill_form_later']
                     ]
                 ],
-                'eventCountersWithDate' => [
-                    $branch => [
-                        'visit_mainpage' => $response['eventCountersWithDate'][$branch]['visit_mainpage'],
-                        'open_contact_form' => $response['eventCountersWithDate'][$branch]['open_contact_form'],
-                        'visited_book_call' => $response['eventCountersWithDate'][$branch]['visited_book_call'],
-                        'fill_form_later' => $response['eventCountersWithDate'][$branch]['fill_form_later']
+                'counters' => [
+                    'incrementalUnique' => [
+                        $branch => [
+                            'visit_mainpage' => $response['counters']['incrementalUnique'][$branch]['visit_mainpage'],
+                            'open_contact_form' => $response['counters']['incrementalUnique'][$branch]['open_contact_form'],
+                            'visited_book_call' => $response['counters']['incrementalUnique'][$branch]['visited_book_call'],
+                            'fill_form_later' => $response['counters']['incrementalUnique'][$branch]['fill_form_later']
+                        ]
                     ]
                 ]
             ]);
         }
     }
 
-    public function showExperimentStatsByIncrementalAndSummarizableEvents(ApiTester $I)
+    public function showExperimentStatsByIncrementalUniqueAndSummarizableEvents(ApiTester $I)
     {
         $users = [];
 
         $unsavedEvents = [
-            ['type' => 'incremental', 'event_name' => 'view_contact_form'],
-            ['type' => 'incremental', 'event_name' => 'visit_mainpage'],
+            ['type' => 'incremental-unique', 'event_name' => 'view_contact_form'],
+            ['type' => 'incremental-unique', 'event_name' => 'visit_mainpage'],
             ['type' => 'summarizable', 'event_name' => 'revenue']
         ];
         $today = (new \DateTime());
@@ -444,19 +456,121 @@ class ExperimentsStatsCest
                 ]
             ],
             'counters' => [
-                'branch_first' => [
-                    'view_contact_form' => 10,
-                    'visit_mainpage' => 10,
-                    'revenue' =>[
-                        $yesterday->format('Y-m-d') => 300,
-                        $today->format('Y-m-d') => 500
+                'incrementalUnique' => [
+                    'branch_first' => [
+                        'view_contact_form' => [$today->format('Y-m-d') => 10],
+                        'visit_mainpage' => [$today->format('Y-m-d') => 10],
+                    ],
+                    'branch_second' => [
+                        'visit_mainpage' => [$today->format('Y-m-d') => 10],
                     ]
                 ],
-                'branch_second' => [
-                    'visit_mainpage' => 10,
-                    'revenue' =>[
-                        $yesterday->format('Y-m-d') => 300,
-                        $today->format('Y-m-d') => 500
+                'summarizable' => [
+                    'branch_first' => [
+                        'revenue' =>[
+                            $yesterday->format('Y-m-d') => 300,
+                            $today->format('Y-m-d') => 500
+                        ]
+                    ],
+                    'branch_second' => [
+                        'revenue' =>[
+                            $yesterday->format('Y-m-d') => 300,
+                            $today->format('Y-m-d') => 500
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+    }
+
+    public function showExperimentStatsByIncrementalEvents(ApiTester $I)
+    {
+        $users = [];
+
+        $unsavedEvents = [
+            ['type' => 'incremental', 'event_name' => 'view_contact_form'],
+            ['type' => 'incremental', 'event_name' => 'visit_mainpage'],
+        ];
+        $today = (new \DateTime());
+        $yesterday = (new \DateTime())
+            ->add(new DateInterval('P1D'));
+
+        $user = $I->haveUser($I);
+        $experiment = $I->haveExperimentWithTwoBranch($user['id']);
+
+        $I->createEventWithSpecificType($user['id'], $unsavedEvents);
+
+        $users[] = $I->createEventsWithTypeIncremental(
+            $user['id'],
+            $unsavedEvents[0]['event_name'],
+            5,
+            $today->format('Y-m-d')
+        );
+        $users[] = $I->createEventsWithTypeIncremental(
+            $user['id'],
+            $unsavedEvents[1]['event_name'],
+            4,
+            $yesterday->format('Y-m-d')
+        );
+        $users[] = $I->createEventsWithTypeIncremental(
+            $user['id'],
+            $unsavedEvents[0]['event_name'],
+            2,
+            $yesterday->format('Y-m-d')
+        );
+        $users[] = $I->createEventsWithTypeIncremental(
+            $user['id'],
+            $unsavedEvents[1]['event_name'],
+            3,
+            $today->format('Y-m-d')
+        );
+
+        $users = collect($users)
+            ->flatten()
+            ->unique()
+            ->values()
+            ->toArray();
+
+        $I->haveConductedExperiments(
+            $user['id'],
+            $experiment['decodeExperimentId'],
+            $experiment['decodeBranchId'],
+            $users
+        );
+
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->haveHttpHeader('Accept', 'application/json');
+        $I->amBearerAuthenticated($user['token']);
+
+        $I->sendGet('/experiments/stats?filter[experimentId]=' . $experiment['experimentId'] .
+            '&filter[date_from]=' .
+            $today->format('m-d-Y') .
+            '&filter[date_to]=' . $yesterday->format('m-d-Y')
+        );
+
+        $response = json_decode($I->grabResponse(), true);
+
+        $I->seeResponseCodeIsSuccessful(200);
+
+        $I->seeResponseContainsJson([
+            'experiment' => [
+                'id' => $response['experiment']['id'],
+                'name' => $experiment['alias'],
+                'is_enabled' => true,
+                'days_running' => 0,
+                'total_users' => 5
+            ],
+            'counters' => [
+                'incremental' => [
+                    'branch_first' => [
+                        'view_contact_form' => [
+                            $today->format('Y-m-d') => 5,
+                            $yesterday->format('Y-m-d') => 2
+                        ],
+                        'visit_mainpage' => [
+                            $today->format('Y-m-d') => 3,
+                            $yesterday->format('Y-m-d') => 4
+                        ],
                     ]
                 ]
             ]

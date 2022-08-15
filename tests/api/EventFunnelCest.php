@@ -8,6 +8,7 @@ class EventFunnelCest
 
     public function showStatsByUserId(ApiTester $I)
     {
+        $date = (new DateTime())->format('Y-m-d');
         $user = $I->haveUser($I);
         $events = $I->haveUserEvents();
 
@@ -34,22 +35,25 @@ class EventFunnelCest
                 'sign up' => 100
             ],
             'counters' => [
-                'visit_mainpage' => 20,
-                'open_contact_form' => 20,
-                'visited_book_call' => 20,
-                'fill_form_later' => 20,
-                'form_filler_complete' => 20,
-                'visited_nutrionists_page' => 20,
-                'skip_call_booking' => 20,
-                'thankyou_page' => 20,
-                'leave' => 20,
-                'sign up' => 20,
+                'incrementalUnique' => [
+                    'visit_mainpage' => [$date => 20],
+                    'open_contact_form' => [$date => 20],
+                    'visited_book_call' => [$date => 20],
+                    'fill_form_later' => [$date => 20],
+                    'form_filler_complete' => [$date => 20],
+                    'visited_nutrionists_page' => [$date => 20],
+                    'skip_call_booking' => [$date => 20],
+                    'thankyou_page' => [$date => 20],
+                    'leave' => [$date => 20],
+                    'sign up' => [$date => 20],
+                ]
             ]
         ]);
     }
 
     public function showStatsByTemporaryUserId(ApiTester $I)
     {
+        $date = (new DateTime())->format('Y-m-d');
         $user = $I->haveUser($I);
         $events = $I->haveUserEvents();
 
@@ -76,22 +80,25 @@ class EventFunnelCest
                 'sign up' => 100
             ],
             'counters' => [
-                'visit_mainpage' => 10,
-                'open_contact_form' => 10,
-                'visited_book_call' => 10,
-                'fill_form_later' => 10,
-                'form_filler_complete' => 10,
-                'visited_nutrionists_page' => 10,
-                'skip_call_booking' => 10,
-                'thankyou_page' => 10,
-                'leave' => 10,
-                'sign up' => 10,
+                'incrementalUnique' => [
+                    'visit_mainpage' => [$date => 10],
+                    'open_contact_form' => [$date => 10],
+                    'visited_book_call' => [$date => 10],
+                    'fill_form_later' => [$date => 10],
+                    'form_filler_complete' => [$date => 10],
+                    'visited_nutrionists_page' => [$date => 10],
+                    'skip_call_booking' => [$date => 10],
+                    'thankyou_page' => [$date => 10],
+                    'leave' => [$date => 10],
+                    'sign up' => [$date => 10],
+                ]
             ]
         ]);
     }
 
     public function showStatsTemporaryUsersAndUsers(ApiTester $I)
     {
+        $date = (new DateTime())->format('Y-m-d');
         $user = $I->haveUser($I);
         $events = $I->haveUserEvents();
 
@@ -118,22 +125,25 @@ class EventFunnelCest
                 'sign up' => 100
             ],
             'counters' => [
-                'visit_mainpage' => 100,
-                'open_contact_form' => 100,
-                'visited_book_call' => 100,
-                'fill_form_later' => 100,
-                'form_filler_complete' => 100,
-                'visited_nutrionists_page' => 100,
-                'skip_call_booking' => 100,
-                'thankyou_page' => 100,
-                'leave' => 100,
-                'sign up' => 100,
+                'incrementalUnique' => [
+                    'visit_mainpage' => [$date => 100],
+                    'open_contact_form' => [$date => 100],
+                    'visited_book_call' => [$date => 100],
+                    'fill_form_later' => [$date => 100],
+                    'form_filler_complete' => [$date => 100],
+                    'visited_nutrionists_page' => [$date => 100],
+                    'skip_call_booking' => [$date => 100],
+                    'thankyou_page' => [$date => 100],
+                    'leave' => [$date => 100],
+                    'sign up' => [$date => 100],
+                ]
             ]
         ]);
     }
 
     public function showStatsRelatedUsersAndUsers(ApiTester $I)
     {
+        $date = (new DateTime())->format('Y-m-d');
         $user = $I->haveUser($I);
         $events = $I->haveUserEvents();
 
@@ -160,25 +170,27 @@ class EventFunnelCest
                 'sign up' => 66
             ],
             'counters' => [
-                'visit_mainpage' => 100,
-                'open_contact_form' => 100,
-                'visited_book_call' => 100,
-                'fill_form_later' => 100,
-                'form_filler_complete' => 100,
-                'visited_nutrionists_page' => 100,
-                'skip_call_booking' => 100,
-                'thankyou_page' => 100,
-                'leave' => 100,
-                'sign up' => 100,
+                'incrementalUnique' => [
+                    'visit_mainpage' => [$date => 100],
+                    'open_contact_form' => [$date => 100],
+                    'visited_book_call' => [$date => 100],
+                    'fill_form_later' => [$date => 100],
+                    'form_filler_complete' => [$date => 100],
+                    'visited_nutrionists_page' => [$date => 100],
+                    'skip_call_booking' => [$date => 100],
+                    'thankyou_page' => [$date => 100],
+                    'leave' => [$date => 100],
+                    'sign up' => [$date => 100],
+                ]
             ]
         ]);
     }
 
-    public function showStatsByIncrementalAndSummarizableEvents(ApiTester $I)
+    public function showStatsByIncrementalUniqueAndSummarizableEvents(ApiTester $I)
     {
         $unsavedEvents = [
-            ['type' => 'incremental', 'event_name' => 'view_contact_form'],
-            ['type' => 'incremental', 'event_name' => 'visit_mainpage'],
+            ['type' => 'incremental-unique', 'event_name' => 'view_contact_form'],
+            ['type' => 'incremental-unique', 'event_name' => 'visit_mainpage'],
             ['type' => 'summarizable', 'event_name' => 'revenue']
         ];
         $today = (new \DateTime());
@@ -234,11 +246,15 @@ class EventFunnelCest
                 'visit_mainpage' => 100
             ],
             'counters' => [
-                'view_contact_form' => 10,
-                'visit_mainpage' => 20,
-                'revenue' => [
-                    $today->format('Y-m-d') => 500,
-                    $yesterday->format('Y-m-d') => 300
+                'incrementalUnique' => [
+                    'view_contact_form' => [$today->format('Y-m-d') => 10],
+                    'visit_mainpage' => [$today->format('Y-m-d') => 20],
+                ],
+                'summarizable' => [
+                    'revenue' => [
+                        $today->format('Y-m-d') => 500,
+                        $yesterday->format('Y-m-d') => 300
+                    ]
                 ]
             ]
         ]);
@@ -296,9 +312,69 @@ class EventFunnelCest
         $I->seeResponseCodeIsSuccessful(200);
         $I->seeResponseContainsJson([
             'counters' => [
-                'revenue' => [
-                    $today->format('Y-m-d') => 400,
-                    $yesterday->format('Y-m-d') => 321
+                'summarizable' => [
+                    'revenue' => [
+                        $today->format('Y-m-d') => 400,
+                        $yesterday->format('Y-m-d') => 321
+                    ]
+                ]
+            ]
+        ]);
+    }
+
+    public function showStatsByIncrementalEvents(ApiTester $I)
+    {
+        $unsavedEvents = [
+            ['type' => 'incremental', 'event_name' => 'click_button']
+        ];
+        $today = (new \DateTime());
+        $yesterday = (new \DateTime())
+            ->add(new DateInterval('P1D'));
+
+        $user = $I->haveUser($I);
+
+        $I->createEventWithSpecificType($user['id'], $unsavedEvents);
+
+        $I->createEventsWithTypeIncremental(
+            $user['id'],
+            $unsavedEvents[0]['event_name'],
+            1,
+            $today->format('Y-m-d')
+        );
+        $I->createEventsWithTypeIncremental(
+            $user['id'],
+            $unsavedEvents[0]['event_name'],
+            2,
+            $yesterday->format('Y-m-d')
+        );
+        $I->createEventsWithTypeIncremental(
+            $user['id'],
+            $unsavedEvents[0]['event_name'],
+            2,
+            $yesterday->format('Y-m-d')
+        );
+        $I->createEventsWithTypeIncremental(
+            $user['id'],
+            $unsavedEvents[0]['event_name'],
+            5,
+            $today->format('Y-m-d')
+        );
+
+        $I->amBearerAuthenticated($user['token']);
+
+        $I->sendPost('/event/funnel?filter[date_from]=' .
+            $today->format('m-d-Y') .
+            '&filter[date_to]=' . $yesterday->format('m-d-Y')
+        );
+
+        $I->seeResponseCodeIsSuccessful(200);
+        $I->seeResponseContainsJson([
+            'counters' => [
+                'incremental' => [
+                    'click_button' => [
+                        $today->format('Y-m-d') => 6,
+                        $yesterday->format('Y-m-d') => 4
+                    ]
                 ]
             ]
         ]);

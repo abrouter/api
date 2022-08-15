@@ -69,13 +69,13 @@ class StatisticsController
 
         return [
             'percentage' => $results->getPercentage(),
-            'counters' => array_merge_recursive(
-                $results->getIncrementalCounters(),
-                $results->getSummarizationCounters()
-            ),
+            'counters' => [
+                'incremental' => $results->getIncrementalCounters(),
+                'incrementalUnique' => $results->getIncrementalUniqueCounters(),
+                'summarizable' => $results->getSummarizationCounters(),
+            ],
             'referrersCounters' => $results->getReferrersCounters(),
             'referrersPercentage' => $results->getReferrersPercentage(),
-            'eventCountersWithDate' => $results->getEventCountersWithDate()
         ];
     }
 
@@ -91,10 +91,11 @@ class StatisticsController
         
         return [
             'percentage' => $results->getPercentage(),
-            'counters' => array_merge(
-                $results->getIncrementalCounters(),
-                $results->getSummarizationCounters()
-            )
+            'counters' => [
+                'incremental' => $results->getIncrementalCounters(),
+                'incrementalUnique' => $results->getIncrementalUniqueCounters(),
+                'summarizable' => $results->getSummarizationCounters(),
+            ],
         ];
     }
 
@@ -111,11 +112,11 @@ class StatisticsController
         return [
             'experiment' => $results->getExperiments(),
             'percentage' => $results->getPercentage(),
-            'counters' => array_merge_recursive(
-                $results->getIncrementalCounters(),
-                $results->getSummarizationCounters()
-            ),
-            'eventCountersWithDate' => $results->getEventCountersWithDate()
+            'counters' => [
+                'incremental' => $results->getIncrementalCounters(),
+                'incrementalUnique' => $results->getIncrementalUniqueCounters(),
+                'summarizable' => $results->getSummarizationCounters(),
+            ],
         ];
     }
 

@@ -339,7 +339,8 @@ class Events extends Module implements DependsOnModule
     public function createEventsWithTypeIncremental(
         int $ownerId,
         string $eventName,
-        int $eventsCount
+        int $eventsCount,
+        ?string $created_at = null
     ) {
         $users = [];
 
@@ -362,8 +363,8 @@ class Events extends Module implements DependsOnModule
                 'referrer' => $referrer,
                 'ip' => $ip,
                 'meta' => $meta,
-                'created_at' => $createdAt,
-                'updated_at' => $updatedAt
+                'created_at' => $created_at ?? $createdAt,
+                'updated_at' => $created_at ?? $updatedAt
             ];
 
             $eventId = $this->laravel->haveRecord(self::TABLE_EVENTS, $recordEvents);
@@ -373,7 +374,7 @@ class Events extends Module implements DependsOnModule
                 'event_id' => $eventId,
                 'user_id' => $userId,
                 'related_user_id' => $temporaryUserId,
-                'created_at' => $createdAt,
+                'created_at' => $created_at ?? $createdAt,
             ];
 
             $this->laravel->haveRecord(self::TABLE_RELATED_USERS, $recordRelatedUsers);
