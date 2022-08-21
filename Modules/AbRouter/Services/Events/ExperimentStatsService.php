@@ -74,6 +74,7 @@ class ExperimentStatsService extends SimpleStatsService
         $allDisplayEvents = $this->getDisplayEvents($statsQueryDTO->getOwnerId());
         $displayEventsWithTypeSummarizable = $this->getDisplayEventsWithTypeSummarizable($allDisplayEvents);
         $displayEventsWithTypeIncremental = $this->getDisplayEventsWithTypeIncremental($allDisplayEvents);
+        $displayEventsWithTypeIncrementalUnique = $this->getDisplayEventsWithTypeIncrementalUnique($allDisplayEvents);
         $uniqUsersIds = $this->getUniqUsersIds($allUserEvents);
         $uniqRelatedUsersIds = $this
             ->getUniqRelatedUsersIds(
@@ -89,8 +90,8 @@ class ExperimentStatsService extends SimpleStatsService
         $jointUsers = $this->getJointUsersFromEventsAndExperiment($experiment, $uniqUsers);
 
         $incrementalCounters = [];
+        $incrementalUniqueCounters = [];
         $eventPercentages = [];
-        $eventCountersWithDate = [];
         $summarizationCounters = [];
 
         foreach($jointUsers as $key => $jointUser) {
@@ -103,14 +104,13 @@ class ExperimentStatsService extends SimpleStatsService
                     $displayEventsWithTypeIncremental
                 );
 
-            $eventCountersWithDate[$key] = $this
+            $incrementalUniqueCounters[$key] = $this
                 ->statsFactory
-                ->getStatsMethod('event')
+                ->getStatsMethod('event-unique')
                 ->getCounters(
                     $allUserEvents,
                     $jointUser,
-                    $displayEventsWithTypeIncremental,
-                    true
+                    $displayEventsWithTypeIncrementalUnique
                 );
 
             $summarizationCounters[$key] = $this
@@ -119,16 +119,15 @@ class ExperimentStatsService extends SimpleStatsService
                 ->getCounters(
                     $allUserEvents,
                     [],
-                    $displayEventsWithTypeSummarizable,
-                    true
+                    $displayEventsWithTypeSummarizable
                 );
 
             $eventPercentages[$key] = $this
                 ->statsFactory
-                ->getStatsMethod('event')
+                ->getStatsMethod('event-unique')
                 ->getPercentages(
                     $allDisplayEvents,
-                    $incrementalCounters[$key],
+                    $incrementalUniqueCounters[$key],
                     count($jointUser)
                 );
         }
@@ -146,10 +145,10 @@ class ExperimentStatsService extends SimpleStatsService
         return new StatsResultsDTO(
             $eventPercentages,
             $incrementalCounters,
+            $incrementalUniqueCounters,
             $summarizationCounters,
             [],
             [],
-            $eventCountersWithDate,
             $experiment
         );
     }

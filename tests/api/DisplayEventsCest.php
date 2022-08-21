@@ -23,14 +23,14 @@ class DisplayEventsCest
             'sign up'
             ];
 
-        $type = ['incremental', 'summarizable'];
+        $type = ['incremental', 'summarizable', 'incremental-unique'];
 
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->haveHttpHeader('Accept', 'application/json');
         $I->amBearerAuthenticated($user['token']);
 
         foreach($events as $event) {
-            $eventType = $type[mt_rand(0,1)];
+            $eventType = $type[mt_rand(0,2)];
 
             $I->sendPost('/user-events', [
                 'data' => [
@@ -106,7 +106,7 @@ class DisplayEventsCest
                         'type' => 'display_user_events',
                         'attributes' => [
                             'event_name' => $event['event_name'],
-                            'event_type' => 'incremental'
+                            'event_type' => 'incremental-unique'
                         ],
                         'relationships' => [
                             'user_id' => [

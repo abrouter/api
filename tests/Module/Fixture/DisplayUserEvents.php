@@ -73,7 +73,7 @@ class DisplayUserEvents extends Module implements DependsOnModule
                     [
                         'user_id' => $ownerId,
                         'event_name' => $event,
-                        'type' => 'incremental',
+                        'type' => 'incremental-unique',
                         'order' => 0,
                         'created_at' => $date,
                         'updated_at' => $date
