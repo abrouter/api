@@ -11,6 +11,7 @@ use Modules\AbRouter\Repositories\Experiments\ExperimentBranchUserRepository;
 use Modules\AbRouter\Repositories\Experiments\ExperimentUsersRepository;
 use Modules\AbRouter\Managers\Experiments\ExperimentBranchUserManager;
 use Modules\AbRouter\Services\Experiment\DTO\UserExperimentsDTO;
+use Modules\AbRouter\Services\RelatedUser\RelatedUserIds;
 use Modules\Core\EntityId\EntityEncoder;
 
 class UserExperimentsService
@@ -35,16 +36,23 @@ class UserExperimentsService
      */
     private $idResolver;
 
+    /**
+     * @var RelatedUserIds
+     */
+    private $relatedUserIds;
+
     public function __construct(
         ExperimentBranchUserRepository $branchUserRepository,
         ExperimentUsersRepository $experimentUsersRepository,
         ExperimentBranchUserManager $branchUserManager,
-        ExperimentIdResolver $idResolver
+        ExperimentIdResolver $idResolver,
+        RelatedUserIds $relatedUserIds
     ) {
         $this->branchUserRepository = $branchUserRepository;
         $this->experimentUsersRepository = $experimentUsersRepository;
         $this->branchUserManager = $branchUserManager;
         $this->idResolver = $idResolver;
+        $this->relatedUserIds = $relatedUserIds;
     }
 
     /**
@@ -95,11 +103,19 @@ class UserExperimentsService
                 $experimentUser->id
             );
 
+        $deleted = false;
+
         if ($experimentBranchUser && $userExperimentDTO->isForce()) {
-            $experimentBranchUser->delete();
+            $deleted = $experimentBranchUser->delete();
+            $this->updateBranchIdRelatedUsers(
+                $experiment->id,
+                $experimentBranch->id,
+                $userExperimentDTO->getOwner(),
+                $userExperimentDTO->getUserSignature(),
+            );
         }
 
-        if (!$experimentBranchUser) {
+        if (!$experimentBranchUser || $deleted) {
             $experimentBranchUser = $this
                 ->branchUserManager
                 ->createExperimentBranchUser(
@@ -137,5 +153,43 @@ class UserExperimentsService
             ->where('experiment_branch_id', $branchId)
             ->where('experiment_id', $experimentId)
             ->delete();
+    }
+
+    public function updateBranchIdRelatedUsers(
+        int $experimentId,
+        int $experimentBranchId,
+        int $ownerId,
+        string $userSignature
+    )
+    {
+        $userSignatures = $this
+            ->relatedUserIds
+            ->getRelatedUserIds(
+                $ownerId,
+                (array) $userSignature
+            );
+
+        $key = array_search($userSignature, $userSignatures);
+
+        unset($userSignatures[$key]);
+
+        if (empty($userSignatures)) {
+            return true;
+        }
+
+        $userIds = $this
+            ->experimentUsersRepository
+            ->getExperimentUserIdsByUserSignatureAndOwner(
+                $userSignatures,
+                $ownerId
+            );
+
+        return $this
+            ->branchUserManager
+            ->updateExperimentBranchUser(
+                $experimentId,
+                $experimentBranchId,
+                $userIds
+            );
     }
 }

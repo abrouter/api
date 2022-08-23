@@ -84,20 +84,21 @@ class RelatedUserRepository extends BaseRepository
 
     /**
      * @param int $ownerId
-     * @param string $userId
+     * @param array $userIds
+     * @return array
      */
-    public function getAllUserIdAndRelatedUserIdByOwnerIdAndUserId(
+    public function getAllUserIdsAndRelatedUserIdByOwnerIdAndUserId(
         int $ownerId,
-        string $userId
-    ) {
+        array $userIds
+    ): array {
         $ids = $this
             ->query()
             ->select(['user_id', 'related_user_id'])
             ->where('owner_id', $ownerId)
-            ->where(function($query) use ($userId) {
+            ->where(function($query) use ($userIds) {
                 $query
-                    ->where('user_id', $userId)
-                    ->orWhere('related_user_id', $userId);
+                    ->whereIn('user_id', $userIds)
+                    ->orWhereIn('related_user_id', $userIds);
             })
             ->distinct()
             ->get()

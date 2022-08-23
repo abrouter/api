@@ -289,13 +289,27 @@ class SimpleStatsService
     protected function convertDateTime($dateFrom = null, $dateTo = null): array
     {
         if(!empty($dateFrom && $dateTo)) {
-            $dateFromConverted = \DateTime::createFromFormat('m-d-Y', $dateFrom)->format('Y-m-d');
-            $dateToConverted = \DateTime::createFromFormat('m-d-Y', $dateTo)->format('Y-m-d');
+            $dateFromConverted = \DateTime
+                ::createFromFormat('m-d-Y', $dateFrom)
+                ->setTime(00, 00, 00)
+                ->format('Y-m-d H:i:s');
+
+            $dateToConverted = \DateTime
+                ::createFromFormat('m-d-Y', $dateTo)
+                ->setTime(23, 59, 59)
+                ->format('Y-m-d H:i:s');
+
             return ['date_from' => $dateFromConverted, 'date_to' => $dateToConverted];
         }
 
-        $dateFrom = (new \DateTime())->format('Y-m-d');
-        $dateTo = (new \DateTime($dateFrom))->add(new \DateInterval('P1D'))->format('Y-m-d');
+        $dateFrom = (new \DateTime())
+            ->setTime(00, 00, 00)
+            ->format('Y-m-d H:i:s');
+
+        $dateTo = (new \DateTime($dateFrom))
+            ->add(new \DateInterval('P1D'))
+            ->setTime(23, 59, 59)
+            ->format('Y-m-d H:i:s');
 
         return ['date_from' => $dateFrom, 'date_to' => $dateTo];
     }

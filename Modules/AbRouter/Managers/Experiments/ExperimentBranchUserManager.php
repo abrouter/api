@@ -31,4 +31,29 @@ class ExperimentBranchUserManager
 
         return $experimentUserBranch;
     }
+
+    /**
+     * @param int $experimentId
+     * @param int $experimentBranchId
+     * @param array $experimentUserIds
+     * @return ExperimentBranchUser
+     */
+    public function updateExperimentBranchUser(
+        int $experimentId,
+        int $experimentBranchId,
+        array $experimentUserIds
+    ) {
+        /**
+         * @var ExperimentBranchUser $experimentUserBranch
+         */
+        $experimentUserBranch =  ExperimentBranchUser
+            ::query()
+            ->where('experiment_id', $experimentId)
+            ->whereIn('experiment_user_id', $experimentUserIds)
+            ->update([
+                'experiment_branch_id' => $experimentBranchId
+            ]);
+
+        return $experimentUserBranch;
+    }
 }
