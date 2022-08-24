@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Modules\AbRouter\Repositories\Experiments;
 
+use Illuminate\Database\Eloquent\Collection;
 use Modules\Core\Repositories\BaseRepository;
 use Modules\AbRouter\Models\Experiments\ExperimentUsers;
 
@@ -27,6 +28,29 @@ class ExperimentUsersRepository extends BaseRepository
         return $model;
     }
 
+    /**
+     * @param array $userSignatures
+     * @param int $owner
+     * @return array
+     */
+    public function getExperimentUserIdsByUserSignatureAndOwner(array $userSignatures, int $owner): array
+    {
+        $ids = $this
+            ->query()
+            ->select(['id'])
+            ->where('owner_id', $owner)
+            ->whereIn('user_signature', $userSignatures)
+            ->get()
+            ->toArray();
+
+        return $ids;
+    }
+
+    /**
+     * @param int $owner
+     * @param string $userSignature
+     * @return ExperimentUsers
+     */
     public function createExperimentUser(int $owner, string $userSignature): ExperimentUsers
     {
         /**
