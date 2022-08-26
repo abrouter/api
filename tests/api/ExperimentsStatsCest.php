@@ -576,4 +576,114 @@ class ExperimentsStatsCest
             ]
         ]);
     }
+
+    public function showExperimentStatsByIncrementalAndIncrementalUniqueEvents(ApiTester $I)
+    {
+        $users = [];
+
+        $unsavedEvents = [
+            ['type' => 'incremental-unique', 'event_name' => 'view_contact_form'],
+            ['type' => 'incremental-unique', 'event_name' => 'visit_mainpage'],
+            ['type' => 'incremental', 'event_name' => 'send_message_button'],
+            ['type' => 'incremental', 'event_name' => 'view_phone_number_button'],
+        ];
+        $today = (new \DateTime());
+        $yesterday = (new \DateTime())
+            ->add(new DateInterval('P1D'));
+
+        $user = $I->haveUser($I);
+        $experiment = $I->haveExperimentWithTwoBranch($user['id']);
+
+        $I->createEventWithSpecificType($user['id'], $unsavedEvents);
+
+        $users[] = $I->createEventsWithTypeIncremental(
+            $user['id'],
+            $unsavedEvents[0]['event_name'],
+            5,
+        );
+        $users[] = $I->createEventsWithTypeIncremental(
+            $user['id'],
+            $unsavedEvents[1]['event_name'],
+            4,
+        );
+        $users[] = $I->createEventsWithTypeIncremental(
+            $user['id'],
+            $unsavedEvents[2]['event_name'],
+            3,
+        );
+        $users[] = $I->createEventsWithTypeIncremental(
+            $user['id'],
+            $unsavedEvents[2]['event_name'],
+            3,
+        );
+        $users[] = $I->createEventsWithTypeIncremental(
+            $user['id'],
+            $unsavedEvents[3]['event_name'],
+            5,
+        );
+        $users[] = $I->createEventsWithTypeIncremental(
+            $user['id'],
+            $unsavedEvents[3]['event_name'],
+            2,
+        );
+
+        $users = collect($users)
+            ->flatten()
+            ->unique()
+            ->values()
+            ->toArray();
+
+        $I->haveConductedExperiments(
+            $user['id'],
+            $experiment['decodeExperimentId'],
+            $experiment['decodeBranchId'],
+            $users
+        );
+
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->haveHttpHeader('Accept', 'application/json');
+        $I->amBearerAuthenticated($user['token']);
+
+        $I->sendGet('/experiments/stats?filter[experimentId]=' . $experiment['experimentId'] .
+            '&filter[date_from]=' .
+            $today->format('m-d-Y') .
+            '&filter[date_to]=' . $yesterday->format('m-d-Y')
+        );
+
+        $response = json_decode($I->grabResponse(), true);
+
+        $I->seeResponseCodeIsSuccessful(200);
+
+        $I->seeResponseContainsJson([
+            'experiment' => [
+                'id' => $response['experiment']['id'],
+                'name' => $experiment['alias'],
+                'is_enabled' => true,
+                'days_running' => 0,
+                'total_users' => 5
+            ],
+            'counters' => [
+                'incrementalUnique' => [
+                    'branch_first' => [
+                        'view_contact_form' => [
+                            $today->format('Y-m-d') => 5,
+                        ],
+                        'visit_mainpage' => [
+                            $today->format('Y-m-d') => 4,
+                        ]
+                    ]
+                ],
+                'incremental' => [
+                    'branch_first' => [
+                        'send_message_button' => [
+                            $today->format('Y-m-d') => 6,
+                        ],
+                        'view_phone_number_button' => [
+                            $today->format('Y-m-d') => 7,
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+    }
 }

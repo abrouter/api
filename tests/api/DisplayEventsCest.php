@@ -84,11 +84,11 @@ class DisplayEventsCest
         }
     }
 
-    public function getEvents(ApiTester $I)
+    public function getIncrementalUniqueEvents(ApiTester $I)
     {
         $user = $I->haveUser($I);
         $events = $I->haveUserEvents($user['id']);
-        $savedEvents = $I->saveUserEvents($user['id'], $events);
+        $savedEvents = $I->saveUserEvents($user['id'], $events, 'incremental-unique');
 
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->haveHttpHeader('Accept', 'application/json');
@@ -107,6 +107,82 @@ class DisplayEventsCest
                         'attributes' => [
                             'event_name' => $event['event_name'],
                             'event_type' => 'incremental-unique'
+                        ],
+                        'relationships' => [
+                            'user_id' => [
+                                'data' => [
+                                    'id' => $user['encodeId'],
+                                    'type' => 'users'
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]);
+        }
+    }
+
+    public function getIncrementalEvents(ApiTester $I)
+    {
+        $user = $I->haveUser($I);
+        $events = $I->haveUserEvents($user['id']);
+        $savedEvents = $I->saveUserEvents($user['id'], $events, 'incremental');
+
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->haveHttpHeader('Accept', 'application/json');
+        $I->amBearerAuthenticated($user['token']);
+
+        $I->sendGet('/user-events');
+
+        $I->seeResponseCodeIsSuccessful(201);
+
+        foreach($savedEvents as $event) {
+            $I->seeResponseContainsJson([
+                'data' => [
+                    [
+                        'id' => $event['id'],
+                        'type' => 'display_user_events',
+                        'attributes' => [
+                            'event_name' => $event['event_name'],
+                            'event_type' => 'incremental'
+                        ],
+                        'relationships' => [
+                            'user_id' => [
+                                'data' => [
+                                    'id' => $user['encodeId'],
+                                    'type' => 'users'
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]);
+        }
+    }
+
+    public function getSummarizableEvents(ApiTester $I)
+    {
+        $user = $I->haveUser($I);
+        $events = $I->haveUserEvents($user['id']);
+        $savedEvents = $I->saveUserEvents($user['id'], $events, 'summarizable');
+
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->haveHttpHeader('Accept', 'application/json');
+        $I->amBearerAuthenticated($user['token']);
+
+        $I->sendGet('/user-events');
+
+        $I->seeResponseCodeIsSuccessful(201);
+
+        foreach($savedEvents as $event) {
+            $I->seeResponseContainsJson([
+                'data' => [
+                    [
+                        'id' => $event['id'],
+                        'type' => 'display_user_events',
+                        'attributes' => [
+                            'event_name' => $event['event_name'],
+                            'event_type' => 'summarizable'
                         ],
                         'relationships' => [
                             'user_id' => [

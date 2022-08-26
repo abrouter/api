@@ -55,6 +55,7 @@ sync-local-to-container: check ./docker-compose.env
 test-run:
 	docker exec $(APP) php artisan abrouter:create-database abr_test
 	docker exec $(APP) php build/switch.php  --mode=test
+	docker exec $(APP) php artisan config:cache
 	docker exec $(APP) php artisan migrate
 	docker exec $(APP) php artisan passport:install
 	docker exec $(APP) php ./vendor/bin/codecept build
@@ -62,6 +63,7 @@ test-run:
 	docker exec $(APP) php ./vendor/bin/codecept clean
 	docker exec $(APP) php artisan abrouter:drop-database abr_test
 	docker exec $(APP) php build/switch.php  --mode=dev
+	docker exec $(APP) php artisan config:cache
 
 %:
 	@:

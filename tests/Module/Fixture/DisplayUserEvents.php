@@ -60,7 +60,7 @@ class DisplayUserEvents extends Module implements DependsOnModule
         return $events;
     }
 
-    public function saveUserEvents(int $ownerId, array $events)
+    public function saveUserEvents(int $ownerId, array $events, string $type = 'incremental-unique')
     {
         $savedEvents = [];
         $date = (new \DateTime())->format('Y-m-d');
@@ -73,7 +73,7 @@ class DisplayUserEvents extends Module implements DependsOnModule
                     [
                         'user_id' => $ownerId,
                         'event_name' => $event,
-                        'type' => 'incremental-unique',
+                        'type' => $type,
                         'order' => 0,
                         'created_at' => $date,
                         'updated_at' => $date

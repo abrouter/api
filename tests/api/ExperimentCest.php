@@ -202,6 +202,7 @@ class ExperimentCest
     {
         $user = $I->haveUser($I);
         $experiment = $I->haveExperiment($user['id']);
+        $experimentBranch = $I->haveBranch($experiment['experimentId']);
         $userSignature = 'user_' . uniqid();
 
         $I->haveHttpHeader('Content-Type', 'application/json');
@@ -233,9 +234,9 @@ class ExperimentCest
                 'type' => 'experiment_branch_users',
                 'id' => $response['data']['id'],
                 'attributes' => [
-                    'run-uid' => $response['data']['attributes']['run-uid'],
-                    'branch-uid' => $response['data']['attributes']['branch-uid'],
-                    'experiment-uid' => $response['data']['attributes']['experiment-uid']
+                    'run-uid' => $experiment['alias'] . '-' . $experimentBranch['branchName'],
+                    'branch-uid' => $experimentBranch['branchName'],
+                    'experiment-uid' => $experiment['alias'] ,
                 ],
                 'relationships' => [
                     'experiment_user' => [
@@ -247,13 +248,13 @@ class ExperimentCest
                     'experiment_id' => [
                         'data' => [
                             'type' => 'users',
-                            'id' => $response['data']['relationships']['experiment_id']['data']['id']
+                            'id' => $experiment['encodeExperimentId']
                         ]
                     ],
                     'experiment_branch_id' => [
                         'data' => [
                             'type' => 'users',
-                            'id' => $response['data']['relationships']['experiment_branch_id']['data']['id']
+                            'id' => $experimentBranch['encodeBranchId']
                         ]
                     ]
                 ]
@@ -261,17 +262,17 @@ class ExperimentCest
             'included' => [
                 [
                     'type' => 'experiment_branches',
-                    'id' => $response['included'][0]['id'],
+                    'id' => $experimentBranch['encodeBranchId'],
                     'attributes' => [
-                        "name" => $response['included'][0]['attributes']['name'],
-                        "uid" => $response['included'][0]['attributes']['uid'],
-                        "percent" => $response['included'][0]['attributes']['percent']
+                        'name' => $experimentBranch['branchName'],
+                        'uid' => $experimentBranch['branchName'],
+                        'percent' => 100
                     ],
                     'relationships' => [
                         'experiment' => [
                             'data' => [
                                 'type' => 'users',
-                                'id' => $response['included'][0]['relationships']['experiment']['data']['id']
+                                'id' => $experiment['encodeExperimentId']
                             ]       
                         ]
                     ]
@@ -279,11 +280,143 @@ class ExperimentCest
             ]
         ]);
 
-        $experimentUserId = (new EntityEncoder())->decode($response['data']['relationships']['experiment_user']['data']['id'], 'experiment_users');
+        $experimentUserId = (new EntityEncoder())
+            ->decode(
+                $response['data']['relationships']['experiment_user']['data']['id'], 'experiment_users'
+            );
+        $experimentBranchId = (new EntityEncoder())
+            ->decode(
+                $response['data']['relationships']['experiment_branch_id']['data']['id'], 'experiment_branches'
+            );
+
         $experimentId = $experiment['experimentId'];
-        $experimentBranchId = (new EntityEncoder())->decode($response['data']['relationships']['experiment_branch_id']['data']['id'], 'experiment_branches');
-        $recordBranchUsers = ['experiment_user_id' => $experimentUserId, 'experiment_id' => $experimentId, 'experiment_branch_id' => $experimentBranchId];
+
+        $recordBranchUsers = [
+            'experiment_user_id' => $experimentUserId,
+            'experiment_id' => $experimentId,
+            'experiment_branch_id' => $experimentBranchId
+        ];
         $recordExperimentUsers = ['owner_id' => $user['id'], 'user_signature' => $userSignature];
+
+        $I->seeRecord('experiment_user_branches', $recordBranchUsers);
+        $I->seeRecord('experiment_users', $recordExperimentUsers);
+    }
+
+    public function runExperimentWithRelatedUser(ApiTester $I)
+    {
+        $user = $I->haveUser($I);
+        $experiment = $I->haveExperiment($user['id']);
+        $experimentBranchFirst = $I->haveBranch($experiment['experimentId']);
+        $experimentBranchSecond = $I->haveBranch($experiment['experimentId'], 0);
+
+        $usersIds = $I->createEventsWithTypeIncremental(
+            $user['id'],
+            'test',
+            5,
+        );
+
+        $I->haveConductedExperiments(
+            $user['id'],
+            $experiment['experimentId'],
+            (array) $experimentBranchSecond['branchId'],
+            $usersIds
+        );
+
+        $event = $I->grabRecord('events', ['user_id' => $usersIds[0]]);
+        $userSignature = $event['temporary_user_id'];
+
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->haveHttpHeader('Accept', 'application/json');
+        $I->amBearerAuthenticated($user['token']);
+
+        $I->sendPost('/experiment/run', [
+            'data' => [
+                'type' => 'experiment-run',
+                'attributes' => [
+                    'userSignature' => $userSignature
+                ],
+                'relationships' => [
+                    'experiment' => [
+                        'data' => [
+                            'id' => $experiment['encodeExperimentId'],
+                            'type' => 'experiments'
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+
+        $response = json_decode($I->grabResponse(), true);
+
+        $I->seeResponseCodeIsSuccessful(201);
+        $I->seeResponseContainsJson([
+            'data' => [
+                'type' => 'experiment_branch_users',
+                'id' => $response['data']['id'],
+                'attributes' => [
+                    'run-uid' => $experiment['alias'] . '-' . $experimentBranchSecond['branchName'],
+                    'branch-uid' => $experimentBranchSecond['branchName'],
+                    'experiment-uid' => $experiment['alias'] ,
+                ],
+                'relationships' => [
+                    'experiment_user' => [
+                        'data' => [
+                            'type' => 'experiment_user',
+                            'id' => $response['data']['relationships']['experiment_user']['data']['id']
+                        ]
+                    ],
+                    'experiment_id' => [
+                        'data' => [
+                            'type' => 'users',
+                            'id' => $experiment['encodeExperimentId']
+                        ]
+                    ],
+                    'experiment_branch_id' => [
+                        'data' => [
+                            'type' => 'users',
+                            'id' => $experimentBranchSecond['encodeBranchId']
+                        ]
+                    ]
+                ]
+            ],
+            'included' => [
+                [
+                    'type' => 'experiment_branches',
+                    'id' => $experimentBranchSecond['encodeBranchId'],
+                    'attributes' => [
+                        'name' => $experimentBranchSecond['branchName'],
+                        'uid' => $experimentBranchSecond['branchName'],
+                        'percent' => 0
+                    ],
+                    'relationships' => [
+                        'experiment' => [
+                            'data' => [
+                                'type' => 'users',
+                                'id' => $experiment['encodeExperimentId']
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+
+        $experimentUserId = (new EntityEncoder())
+            ->decode(
+                $response['data']['relationships']['experiment_user']['data']['id'], 'experiment_users'
+            );
+        $experimentBranchId = (new EntityEncoder())
+            ->decode(
+                $response['data']['relationships']['experiment_branch_id']['data']['id'], 'experiment_branches'
+            );
+
+        $experimentId = $experiment['experimentId'];
+
+        $recordBranchUsers = [
+            'experiment_user_id' => $experimentUserId,
+            'experiment_id' => $experimentId,
+            'experiment_branch_id' => $experimentBranchId
+        ];
+        $recordExperimentUsers = ['owner_id' => $user['id'], 'user_signature' => $event['user_id']];
 
         $I->seeRecord('experiment_user_branches', $recordBranchUsers);
         $I->seeRecord('experiment_users', $recordExperimentUsers);
@@ -293,6 +426,7 @@ class ExperimentCest
     {
         $user = $I->haveUser($I);
         $experiment = $I->haveExperiment($user['id']);
+        $experimentBranch = $I->haveBranch($experiment['experimentId']);
         $experimentId = $experiment['encodeExperimentId'];
         $experimentName = 'experiment_' . uniqid();
         $branchName = 'branch_' . uniqid();
@@ -317,7 +451,7 @@ class ExperimentCest
                 'relationships' => [
                     'branches' => [
                         'data' => [
-                            'id' => $experiment['idBranch'],
+                            'id' => $experimentBranch['encodeBranchId'],
                             'type' => 'experiment_branches',
                         ]
                     ],
@@ -331,7 +465,7 @@ class ExperimentCest
             ],
             'included' => [
                 [ 
-                    'id' => $experiment['idBranch'],
+                    'id' => $experimentBranch['encodeBranchId'],
                     'type' => 'experiment_branches',
                     'attributes' => [
                         'name' => $branchName,
@@ -359,16 +493,12 @@ class ExperimentCest
     
         $response = json_decode($I->grabResponse(), true);
 
-        $alias = $response['data']['attributes']['alias'];
-        $config = $response['data']['attributes']['config'];
-        $isEnabled = $response['data']['attributes']['is_enabled'];
-        $isFeatureToggle = $response['data']['attributes']['is_feature_toggle'];
         $recordExperiment = [
             'name' => $experimentName,
             'uid' => $experimentName,
-            'alias' => $alias,
-            'is_enabled' => $isEnabled,
-            'is_feature_toggle' => $isFeatureToggle,
+            'alias' => $experimentName,
+            'is_enabled' => true,
+            'is_feature_toggle' => false,
             'owner_id' => $user['id']
         ];
         $recordBranch = [
@@ -386,10 +516,10 @@ class ExperimentCest
                 'attributes' => [
                     'name' => $experimentName,
                     'uid' => $experimentName,
-                    'alias' => $alias,
-                    'config' => $config,
-                    'is_enabled' => $isEnabled,
-                    'is_feature_toggle' => $isFeatureToggle
+                    'alias' => $experimentName,
+                    'config' => [],
+                    'is_enabled' => true,
+                    'is_feature_toggle' => false
                 ],
                 'relationships' => [
                     'owner' => [
@@ -401,7 +531,7 @@ class ExperimentCest
                     'branches' => [
                         'data' => [
                             [
-                                'id' => $experiment['idBranch'],
+                                'id' => $experimentBranch['encodeBranchId'],
                                 'type' => 'experiment_branches'
                             ]
                         ]
@@ -418,10 +548,8 @@ class ExperimentCest
     {
         $user = $I->haveUser($I);
         $experiment = $I->haveExperiment($user['id']);
+        $experimentBranch = $I->haveBranch($experiment['experimentId']);
         $experimentId = $experiment['encodeExperimentId'];
-        $experimentName = 'experiment_' . uniqid();
-        $branchName = 'branch_' . uniqid();
-        $percent = random_int(1,100);
 
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->haveHttpHeader('Accept', 'application/json');
@@ -432,13 +560,13 @@ class ExperimentCest
                 'id' => $experimentId,
                 'type' => 'experiments',
                 'attributes' => [
-                    'name' => $experimentName,
+                    'name' => $experiment['name'],
                 ],
                 'relationships' => [
                     'branches' => [
                         'data' => [
                             [
-                            'id' => $experiment['idBranch'],
+                            'id' => $experimentBranch['encodeBranchId'],
                             'type' => 'experiment_branches',
                             ]
                         ]
@@ -452,10 +580,8 @@ class ExperimentCest
                 ]
             ]
         ]);
-    
-        $response = json_decode($I->grabResponse(), true);
 
-        $recordExperiment = ['name' => $experimentName, 'owner_id' => $user['id']];
+        $recordExperiment = ['name' => $experiment['name'], 'owner_id' => $user['id']];
         $recordBranch = ['experiment_id' => $experiment['experimentId']];
 
         $I->seeResponseCodeIsSuccessful(204);
@@ -464,28 +590,24 @@ class ExperimentCest
         $I->dontSeeRecord('experiment_branches', $recordBranch);
     }
 
-    public function getExperimentsHaveUser(ApiTester $I)
+    public function getUserExperiments(ApiTester $I)
     {
         $user = $I->haveUser($I);
 
-
-        //please, attention
-        // the method inside creates the branches, but it's to declarative
-        $experimentWithBranch = $I->haveExperiment($user['id']);
+        $experiment = $I->haveExperiment($user['id']);
+        $experimentBranch = $I->haveBranch($experiment['experimentId']);
         $userSignature = uniqid();
 
         $I->experimentsHaveUsers(
             $userSignature,
             $user['id'],
-            $experimentWithBranch['experimentId'],
-            $experimentWithBranch['decodeBranchId']
+            $experiment['experimentId'],
+            $experimentBranch['branchId']
         );
 
         $I->haveHttpHeader('Accept', 'application/json');
         $I->amBearerAuthenticated($user['token']);
         $I->sendGet('experiments/have-user/' . $userSignature);
-
-        $response = json_decode($I->grabResponse(), true);
 
         $I->seeResponseCodeIsSuccessful(200);
 
@@ -494,9 +616,9 @@ class ExperimentCest
                 [
                     'type' => 'experiment_branch_users',
                     'attributes' => [
-                        'run-uid' => $experimentWithBranch['alias'] . '-' . $experimentWithBranch['branchName'],
-                        'branch-uid' => $experimentWithBranch['branchName'],
-                        'experiment-uid' => $experimentWithBranch['alias'] ,
+                        'run-uid' => $experiment['alias'] . '-' . $experimentBranch['branchName'],
+                        'branch-uid' => $experimentBranch['branchName'],
+                        'experiment-uid' => $experiment['alias'],
                     ],
                 ]
             ]
@@ -507,12 +629,13 @@ class ExperimentCest
     {
         $user = $I->haveUser($I);
         $experiment = $I->haveExperiment($user['id']);
+        $experimentBranch = $I->haveBranch($experiment['experimentId']);
         $userSignature = uniqid();
         $I->experimentsHaveUsers(
             $userSignature,
             $user['id'],
             $experiment['experimentId'],
-            $experiment['decodeBranchId']
+            $experimentBranch['branchId']
         );
 
         $I->haveHttpHeader('Content-Type', 'application/json');
@@ -534,7 +657,7 @@ class ExperimentCest
                     ],
                     'branches' => [
                         'data' => [
-                            'id' => $experiment['idBranch'],
+                            'id' => $experimentBranch['encodeBranchId'],
                             'type' => 'experiment_branches'
                         ]
                     ]
@@ -579,17 +702,115 @@ class ExperimentCest
             'included' => [
                 [
                     'type' => 'experiment_branches',
-                    'id' => $response['included'][0]['id'],
+                    'id' => $experimentBranch['encodeBranchId'],
                     'attributes' => [
-                        "name" => $response['included'][0]['attributes']['name'],
-                        "uid" => $response['included'][0]['attributes']['uid'],
-                        "percent" => $response['included'][0]['attributes']['percent']
+                        'name' => $experimentBranch['branchName'],
+                        'uid' => $experimentBranch['branchName'],
+                        'percent' => 100
                     ],
                     'relationships' => [
                         'experiment' => [
                             'data' => [
                                 'type' => 'users',
-                                'id' => $response['included'][0]['relationships']['experiment']['data']['id']
+                                'id' => $experiment['encodeExperimentId']
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+    }
+
+    public function reAddingUserToExperiment(ApiTester $I)
+    {
+        $user = $I->haveUser($I);
+        $experiment = $I->haveExperiment($user['id']);
+        $experimentBranchFirst = $I->haveBranch($experiment['experimentId']);
+        $experimentBranchSecond = $I->haveBranch($experiment['experimentId']);
+        $userSignature = uniqid();
+        $I->experimentsHaveUsers(
+            $userSignature,
+            $user['id'],
+            $experiment['experimentId'],
+            $experimentBranchFirst['branchId']
+        );
+
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->haveHttpHeader('Accept', 'application/json');
+        $I->amBearerAuthenticated($user['token']);
+
+        $I->sendPost('experiments/add-user', [
+            'data' => [
+                'type' => 'experiment_users',
+                'attributes' => [
+                    'user_signature' => $userSignature,
+                    'forced' => true,
+                ],
+                'relationships' => [
+                    'experiments' => [
+                        'data' => [
+                            'id' => $experiment['encodeExperimentId'],
+                            'type' => 'experiments'
+                        ]
+                    ],
+                    'branches' => [
+                        'data' => [
+                            'id' => $experimentBranchSecond['encodeBranchId'],
+                            'type' => 'experiment_branches'
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+
+        $response = json_decode($I->grabResponse(), true);
+
+        $I->seeResponseCodeIsSuccessful(200);
+
+        $I->seeResponseContainsJson([
+            'data' => [
+                'type' => 'experiment_branch_users',
+                'id' => $response['data']['id'],
+                'attributes' => [
+                    'run-uid' => $experiment['alias'] . '-' . $experimentBranchSecond['branchName'],
+                    'branch-uid' => $experimentBranchSecond['branchName'],
+                    'experiment-uid' => $experiment['alias'],
+                ],
+                'relationships' => [
+                    'experiment_user' => [
+                        'data' => [
+                            'type' => 'experiment_user',
+                            'id' => $response['data']['relationships']['experiment_user']['data']['id']
+                        ]
+                    ],
+                    'experiment_id' => [
+                        'data' => [
+                            'type' => 'users',
+                            'id' => $response['data']['relationships']['experiment_id']['data']['id']
+                        ]
+                    ],
+                    'experiment_branch_id' => [
+                        'data' => [
+                            'type' => 'users',
+                            'id' => $response['data']['relationships']['experiment_branch_id']['data']['id']
+                        ]
+                    ]
+                ]
+            ],
+            'included' => [
+                [
+                    'type' => 'experiment_branches',
+                    'id' => $experimentBranchSecond['encodeBranchId'],
+                    'attributes' => [
+                        'name' => $experimentBranchSecond['branchName'],
+                        'uid' => $experimentBranchSecond['branchName'],
+                        'percent' => 100
+                    ],
+                    'relationships' => [
+                        'experiment' => [
+                            'data' => [
+                                'type' => 'users',
+                                'id' => $experiment['encodeExperimentId']
                             ]
                         ]
                     ]

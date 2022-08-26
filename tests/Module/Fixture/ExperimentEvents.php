@@ -38,7 +38,7 @@ class ExperimentEvents extends Module implements DependsOnModule
             'alias' => $experimentName,
             'config' => $config,
             'is_enabled' => true,
-            'is_feature_toggle' => true,
+            'is_feature_toggle' => false,
             'uid' => $experimentName,
             'created_at' => $date,
             'updated_at' => $date
@@ -87,7 +87,7 @@ class ExperimentEvents extends Module implements DependsOnModule
             'alias' => $experimentName,
             'config' => $config,
             'is_enabled' => true,
-            'is_feature_toggle' => true,
+            'is_feature_toggle' => false,
             'uid' => $experimentName,
             'created_at' => $date,
             'updated_at' => $date
