@@ -15,7 +15,7 @@ class AlterTableEventsAddIndexes extends Migration
     {
         Schema::table('events', function (Blueprint $table) {
             $table->dropIndex('events_user_id_index');
-            $table->index(['user_id', 'created_at']);
+            $table->index(['owner', 'created_at']);
         });
     }
 
