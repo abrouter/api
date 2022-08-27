@@ -13,6 +13,7 @@ class RuningExperimentsByAliasCest
     {
         $user = $I->haveUser($I);
         $experiment = $I->haveExperiment($user['id']);
+        $experimentBranch = $I->haveBranch($experiment['experimentId']);
         $userSignature = 'user_' . uniqid();
 
         $I->haveHttpHeader('Content-Type', 'application/json');
@@ -44,9 +45,9 @@ class RuningExperimentsByAliasCest
                 'type' => 'experiment_branch_users',
                 'id' => $response['data']['id'],
                 'attributes' => [
-                    'run-uid' => $response['data']['attributes']['run-uid'],
-                    'branch-uid' => $response['data']['attributes']['branch-uid'],
-                    'experiment-uid' => $response['data']['attributes']['experiment-uid']
+                    'run-uid' => $experiment['alias'] . '-' . $experimentBranch['branchName'],
+                    'branch-uid' => $experimentBranch['branchName'],
+                    'experiment-uid' => $experiment['alias'] ,
                 ],
                 'relationships' => [
                     'experiment_user' => [
@@ -58,13 +59,13 @@ class RuningExperimentsByAliasCest
                     'experiment_id' => [
                         'data' => [
                             'type' => 'users',
-                            'id' => $response['data']['relationships']['experiment_id']['data']['id']
+                            'id' => $experiment['encodeExperimentId']
                         ]
                     ],
                     'experiment_branch_id' => [
                         'data' => [
                             'type' => 'users',
-                            'id' => $response['data']['relationships']['experiment_branch_id']['data']['id']
+                            'id' => $experimentBranch['encodeBranchId']
                         ]
                     ]
                 ]

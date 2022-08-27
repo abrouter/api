@@ -325,7 +325,8 @@ class EventFunnelCest
     public function showStatsByIncrementalEvents(ApiTester $I)
     {
         $unsavedEvents = [
-            ['type' => 'incremental', 'event_name' => 'click_button']
+            ['type' => 'incremental', 'event_name' => 'click_button'],
+            ['type' => 'incremental', 'event_name' => 'click_logout_button']
         ];
         $today = (new \DateTime());
         $yesterday = (new \DateTime())
@@ -359,6 +360,18 @@ class EventFunnelCest
             5,
             $today->format('Y-m-d')
         );
+        $I->createEventsWithTypeIncremental(
+            $user['id'],
+            $unsavedEvents[1]['event_name'],
+            67,
+            $today->format('Y-m-d')
+        );
+        $I->createEventsWithTypeIncremental(
+            $user['id'],
+            $unsavedEvents[1]['event_name'],
+            15,
+            $today->format('Y-m-d')
+        );
 
         $I->amBearerAuthenticated($user['token']);
 
@@ -374,6 +387,9 @@ class EventFunnelCest
                     'click_button' => [
                         $today->format('Y-m-d') => 6,
                         $yesterday->format('Y-m-d') => 4
+                    ],
+                    'click_logout_button' => [
+                        $today->format('Y-m-d') => 82,
                     ]
                 ]
             ]
