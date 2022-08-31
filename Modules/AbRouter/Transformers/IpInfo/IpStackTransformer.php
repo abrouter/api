@@ -19,7 +19,7 @@ class IpStackTransformer
             $info['country_code'],
             $info['country_name'],
             $info['city'],
-            $info['currency']
+            $info['currency']['code']
         );
     }
 }
