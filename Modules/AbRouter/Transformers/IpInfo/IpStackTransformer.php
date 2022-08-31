@@ -18,7 +18,8 @@ class IpStackTransformer
             md5($info['ip']),
             $info['country_code'],
             $info['country_name'],
-            $info['city']
+            $info['city'],
+            $info['currency']
         );
     }
 }
