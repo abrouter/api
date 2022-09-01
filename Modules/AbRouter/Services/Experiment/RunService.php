@@ -70,6 +70,7 @@ class RunService
                 $runExperimentDTO->getOwnerId()
             );
 
+        /**
         $userIds = $this
             ->relatedUserIds
             ->getRelatedUserIds(
@@ -82,6 +83,7 @@ class RunService
             ->where('owner_id', $runExperimentDTO->getOwnerId())
             ->whereIn('user_signature', $userIds)
             ->first();
+         */
 
         if (empty($user)) {
             //usage statistics
