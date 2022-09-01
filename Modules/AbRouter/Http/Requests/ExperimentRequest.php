@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Modules\AbRouter\Http\Requests;
 
 use Illuminate\Validation\Rule;
+use Modules\Auth\Exposable\AuthDecorator;
 use Modules\Core\Http\Requests\FormRequest;
 use Modules\Core\Rules\SumPercent;
 use Modules\Core\EntityId\EntityEncoder;
@@ -29,7 +30,14 @@ class ExperimentRequest extends FormRequest
             'data.attributes.name' => 'required|string',
             'data.attributes.alias' => ['required', 'string',
                 Rule::unique('experiments', 'alias')
-                    ->ignore($id ?? null),
+                    ->ignore($id ?? null)
+                    ->where(function ($query) {
+                        /**
+                         * @var AuthDecorator $authDecorator
+                         */
+                        $authDecorator = app()->make(AuthDecorator::class);
+                        $query->where('owner_id', $authDecorator->get()->getUser()->id);
+                    })
             ],
             'included' => ['array', 'min:1', new SumPercent],
             'included.*.type' => ['required', Rule::in('experiment_branches')],
