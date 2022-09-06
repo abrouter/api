@@ -28,6 +28,7 @@ class IpInfoScheme extends DocumentSchema
             'city' => $this->activeData->getCity(),
             'countryCode' => $this->activeData->getCountryCode(),
             'countryName' => $this->activeData->getCountryName(),
+            'currency' => $this->activeData->getCurrency(),
         ]);
     }
 }

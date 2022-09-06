@@ -32,18 +32,25 @@ class IpInfoEntity
      */
     private $ipHash;
 
+    /**
+     * @var string
+     */
+    private $currency;
+
     public function __construct(
         string $ip,
         string $ipHash,
         string $countryCode,
         string $countryName,
-        string $city
+        string $city,
+        string $currency
     ) {
         $this->countryCode = $countryCode;
         $this->countryName = $countryName;
         $this->city = $city;
         $this->ip = $ip;
         $this->ipHash = $ipHash;
+        $this->currency = $currency;
     }
 
     /**
@@ -86,5 +93,13 @@ class IpInfoEntity
     public function getIp(): string
     {
         return $this->ip;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCurrency(): string
+    {
+        return $this->currency;
     }
 }
