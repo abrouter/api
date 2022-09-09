@@ -222,8 +222,7 @@ class EventCest
             'tag' => $tag,
             'referrer' => $referrer,
             'ip' => $ip,
-            'owner_id' => $user['id'],
-            'created_at' => $d
+            'owner_id' => $user['id']
         ];
 
         $I->seeRecord('events', $recordEvents);
@@ -308,8 +307,7 @@ class EventCest
             'tag' => $tag,
             'referrer' => $referrer,
             'ip' => $ip,
-            'owner_id' => $user['id'],
-            'created_at' => $d
+            'owner_id' => $user['id']
         ];
 
         $I->seeRecord('events', $recordEvents);

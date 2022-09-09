@@ -67,6 +67,27 @@ class ExperimentUsersRepository extends BaseRepository
         return $model;
     }
 
+    /**
+     * @param int $ownerId
+     * @return Collection
+     */
+    public function getAllUsersExperiments(int $ownerId): Collection
+    {
+        /**
+         * @var Collection $collection
+         */
+
+        $collection = $this
+            ->query()
+            ->where('owner_id', $ownerId)
+            ->with(
+                ['experimentUser.experiment', 'experimentUser.experimentBranch']
+            )
+            ->get();
+
+        return $collection;
+    }
+
     public function getModel(): ExperimentUsers
     {
         return new ExperimentUsers();

@@ -14,6 +14,7 @@ Route::middleware(['api', 'auth:api'])->group(function () {
     Route::get('/v1/experiments', 'ExperimentsController@index');
     Route::get('/v1/experiments/have-user/{id}', 'ExperimentsController@getUserExperiments');
     Route::post('/v1/experiments/add-user', 'ExperimentsController@addUserToExperiment');
+    Route::get('/v1/all-users-experiments', 'ExperimentsController@allUsersExperiments');
     Route::delete('/v1/experiments/user/delete', 'ExperimentsController@deleteUserFromExperiment');
     Route::post('/v1/experiment/run', 'ExperimentsController@run');
     Route::post('/v1/feature-toggles/', 'FeatureTogglesController@createOrUpdate');

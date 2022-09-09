@@ -11,6 +11,7 @@ use Modules\AbRouter\Http\Requests\ExperimentRunRequest;
 use Modules\AbRouter\Http\Requests\UserExperimentsRequest;
 use Modules\AbRouter\Http\Resources2\Experiment\ExperimentScheme;
 use Modules\AbRouter\Http\Resources2\ExperimentBranchUser\ExperimentBranchUserScheme;
+use Modules\AbRouter\Http\Resources2\ExperimentUser\AllUsersExperimentsScheme;
 use Modules\AbRouter\Http\Transformers\Experiments\ExperimentTransformer;
 use Modules\AbRouter\Http\Transformers\Experiments\ExperimentDeleteTransformer;
 use Modules\AbRouter\Http\Transformers\Experiments\RunExperimentTransformer;
@@ -18,11 +19,13 @@ use Modules\AbRouter\Http\Transformers\Experiments\SimpleRunTransformer;
 use Modules\AbRouter\Http\Transformers\Experiments\UserExperimentsTransformer;
 use Modules\AbRouter\Models\Experiments\Experiment;
 use Modules\AbRouter\Repositories\Experiments\ExperimentBranchUserRepository;
+use Modules\AbRouter\Repositories\Experiments\ExperimentUsersRepository;
 use Modules\AbRouter\Services\Experiment\ExperimentService;
 use Modules\AbRouter\Services\Experiment\ExperimentDeleteService;
 use Modules\AbRouter\Services\Experiment\RunService;
 use Modules\AbRouter\Services\Experiment\SimpleRunService;
 use Modules\AbRouter\Services\Experiment\UserExperimentsService;
+use Modules\AbRouter\Services\Experiment\AllUsersExperimentsService;
 use Modules\Auth\Exposable\AuthDecorator;
 
 class ExperimentsController extends Controller
@@ -150,5 +153,17 @@ class ExperimentsController extends Controller
         $experimentService->deleteUserFromExperiment($addUserToExperimentDTO);
 
         return response()->noContent();
+    }
+
+    public function allUsersExperiments(
+        ExperimentUsersRepository $repository,
+        AuthDecorator $authDecorator,
+        AllUsersExperimentsService $allUsersExperimentsService
+    ) {
+        $ownerId = $authDecorator->get()->getId();
+
+        return $allUsersExperimentsService->getAllUsersExperiments(
+            $repository->getAllUsersExperiments($ownerId)
+        );
     }
 }

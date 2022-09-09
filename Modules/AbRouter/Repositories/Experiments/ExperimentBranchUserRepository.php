@@ -48,7 +48,7 @@ class ExperimentBranchUserRepository extends BaseRepository
      * @param string $userSignature
      * @return Collection
      */
-    public function getExperimentsBranchesByUserSignature(int $ownerId, string $userSignature)
+    public function getExperimentsBranchesByUserSignature(int $ownerId, string $userSignature): Collection
     {
         /**
          * @var Collection $collection
