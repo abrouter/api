@@ -43,6 +43,7 @@ class FillOwnerIdExperimentUserBranches extends Command
                 return ;
             }
             $experimentBranchUser->owner_id = $experimentBranchUser->experiment->owner_id;
+            $experimentBranchUser->save();
             $this->info("Processing: {$counter} / $i");
         });
 
