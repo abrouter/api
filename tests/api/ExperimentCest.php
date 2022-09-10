@@ -294,7 +294,8 @@ class ExperimentCest
         $recordBranchUsers = [
             'experiment_user_id' => $experimentUserId,
             'experiment_id' => $experimentId,
-            'experiment_branch_id' => $experimentBranchId
+            'experiment_branch_id' => $experimentBranchId,
+            'owner_id' => $user['id'],
         ];
         $recordExperimentUsers = ['owner_id' => $user['id'], 'user_signature' => $userSignature];
 

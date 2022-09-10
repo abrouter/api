@@ -12,6 +12,7 @@ use Modules\Core\EntityId\IdTrait;
  * Class User
  * @package Modules\Auth\Models\User
  * @property int id
+ * @property int owner_id
  * @property int experiment_user_id
  * @property int experiment_id
  * @property int experiment_branch_xid
@@ -29,6 +30,7 @@ class ExperimentBranchUser extends Model
 
     protected $casts = [
         'id' => 'int',
+        'owner_id' => 'int',
         'experiment_user_id' => 'int',
         'experiment_id' => 'int',
         'experiment_branch_id' => 'int',
@@ -37,6 +39,7 @@ class ExperimentBranchUser extends Model
     ];
 
     protected $fillable = [
+        'owner_id',
         'experiment_user_id',
         'experiment_id',
         'experiment_branch_id',

@@ -94,7 +94,12 @@ class RuningExperimentsByAliasCest
         $experimentUserId = (new EntityEncoder())->decode($response['data']['relationships']['experiment_user']['data']['id'], 'experiment_users');
         $experimentId = $experiment['experimentId'];
         $experimentBranchId = (new EntityEncoder())->decode($response['data']['relationships']['experiment_branch_id']['data']['id'], 'experiment_branches');
-        $recordBranchUsers = ['experiment_user_id' => $experimentUserId, 'experiment_id' => $experimentId, 'experiment_branch_id' => $experimentBranchId];
+        $recordBranchUsers = [
+            'experiment_user_id' => $experimentUserId,
+            'experiment_id' => $experimentId,
+            'experiment_branch_id' => $experimentBranchId,
+            'owner_id' => $user['id'],
+        ];
         $recordExperimentUsers = ['owner_id' => $user['id'], 'user_signature' => $userSignature];
 
         $I->seeRecord('experiment_user_branches', $recordBranchUsers);

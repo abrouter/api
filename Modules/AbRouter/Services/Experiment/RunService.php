@@ -119,6 +119,7 @@ class RunService
             'experiment_user_id' => $user->id,
             'experiment_id' => $experiment->id,
             'experiment_branch_id' => $roll,
+            'owner_id' => $experiment->owner_id,
         ]);
         $experimentBranchUser->save();
 

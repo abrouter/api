@@ -192,7 +192,8 @@ class ExperimentEvents extends Module implements DependsOnModule
             $recordExperimentUserBranches = [
                 'experiment_user_id' => $userId,
                 'experiment_id' => $experimentId,
-                'experiment_branch_id' => $experimentBranchesIds[$i]
+                'experiment_branch_id' => $experimentBranchesIds[$i],
+                'owner_id' => $ownerId,
             ];
 
             $this->laravel->haveRecord(self::TABLE_EXPERIMENT_USER_BRANCHES, $recordExperimentUserBranches);
@@ -226,6 +227,7 @@ class ExperimentEvents extends Module implements DependsOnModule
             'experiment_user_id' => $userId,
             'experiment_id' => $experimentId,
             'experiment_branch_id' => $branchId,
+            'owner_id' => $ownerId,
             'created_at' => $date,
             'updated_at' => $date
         ];
