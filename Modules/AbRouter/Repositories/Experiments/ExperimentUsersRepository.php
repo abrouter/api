@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace Modules\AbRouter\Repositories\Experiments;
 
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
+use Modules\AbRouter\Models\Experiments\Experiment;
+use Modules\AbRouter\Models\Experiments\ExperimentBranchUser;
 use Modules\Core\Repositories\BaseRepository;
 use Modules\AbRouter\Models\Experiments\ExperimentUsers;
 
@@ -80,12 +82,70 @@ class ExperimentUsersRepository extends BaseRepository
         $collection = $this
             ->query()
             ->where('owner_id', $ownerId)
-            ->with(
-                ['experimentUser.experiment', 'experimentUser.experimentBranch']
-            )
             ->get();
 
-        return $collection;
+        $allExperimentBranchesById = ExperimentBranchUser::query()
+            ->where('owner_id', $ownerId)
+            ->get()
+            ->reduce(function ($acc, ExperimentBranchUser $experimentBranchUser) {
+                $acc[$experimentBranchUser->id] = $experimentBranchUser;
+                return $acc;
+            });
+
+        $allExperimentBranchesByExperimentUserId = ExperimentBranchUser::query()
+            ->where('owner_id', $ownerId)
+            ->get()
+            ->reduce(function ($acc, ExperimentBranchUser $experimentBranchUser) {
+                $acc[$experimentBranchUser->experiment_user_id][] = $experimentBranchUser;
+                return $acc;
+            });
+
+
+        $allExperiments = Experiment::query()
+            ->where('owner_id', $ownerId)
+            ->get()
+            ->reduce(function ($acc, Experiment $experiment) {
+                $acc[$experiment->id] = $experiment;
+                return $acc;
+            });
+
+
+        foreach ($collection as $key => $item) {
+            /**
+             * @var ExperimentUsers $item
+             */
+            if (empty($allExperimentBranchesByExperimentUserId[$item->id])) {
+                continue;
+            }
+
+            $experimentUserBranches = $allExperimentBranchesByExperimentUserId[$item->id];
+            $item->experimentUser = $experimentUserBranches;
+            $item->experimentBranchUsers = $item->experimentUser;
+
+
+            foreach ($item->experimentUser as $experimentBranchUser) {
+
+                if (empty($experimentBranchUser)) {
+                    continue;
+                }
+
+                if (empty($allExperimentBranchesById[$experimentBranchUser->experiment_branch_id])) {
+                    continue;
+                }
+
+                /**
+                 * @var ExperimentBranchUser $experimentBranchUser
+                 */
+                $experimentBranchUser->experiment = $allExperiments[$experimentBranchUser->experiment_id];
+                $experimentBranchUser->experimentBranch = $allExperimentBranchesById[$experimentBranchUser->experiment_branch_id];
+            }
+
+            $item->experimentUser = collect($experimentUserBranches);
+            $item->experimentBranchUsers = $item->experimentUser;
+            $collection[$key] = $item;
+        }
+
+        return collect($collection);
     }
 
     public function getModel(): ExperimentUsers

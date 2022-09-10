@@ -15,7 +15,7 @@ use Modules\Core\EntityId\IdTrait;
  * @property int owner_id
  * @property int experiment_user_id
  * @property int experiment_id
- * @property int experiment_branch_xid
+ * @property int experiment_branch_id
  * @property Carbon created_at
  * @property Carbon updated_at
  * @property ExperimentUsers experimentUser

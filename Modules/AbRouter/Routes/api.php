@@ -33,6 +33,9 @@ Route::middleware(['api', 'auth:api'])->group(function () {
 
     Route::get('/v1/user-tags', 'StatisticsController@showTags');
 
+    /**
+     * @TODO: rename to display user events
+     */
     Route::get('/v1/user-events', 'CustomizationEventController@index');
     Route::post('/v1/user-events', 'CustomizationEventController@create');
     Route::patch('/v1/user-events/{id}', 'CustomizationEventController@update');

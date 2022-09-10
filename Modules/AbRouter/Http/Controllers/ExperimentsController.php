@@ -26,6 +26,7 @@ use Modules\AbRouter\Services\Experiment\RunService;
 use Modules\AbRouter\Services\Experiment\SimpleRunService;
 use Modules\AbRouter\Services\Experiment\UserExperimentsService;
 use Modules\AbRouter\Services\Experiment\AllUsersExperimentsService;
+use Modules\AbRouter\Transformers\AllUsersExperimentsTransformer;
 use Modules\Auth\Exposable\AuthDecorator;
 
 class ExperimentsController extends Controller
@@ -158,11 +159,11 @@ class ExperimentsController extends Controller
     public function allUsersExperiments(
         ExperimentUsersRepository $repository,
         AuthDecorator $authDecorator,
-        AllUsersExperimentsService $allUsersExperimentsService
+        AllUsersExperimentsTransformer $allUsersExperimentsTransformer
     ) {
         $ownerId = $authDecorator->get()->getId();
 
-        return $allUsersExperimentsService->getAllUsersExperiments(
+        return $allUsersExperimentsTransformer->getAllUsersExperiments(
             $repository->getAllUsersExperiments($ownerId)
         );
     }
