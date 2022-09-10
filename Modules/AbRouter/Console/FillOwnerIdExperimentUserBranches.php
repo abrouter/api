@@ -37,8 +37,11 @@ class FillOwnerIdExperimentUserBranches extends Command
         $this->info("Chunk: " . $counter);
 
         $i = 0;
-        $experimentBranchUsers->each(function(ExperimentBranchUser $experimentBranchUser) use ($i, $counter) {
+        $experimentBranchUsers->each(function(ExperimentBranchUser $experimentBranchUser) use (&$i, $counter) {
             $i ++;
+            if (empty($experimentBranchUser->experiment)) {
+                return ;
+            }
             $experimentBranchUser->owner_id = $experimentBranchUser->experiment->owner_id;
             $this->info("Processing: {$counter} / $i");
         });
