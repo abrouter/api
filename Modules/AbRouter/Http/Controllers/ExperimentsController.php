@@ -3,6 +3,7 @@
 namespace Modules\AbRouter\Http\Controllers;
 
 use AbRouter\JsonApiFormatter\DataSource\DataProviders\SimpleDataProvider;
+use Illuminate\Http\Response;
 use Laravel\Passport\Token;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -17,6 +18,7 @@ use Modules\AbRouter\Http\Transformers\Experiments\RunExperimentTransformer;
 use Modules\AbRouter\Http\Transformers\Experiments\SimpleRunTransformer;
 use Modules\AbRouter\Http\Transformers\Experiments\UserExperimentsTransformer;
 use Modules\AbRouter\Models\Experiments\Experiment;
+use Modules\AbRouter\Repositories\AllUsersExperimentsHotStorageRepository;
 use Modules\AbRouter\Repositories\Experiments\ExperimentBranchUserRepository;
 use Modules\AbRouter\Repositories\Experiments\ExperimentUsersRepository;
 use Modules\AbRouter\Services\Experiment\ExperimentService;
@@ -157,9 +159,20 @@ class ExperimentsController extends Controller
     public function allUsersExperiments(
         ExperimentUsersRepository $repository,
         AuthDecorator $authDecorator,
-        AllUsersExperimentsTransformer $allUsersExperimentsTransformer
+        AllUsersExperimentsTransformer $allUsersExperimentsTransformer,
+        AllUsersExperimentsHotStorageRepository $allUsersExperimentsHotStorageRepository
     ) {
         $ownerId = $authDecorator->get()->getId();
+        if ($allUsersExperimentsHotStorageRepository->get($ownerId)) {
+            return response([
+                'status' => false,
+                'message' => 'Calculating, try in 5 minutes',
+                'data' => [
+                    'retryIn' => 300,
+                ],
+                Response::HTTP_PROCESSING
+            ]);
+        }
 
         return $allUsersExperimentsTransformer->getAllUsersExperiments(
             $repository->getAllUsersExperiments($ownerId)
