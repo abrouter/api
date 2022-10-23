@@ -10,7 +10,8 @@
     "require": {
         "php": "^7.4",
         "ext-json": "*",
-        "abrouter/laravel-json-api-formatter": "0.0.17",
+        "abrouter/laravel-json-api-formatter": "^0.0.17",
+        "abrouter/related-users": "^0.0.3",
         "fideloper/proxy": "^4.0",
         "google/apiclient": "^2.12",
         "laravel/framework": "^6.2",

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ab717ecf6b8866c91255c16affd12c53",
+    "content-hash": "4b5160e35a98c225b40cf0c3aa694bcd",
     "packages": [
         {
             "name": "abrouter/laravel-json-api-formatter",
@@ -48,6 +48,49 @@
                 "source": "https://github.com/abrouter/laravel-json-api-formatter/tree/0.0.17"
             },
             "time": "2022-06-12T15:35:06+00:00"
+        },
+        {
+            "name": "abrouter/related-users",
+            "version": "0.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/abrouter/php-related-users.git",
+                "reference": "e359886812e96ddc3cb6aadbcbb3887fa52ed3e7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/abrouter/php-related-users/zipball/e359886812e96ddc3cb6aadbcbb3887fa52ed3e7",
+                "reference": "e359886812e96ddc3cb6aadbcbb3887fa52ed3e7",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.4 || ^8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Abrouter\\RelatedUsers\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Alex Yatsenko",
+                    "email": "abrouter@proxiedmail.com"
+                }
+            ],
+            "description": "ABRouter internal tool for handling related user's ids",
+            "support": {
+                "issues": "https://github.com/abrouter/php-related-users/issues",
+                "source": "https://github.com/abrouter/php-related-users/tree/0.0.3"
+            },
+            "time": "2022-09-04T23:14:05+00:00"
         },
         {
             "name": "defuse/php-encryption",
@@ -9014,5 +9057,5 @@
         "ext-json": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.2.0"
 }

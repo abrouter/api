@@ -32,7 +32,7 @@ class DisplayEventsCest
         foreach($events as $event) {
             $eventType = $type[mt_rand(0,2)];
 
-            $I->sendPost('/user-events', [
+            $I->sendPost('/display-user-events', [
                 'data' => [
                     'type' => 'display_user_events',
                     'attributes' => [
@@ -94,7 +94,7 @@ class DisplayEventsCest
         $I->haveHttpHeader('Accept', 'application/json');
         $I->amBearerAuthenticated($user['token']);
 
-        $I->sendGet('/user-events');
+        $I->sendGet('/display-user-events');
         
         $I->seeResponseCodeIsSuccessful(201);
         
@@ -132,7 +132,7 @@ class DisplayEventsCest
         $I->haveHttpHeader('Accept', 'application/json');
         $I->amBearerAuthenticated($user['token']);
 
-        $I->sendGet('/user-events');
+        $I->sendGet('/display-user-events');
 
         $I->seeResponseCodeIsSuccessful(201);
 
@@ -170,7 +170,7 @@ class DisplayEventsCest
         $I->haveHttpHeader('Accept', 'application/json');
         $I->amBearerAuthenticated($user['token']);
 
-        $I->sendGet('/user-events');
+        $I->sendGet('/display-user-events');
 
         $I->seeResponseCodeIsSuccessful(201);
 
@@ -212,7 +212,7 @@ class DisplayEventsCest
         foreach($savedEvents as $event) {
             $newEvent = 'event_' . $n . uniqid();
 
-            $I->sendPatch('/user-events/' . $event['id'], [
+            $I->sendPatch('/display-user-events/' . $event['id'], [
                 'data' => [
                     'type' => 'display_user_events',
                     'attributes' => [
@@ -262,7 +262,7 @@ class DisplayEventsCest
         $I->amBearerAuthenticated($user['token']);
 
         foreach($savedEvents as $event) {
-            $I->sendDelete('/user-events/' . $event['id'], [
+            $I->sendDelete('/display-user-events/' . $event['id'], [
                 'data' => [
                     'type' => 'display_user_events',
                     'attributes' => [

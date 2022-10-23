@@ -42,6 +42,57 @@ class RelatedUser extends Module implements DependsOnModule
         return $userId;
     }
 
+    public function haveRelatedUserId(int $owner)
+    {
+        $this->laravel->haveRecord(self::TABLES_RELATED_USERS,[
+            'owner_id' => $owner,
+            'event_id' => 1,
+            'related_user_id' => 'related_user1',
+            'user_id' => 'user1',
+            'created_at' => (new \DateTime())->format('Y-m-d')
+        ]);
+
+        $this->laravel->haveRecord(self::TABLES_RELATED_USERS,[
+            'owner_id' => $owner,
+            'event_id' => 1,
+            'related_user_id' => 'related_user2',
+            'user_id' => 'user1',
+            'created_at' => (new \DateTime())->format('Y-m-d')
+        ]);
+
+        $this->laravel->haveRecord(self::TABLES_RELATED_USERS,[
+            'owner_id' => $owner,
+            'event_id' => 1,
+            'related_user_id' => 'related_user3',
+            'user_id' => 'user2',
+            'created_at' => (new \DateTime())->format('Y-m-d')
+        ]);
+
+        $this->laravel->haveRecord(self::TABLES_RELATED_USERS,[
+            'owner_id' => $owner,
+            'event_id' => 1,
+            'related_user_id' => 'related_user1',
+            'user_id' => 'user3',
+            'created_at' => (new \DateTime())->format('Y-m-d')
+        ]);
+
+        $this->laravel->haveRecord(self::TABLES_RELATED_USERS,[
+            'owner_id' => $owner,
+            'event_id' => 1,
+            'related_user_id' => 'related_user4',
+            'user_id' => 'user4',
+            'created_at' => (new \DateTime())->format('Y-m-d')
+        ]);
+
+        $this->laravel->haveRecord(self::TABLES_RELATED_USERS,[
+            'owner_id' => $owner,
+            'event_id' => 1,
+            'related_user_id' => 'related_user3',
+            'user_id' => 'user5',
+            'created_at' => (new \DateTime())->format('Y-m-d')
+        ]);
+    }
+
     public function _depends(): array
     {
         return [

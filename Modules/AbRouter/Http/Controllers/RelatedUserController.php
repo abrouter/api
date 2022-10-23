@@ -7,9 +7,8 @@ use Illuminate\Routing\Controller;
 use Modules\AbRouter\Http\Requests\RelatedUserRequest;
 use Modules\AbRouter\Http\Resources2\RelatedUser\RelatedUserScheme;
 use Modules\AbRouter\Http\Transformers\RelatedUser\RelatedUserTransformer;
-use Modules\AbRouter\Http\Transformers\RelatedUser\AllRelatedUsersTransformer;
 use Modules\AbRouter\Services\RelatedUser\RelatedUserCreator;
-use Modules\AbRouter\Services\RelatedUser\AllRelatedUsersServices;
+use Modules\AbRouter\Repositories\RelatedUser\RelatedUserRepository;
 use Modules\Auth\Exposable\AuthDecorator;
 
 class RelatedUserController extends Controller
@@ -35,16 +34,28 @@ class RelatedUserController extends Controller
         return new RelatedUserScheme(new SimpleDataProvider($createRelatedUser));
     }
 
-    public function getAllRelatedUsers(
-        AllRelatedUsersTransformer $transformer,
-        AllRelatedUsersServices $allRelatedUsersServices,
+    public function getRelatedUsers(
         AuthDecorator $authDecorator,
-        $id
+        RelatedUserRepository $relatedUserRepository,
+        $userId
     ) {
         $ownerId = $authDecorator->get()->getId();
-        $allRelatedUsersDTO = $transformer->transform($ownerId, $id);
-        $allRelatedUsers = $allRelatedUsersServices->getAllRelatedUsers($allRelatedUsersDTO);
 
-        return new RelatedUserScheme(new SimpleDataProvider($allRelatedUsers));
+        return new RelatedUserScheme(
+            new SimpleDataProvider(
+                $relatedUserRepository->getAllWithOwnersByUserId(
+                    $ownerId,
+                    $userId
+                )
+        ));
+    }
+
+    public function getAllRelatedUsers(
+        AuthDecorator $authDecorator,
+        RelatedUserRepository $relatedUserRepository
+    ) {
+        $ownerId = $authDecorator->get()->getId();
+
+        return $relatedUserRepository->getAllByOwnerId($ownerId);
     }
 }

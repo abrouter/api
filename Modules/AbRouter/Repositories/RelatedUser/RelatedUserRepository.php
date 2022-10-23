@@ -6,6 +6,7 @@ namespace Modules\AbRouter\Repositories\RelatedUser;
 use Modules\AbRouter\Models\RelatedUsers\RelatedUser;
 use Modules\Core\Repositories\BaseRepository;
 use Illuminate\Support\Collection;
+use Abrouter\RelatedUsers\Collections\RelatedUsersCollection;
 
 class RelatedUserRepository extends BaseRepository
 {
@@ -54,7 +55,8 @@ class RelatedUserRepository extends BaseRepository
     /**
      * @param int $owner
      * @param string $id
-     *
+     * @param string $dateFrom
+     * @param string $dateTo
      * @return Collection
      */
     public function getAllEventsIdWithOwnersByRelatedIdOrUserId(
@@ -105,6 +107,28 @@ class RelatedUserRepository extends BaseRepository
             ->toArray();
 
         return $ids;
+    }
+
+    public function getAllByOwnerId(int $ownerId): array
+    {
+        $relatedUsers = $this
+            ->query()
+            ->select(['user_id', 'related_user_id'])
+            ->where('owner_id', $ownerId)
+            ->distinct()
+            ->get();
+
+        $relatedUsersCollection = new RelatedUsersCollection();
+
+        foreach ($relatedUsers as $relatedUser) {
+            if (empty($relatedUser->user_id) || empty($relatedUser->related_user_id)) {
+                continue;
+            }
+
+            $relatedUsersCollection->append($relatedUser->user_id, $relatedUser->related_user_id);
+        }
+
+        return $relatedUsersCollection->getAll();
     }
 
     protected function getModel(): RelatedUser

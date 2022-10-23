@@ -97,4 +97,58 @@ class RelatedUserCest
             ]);
         }
     }
+
+    public function getAllRelatedUsersByOwner(ApiTester $I)
+    {
+        $user = $I->haveUser($I);
+        $I->haveRelatedUserId($user['id']);
+
+        $I->haveHttpHeader('Accept', 'application/json');
+        $I->amBearerAuthenticated($user['token']);
+
+        $I->sendGet('/related-users/');
+
+        $I->seeResponseCodeIsSuccessful(200);
+
+        $I->seeResponseContainsJson([
+            'related_user1' => [
+                'user1',
+                'related_user2',
+                'user3'
+            ],
+            'user1' => [
+                'related_user1',
+                'related_user2',
+                'user3'
+            ],
+            'related_user2' => [
+                'user1',
+                'related_user1',
+                'user3'
+            ],
+            'related_user3' => [
+                'user2',
+                'user5'
+            ],
+            'user2' => [
+                'related_user3',
+                'user5'
+            ],
+            'user3' => [
+                'related_user1',
+                'user1',
+                'related_user2'
+            ],
+            'related_user4' => [
+                'user4'
+            ],
+            'user4' => [
+                'related_user4'
+            ],
+            'user5' => [
+                'related_user3',
+                'user2'
+            ]
+        ]);
+    }
 }
