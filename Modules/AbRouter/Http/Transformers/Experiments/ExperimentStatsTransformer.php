@@ -6,6 +6,7 @@ namespace Modules\AbRouter\Http\Transformers\Experiments;
 use Illuminate\Http\Request;
 use Modules\AbRouter\Services\Events\DTO\StatsQueryDTO;
 use Modules\Auth\Exposable\AuthDecorator;
+use Modules\Core\EntityId\EntityEncoder;
 
 class ExperimentStatsTransformer
 {
@@ -21,8 +22,11 @@ class ExperimentStatsTransformer
 
     public function transform(Request $request): StatsQueryDTO
     {
+        $userId = $this->authDecorator->get()->getId()
+            ?? (new EntityEncoder())->decode($request->get('userId'), 'users');
+
         return new StatsQueryDTO(
-            $this->authDecorator->get()->getId(),
+            $userId,
             $request->input('filter.tag'),
             $request->input('filter.date_from'),
             $request->input('filter.date_to'),

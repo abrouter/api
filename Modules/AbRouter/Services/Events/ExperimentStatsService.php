@@ -13,6 +13,7 @@ use Modules\AbRouter\Services\Events\DTO\StatsQueryDTO;
 use Modules\AbRouter\Services\Events\DTO\StatsResultsDTO;
 use Modules\AbRouter\Models\Experiments\Experiment;
 use Modules\AbRouter\Services\Events\Stats\StatsFactory;
+use Modules\AbRouter\Services\Experiment\ExperimentIdResolver;
 
 class ExperimentStatsService extends SimpleStatsService
 {
@@ -26,13 +27,19 @@ class ExperimentStatsService extends SimpleStatsService
      */
     private $experimentsRepository;
 
+    /**
+     * @var ExperimentIdResolver
+     */
+    private $experimentIdResolver;
+
     function __construct(
         UserEventsRepository $userEventsRepository,
         EventsRepository $eventsRepository,
         RelatedUserRepository $relatedUserRepository,
         ExperimentBranchUserRepository $experimentBranchUserRepository,
         ExperimentsRepository $experimentsRepository,
-        StatsFactory $statsFactory
+        StatsFactory $statsFactory,
+        ExperimentIdResolver $experimentIdResolver
     ) {
         parent::__construct(
             $userEventsRepository,
@@ -43,6 +50,7 @@ class ExperimentStatsService extends SimpleStatsService
 
         $this->experimentBranchUserRepository = $experimentBranchUserRepository;
         $this->experimentsRepository = $experimentsRepository;
+        $this->experimentIdResolver = $experimentIdResolver;
     }
 
     public function getStatsByExperiment(StatsQueryDTO $statsQueryDTO): StatsResultsDTO
@@ -172,16 +180,7 @@ class ExperimentStatsService extends SimpleStatsService
         int $owner,
         string $experimentId
     ): Experiment {
-        $checkId = preg_match(
-            '/^([A-Z0-9]{8})(-){1}([A-Z0-9]{4})(-){1}([A-Z0-9]{4})(-){1}([A-Z0-9]{8})$/',
-            $experimentId
-        );
-
-        $checkId === 1
-        ? $experiment = $this->getExperimentIdById($experimentId, $owner)
-        : $experiment = $this->getExperimentByAlias($experimentId, $owner);
-
-        return $experiment;
+        return $this->experimentIdResolver->getExperimentsByResolvedId($experimentId, $owner);
     }
 
     private function getJointUsersFromEventsAndExperiment(

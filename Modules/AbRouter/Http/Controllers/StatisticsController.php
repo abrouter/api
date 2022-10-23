@@ -19,6 +19,7 @@ use Modules\AbRouter\Services\Events\ExperimentStatsService;
 use Modules\AbRouter\Services\Events\ExperimentBranchStatsService;
 use Modules\AbRouter\Services\Events\AllEventsServices;
 use Modules\Auth\Exposable\AuthDecorator;
+use Modules\Core\EntityId\EntityEncoder;
 
 class StatisticsController
 {
@@ -60,8 +61,11 @@ class StatisticsController
         SimpleStatsService $simpleStatsService,
         AuthDecorator $authDecorator
     ) {
+        $userId = $authDecorator->get()->getId()
+            ?? (new EntityEncoder())->decode($request->get('userId'), 'users');
+
         $results = $simpleStatsService->getStats(new StatsQueryDTO(
-            $authDecorator->get()->getId(),
+            $userId,
             $request->input('filter.tag'),
             $request->input('filter.date_from'),
             $request->input('filter.date_to')
