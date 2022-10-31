@@ -77,13 +77,14 @@ class RunService
                 $runExperimentDTO->getOwnerId(),
                 (array) $runExperimentDTO->getUserSignature()
             );
+         */
+
 
         $user = (new ExperimentUsers())
             ->newQuery()
             ->where('owner_id', $runExperimentDTO->getOwnerId())
-            ->whereIn('user_signature', $userIds)
+            ->whereIn('user_signature', $runExperimentDTO->getUserSignature())
             ->first();
-         */
 
         if (empty($user)) {
             //usage statistics
