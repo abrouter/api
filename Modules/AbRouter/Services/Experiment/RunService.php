@@ -83,7 +83,7 @@ class RunService
         $user = (new ExperimentUsers())
             ->newQuery()
             ->where('owner_id', $runExperimentDTO->getOwnerId())
-            ->whereIn('user_signature', $runExperimentDTO->getUserSignature())
+            ->where('user_signature', '=', $runExperimentDTO->getUserSignature())
             ->first();
 
         if (empty($user)) {
