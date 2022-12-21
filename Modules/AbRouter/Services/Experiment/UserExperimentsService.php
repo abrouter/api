@@ -144,7 +144,7 @@ class UserExperimentsService
             ->get();
 
         if ($usersId->isEmpty()) {
-            throw new ModelNotFoundException('Failed to find an user');;
+            throw new ModelNotFoundException('Failed to find an user');
         }
 
         (new ExperimentBranchUser())

@@ -49,7 +49,7 @@ class EventCreator
 
         $saved = $event->save();
 
-        if ($saved) {
+        if ($saved && !empty($eventDTO->getUserId()) && !empty($eventDTO->getTemporaryUserId())) {
             $this->relatedUserCreator->create(new RelatedUserDTO(
                 $eventDTO->getOwnerId(),
                 $eventDTO->getUserId(),

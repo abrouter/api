@@ -120,7 +120,7 @@ class ExperimentsStatsCest
         $experiment = $I->haveExperimentWithThreeBranch($user['id']);
         $events = $I->haveUserEvents();
 
-        $I->saveUserEvents($user['id'], $events);;
+        $I->saveUserEvents($user['id'], $events);
 
         $users = $I->createEventsWithRelatedUserAndUserForExperimentStats($user['id'], $events);
 

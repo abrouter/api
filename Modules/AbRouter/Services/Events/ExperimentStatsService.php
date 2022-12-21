@@ -68,7 +68,7 @@ class ExperimentStatsService extends SimpleStatsService
                 $date['date_from'],
                 $date['date_to']
             )
-            ->load('relatedUsers');;
+            ->load('relatedUsers');
 
         $totalUsers = $this->getTotalUsers(
             $statsQueryDTO->getOwnerId(),
