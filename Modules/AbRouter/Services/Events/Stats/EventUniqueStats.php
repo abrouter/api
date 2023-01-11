@@ -69,7 +69,7 @@ class EventUniqueStats implements Stats
                 }
             }
 
-            if (!$hasUserInRelated && !isset($uniqUsers[$event->user_id])) {
+            if (!$hasUserInRelated && !isset($uniqUsers[$event->user_id]) && !empty($uniqUsers)) {
                 continue;
             }
 
@@ -126,7 +126,7 @@ class EventUniqueStats implements Stats
                 $counters += $counter;
             }
 
-            $eventPercentage[$displayEvent['event_name']] = intval(($counters / $uniqUsersCount) * 100);
+            $eventPercentage[$displayEvent['event_name']] = $uniqUsersCount > 0 ? intval(($counters / $uniqUsersCount) * 100) : 0;
         }
 
         return $eventPercentage;
