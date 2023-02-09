@@ -102,7 +102,7 @@ class ExperimentStatsService extends SimpleStatsService
         $eventPercentages = [];
         $summarizationCounters = [];
 
-        foreach($jointUsers as $branchName => $jointUser) {
+        foreach($jointUsers as $branchName => $jointUser) {:
             $incrementalCounters[$branchName] = $this
                 ->statsFactory
                 ->getStatsMethod('event')
