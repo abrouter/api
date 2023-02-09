@@ -151,7 +151,8 @@ class SimpleStatsService
     protected function getUniqUsersIds(Collection $allUserEvents): array
     {
         $users = $allUserEvents->reduce(function (array $acc, Event $event) {
-            $acc[] = $event->user_id;
+            $userId = empty($event->user_id) ? $event->user_id : $event->temporary_user_id;
+            $acc[] = $userId;
             return $acc;
         }, []);
 
