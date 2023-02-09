@@ -102,8 +102,8 @@ class ExperimentStatsService extends SimpleStatsService
         $eventPercentages = [];
         $summarizationCounters = [];
 
-        foreach($jointUsers as $key => $jointUser) {
-            $incrementalCounters[$key] = $this
+        foreach($jointUsers as $branchName => $jointUser) {
+            $incrementalCounters[$branchName] = $this
                 ->statsFactory
                 ->getStatsMethod('event')
                 ->getCounters(
@@ -112,7 +112,7 @@ class ExperimentStatsService extends SimpleStatsService
                     $displayEventsWithTypeIncremental
                 );
 
-            $incrementalUniqueCounters[$key] = $this
+            $incrementalUniqueCounters[$branchName] = $this
                 ->statsFactory
                 ->getStatsMethod('event-unique')
                 ->getCounters(
@@ -121,7 +121,7 @@ class ExperimentStatsService extends SimpleStatsService
                     $displayEventsWithTypeIncrementalUnique
                 );
 
-            $summarizationCounters[$key] = $this
+            $summarizationCounters[$branchName] = $this
                 ->statsFactory
                 ->getStatsMethod('revenue')
                 ->getCounters(
@@ -130,12 +130,12 @@ class ExperimentStatsService extends SimpleStatsService
                     $displayEventsWithTypeSummarizable
                 );
 
-            $eventPercentages[$key] = $this
+            $eventPercentages[$branchName] = $this
                 ->statsFactory
                 ->getStatsMethod('event-unique')
                 ->getPercentages(
                     $allDisplayEvents,
-                    $incrementalUniqueCounters[$key],
+                    $incrementalUniqueCounters[$branchName],
                     count($jointUser)
                 );
         }
