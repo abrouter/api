@@ -130,12 +130,15 @@ class ExperimentStatsService extends SimpleStatsService
                     $displayEventsWithTypeSummarizable
                 );
 
+
+
+            $percentageCounter = empty($incrementalUniqueCounters) ? $incrementalCounters : $incrementalUniqueCounters;
             $eventPercentages[$branchName] = $this
                 ->statsFactory
                 ->getStatsMethod('event-unique')
                 ->getPercentages(
                     $allDisplayEvents,
-                    $incrementalUniqueCounters[$branchName],
+                    $percentageCounter[$branchName],
                     count($jointUser)
                 );
         }
