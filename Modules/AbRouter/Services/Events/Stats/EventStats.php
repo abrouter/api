@@ -26,8 +26,8 @@ class EventStats implements Stats
             /**
              * @var Event $event
              */
-
-            if (in_array($event->event, $allDisplayEvents, true) && in_array($event->user_id, $uniqUsers, true)) {
+            $userId = empty($event->user_id) ? $event->temporary_user_id : $event->user_id;
+            if (in_array($event->event, $allDisplayEvents, true) && in_array($userId, $uniqUsers, true)) {
                 $convertDate = $event->created_at->format('Y-m-d');
 
                 if (!isset($eventCounters[$event->event][$convertDate])) {
