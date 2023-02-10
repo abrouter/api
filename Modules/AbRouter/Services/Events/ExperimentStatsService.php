@@ -145,6 +145,13 @@ class ExperimentStatsService extends SimpleStatsService
                 );
         }
 
+        /**
+         * Hotfix for frontend
+         */
+        foreach ($incrementalCounters as $incrementalCounterKey => $incrementalCounterValue) {
+            $incrementalUniqueCounters[$incrementalCounterKey] = $incrementalCounterValue;
+        }
+
         $interval = (new \DateTime())
             ->diff(
                 $experiment->start_experiment_day
