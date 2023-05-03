@@ -252,6 +252,10 @@ class SimpleStatsService
             if (empty($relatedUser->user_id) || empty($relatedUser->related_user_id)) {
                 continue;
             }
+
+            if ($relatedUser->user_id == $relatedUser->related_user_id) {
+                continue;
+            }
             
             $glueUserRelatedUser[$relatedUser->user_id][] = $relatedUser->related_user_id;
             $glueRelatedUser[$relatedUser->related_user_id][] = $relatedUser->user_id;
