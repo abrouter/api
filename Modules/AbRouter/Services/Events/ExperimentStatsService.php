@@ -102,6 +102,9 @@ class ExperimentStatsService extends SimpleStatsService
         $eventPercentages = [];
         $summarizationCounters = [];
 
+        $allUsersSum = array_map('count', $jointUsers);
+        $allUsersSum = array_sum($allUsersSum);
+
         foreach($jointUsers as $branchName => $jointUser) {
             $incrementalCounters[$branchName] = $this
                 ->statsFactory
@@ -141,7 +144,7 @@ class ExperimentStatsService extends SimpleStatsService
                 ->getPercentages(
                     $allDisplayEvents,
                     $percentageCounter[$branchName],
-                    count($jointUser)
+                    $allUsersSum
                 );
         }
 
