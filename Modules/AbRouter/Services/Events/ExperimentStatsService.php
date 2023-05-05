@@ -137,7 +137,7 @@ class ExperimentStatsService extends SimpleStatsService
 
             $eventPercentages[$branchName] = $this
                 ->statsFactory
-                ->getStatsMethod('event-unique')
+                ->getStatsMethod(empty($incrementalUniqueCounters) ? 'event' : 'event-unique')
                 ->getPercentages(
                     $allDisplayEvents,
                     $percentageCounter[$branchName],
