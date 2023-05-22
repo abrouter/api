@@ -82,7 +82,7 @@ class RelatedUserRepository extends BaseRepository
             ->get()
             ->pluck('event');
 
-        if (empty($collection)) {
+        if ($collection->isEmpty()) {
             return Event::query()->where('user_id', $id)->where('owner_id', $owner)->get();
         }
 
