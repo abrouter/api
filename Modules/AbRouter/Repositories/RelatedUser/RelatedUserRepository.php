@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Modules\AbRouter\Repositories\RelatedUser;
 
+use Modules\AbRouter\Models\Events\Event;
 use Modules\AbRouter\Models\RelatedUsers\RelatedUser;
 use Modules\Core\Repositories\BaseRepository;
 use Illuminate\Support\Collection;
@@ -80,6 +81,11 @@ class RelatedUserRepository extends BaseRepository
             ->orderByDesc('id')
             ->get()
             ->pluck('event');
+
+        if (empty($collection)) {
+            return Event::query()->where('user_id', $id)->where('owner_id', $owner)->get();
+        }
+
 
         return $collection;
     }
