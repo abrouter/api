@@ -4,6 +4,7 @@ namespace Modules\Auth\Http\Controllers;
 
 use AbRouter\JsonApiFormatter\DataSource\DataProviders\SimpleDataProvider;
 use Illuminate\Routing\Controller;
+use Laravel\Passport\Passport;
 use Modules\Auth\Exposable\AuthDecorator;
 use Modules\Auth\Http\Requests\User\UserCreateRequest;
 use Modules\Auth\Http\Resources2\AccessTokenScheme;
@@ -43,7 +44,7 @@ class UsersController extends Controller
         TokenRepository $tokenRepository
     ) {
         $user = $authDecorator->get()->model();
-        $token = $tokenRepository->forUser($authDecorator->get()->getId())->last();
+        $token = Passport::token()->where('user_id', $user->id)->orderBy('created_at', 'desc')->first();
         $token = empty($token) ? '' : $token->id;
 
 
