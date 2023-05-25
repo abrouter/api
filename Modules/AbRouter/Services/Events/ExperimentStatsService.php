@@ -74,7 +74,8 @@ class ExperimentStatsService extends SimpleStatsService
             $statsQueryDTO->getOwnerId(),
             $statsQueryDTO->getExperimentId(),
             $date['date_from'],
-            $date['date_to']
+            $date['date_to'],
+            $allUserEvents
         );
 
         $allRelatedUsers = $allUserEvents
@@ -241,19 +242,22 @@ class ExperimentStatsService extends SimpleStatsService
         $owner,
         $experimentId,
         string $dateFrom,
-        string $dateTo
+        string $dateTo,
+        array $allUserEvents = null
     ): int {
-        $allUserEvents = $this
-            ->userEventsRepository
-            ->getWithOwnerByTagAndDate(
-                $owner,
-                null,
-                $dateFrom,
-                $dateTo
-            );
+        if ($allUserEvents === null) {
+            $allUserEvents = $this
+                ->userEventsRepository
+                ->getWithOwnerByTagAndDate(
+                    $owner,
+                    null,
+                    $dateFrom,
+                    $dateTo
+                )
+                ->load('relatedUsers');
+        }
 
         $allRelatedUsers = $allUserEvents
-            ->load('relatedUsers')
             ->pluck('relatedUsers')
             ->flatten();
 
