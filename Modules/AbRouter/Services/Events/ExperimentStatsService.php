@@ -72,7 +72,9 @@ class ExperimentStatsService extends SimpleStatsService
 
         $totalUsers = $this->getTotalUsers(
             $statsQueryDTO->getOwnerId(),
-            $statsQueryDTO->getExperimentId()
+            $statsQueryDTO->getExperimentId(),
+            date['date_from'],
+            $date['date_to']
         );
 
         $allRelatedUsers = $allUserEvents
@@ -237,13 +239,17 @@ class ExperimentStatsService extends SimpleStatsService
 
     private function getTotalUsers(
         $owner,
-        $experimentId
+        $experimentId,
+        string $dateFrom,
+        string $dateTo
     ): int {
         $allUserEvents = $this
             ->userEventsRepository
             ->getWithOwnerByTagAndDate(
                 $owner,
-                null
+                null,
+                $dateFrom,
+                $dateTo
             );
 
         $allRelatedUsers = $allUserEvents
