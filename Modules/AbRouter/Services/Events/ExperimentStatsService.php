@@ -270,6 +270,7 @@ class ExperimentStatsService extends SimpleStatsService
             $experimentId
         );
         $uniqUsers = $this->getFinalUniqUsers($uniqUsersIds, $uniqRelatedUsersIds);
+        //using too much memory here
         $jointUsers = $this->getJointUsersFromEventsAndExperiment($experiment, $uniqUsers);
         $totalUsers = [];
 
