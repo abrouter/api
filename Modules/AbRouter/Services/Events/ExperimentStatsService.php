@@ -243,7 +243,7 @@ class ExperimentStatsService extends SimpleStatsService
         $experimentId,
         string $dateFrom,
         string $dateTo,
-        array $allUserEvents = null
+        ?Collection $allUserEvents = null
     ): int {
         if ($allUserEvents === null) {
             $allUserEvents = $this
