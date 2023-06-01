@@ -150,11 +150,12 @@ class SimpleStatsService
     
     protected function getUniqUsersIds(Collection $allUserEvents): array
     {
-        $users = $allUserEvents->reduce(function (array $acc, Event $event) {
+        $users = [];
+        foreach ($allUserEvents as $event) {
             $userId = !empty($event->user_id) ? $event->user_id : $event->temporary_user_id;
-            $acc[] = $userId;
-            return $acc;
-        }, []);
+            $users[] = $userId;
+        }
+
 
         $users = array_unique($users);
         $usersFlip = array_flip($users);
@@ -319,13 +320,16 @@ class SimpleStatsService
         return ['date_from' => $dateFrom, 'date_to' => $dateTo];
     }
 
-    protected function getUniqRelatedUsersIds(RelatedUser...$relatedUsers): array
+    protected function getUniqRelatedUsersIds(Collection $relatedUsers): array
     {
-        return array_reduce($relatedUsers, function (array $acc, RelatedUser $relatedUser) {
+        $acc = [];
+        foreach ($relatedUsers as $relatedUser) {
+            /**
+             * @var RelatedUser $relatedUser
+             */
             $acc[] = $relatedUser->user_id;
             $acc[] = $relatedUser->related_user_id;
-
-            return $acc;
-        }, []);
+        }
+        return $acc;
     }
 }

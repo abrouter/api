@@ -4,6 +4,8 @@ declare(strict_types =1);
 namespace Modules\AbRouter\Services\Events;
 
 use Illuminate\Support\Collection;
+use Modules\AbRouter\Models\Experiments\ExperimentUsers;
+use Modules\AbRouter\Models\RelatedUsers\RelatedUser;
 use Modules\AbRouter\Repositories\Events\EventsRepository;
 use Modules\AbRouter\Repositories\Events\UserEventsRepository;
 use Modules\AbRouter\Repositories\RelatedUser\RelatedUserRepository;
@@ -67,20 +69,22 @@ class ExperimentStatsService extends SimpleStatsService
                 $statsQueryDTO->getTag(),
                 $date['date_from'],
                 $date['date_to']
-            )
-            ->load('relatedUsers');
+            );
+
+        $allRelatedUsers = RelatedUser::query()
+            ->whereBetween('created_at', [$date['date_from'], $date['date_to']])
+            ->where('owner_id', $statsQueryDTO->getOwnerId())
+            ->get();
 
         $totalUsers = $this->getTotalUsers(
             $statsQueryDTO->getOwnerId(),
             $statsQueryDTO->getExperimentId(),
             $date['date_from'],
             $date['date_to'],
-            $allUserEvents
+            $allUserEvents,
+            $allRelatedUsers
         );
 
-        $allRelatedUsers = $allUserEvents
-            ->pluck('relatedUsers')
-            ->flatten();
 
         $allDisplayEvents = $this->getDisplayEvents($statsQueryDTO->getOwnerId());
         $displayEventsWithTypeSummarizable = $this->getDisplayEventsWithTypeSummarizable($allDisplayEvents);
@@ -89,7 +93,7 @@ class ExperimentStatsService extends SimpleStatsService
         $uniqUsersIds = $this->getUniqUsersIds($allUserEvents);
         $uniqRelatedUsersIds = $this
             ->getUniqRelatedUsersIds(
-                ...$allRelatedUsers->all()
+                $allRelatedUsers
             );
 
         $uniqUsers = $this->getFinalUniqUsers($uniqUsersIds, $uniqRelatedUsersIds);
@@ -98,7 +102,12 @@ class ExperimentStatsService extends SimpleStatsService
             $statsQueryDTO->getExperimentId()
         );
 
-        $jointUsers = $this->getJointUsersFromEventsAndExperiment($experiment, $uniqUsers);
+        $jointUsers = $this->getJointUsersFromEventsAndExperiment(
+            $experiment,
+            $uniqUsers,
+            $date['date_from'],
+            $date['date_to']
+        );
 
         $incrementalCounters = [];
         $incrementalUniqueCounters = [];
@@ -179,9 +188,16 @@ class ExperimentStatsService extends SimpleStatsService
         );
     }
 
-    private function getExperimentUsersIdByExperimentId(int $experimentId): Collection
-    {
-        return $this->experimentBranchUserRepository->getUsersIdByExperimentId($experimentId);
+    private function getExperimentUsersIdByExperimentId(
+        int $experimentId,
+        string $dateFrom,
+        string $dateTo
+    ): Collection {
+        return $this->experimentBranchUserRepository->getUsersIdByExperimentId(
+            $experimentId,
+            $dateFrom,
+            $dateTo
+        );
     }
 
     private function getExperimentIdById(string $experimentId , int $owner): Experiment
@@ -203,13 +219,29 @@ class ExperimentStatsService extends SimpleStatsService
 
     private function getJointUsersFromEventsAndExperiment(
         Experiment $experiment,
-        array $uniqUsers
+        array $uniqUsers,
+        string $dateFrom,
+        string $dateTo
     ): array {
         $jointUsers = [];
 
         $usersId = $this
-            ->getExperimentUsersIdByExperimentId($experiment->id)
-            ->load('experimentBranch', 'experimentUser');
+            ->getExperimentUsersIdByExperimentId(
+                $experiment->id,
+                $dateFrom,
+                $dateTo
+            )
+            ->load('experimentBranch');
+
+        $allExperimentUsers = ExperimentUsers::query()
+            ->where('owner_id', $experiment->owner_id)
+            ->get()
+            ->keyBy('id');
+
+        foreach ($usersId as $key => $userId) {
+            $userId->experimentUser = $allExperimentUsers->get($userId->experiment_user_id);
+            $usersId[$key] = $userId;
+        }
 
         $branchesNames = $usersId
             ->pluck('experimentBranch')
@@ -243,7 +275,8 @@ class ExperimentStatsService extends SimpleStatsService
         $experimentId,
         string $dateFrom,
         string $dateTo,
-        ?Collection $allUserEvents = null
+        ?Collection $allUserEvents = null,
+        ?Collection $allRelatedUsers = null
     ): int {
         if ($allUserEvents === null) {
             $allUserEvents = $this
@@ -257,23 +290,35 @@ class ExperimentStatsService extends SimpleStatsService
                 ->load('relatedUsers');
         }
 
-        $allRelatedUsers = $allUserEvents
-            ->pluck('relatedUsers')
-            ->flatten();
+        if ($allRelatedUsers === null) {
+            $allRelatedUsers = $allUserEvents
+                ->pluck('relatedUsers')
+                ->flatten();
+        }
 
         $uniqUsersIds = $this->getUniqUsersIds($allUserEvents);
+
         $uniqRelatedUsersIds = $this->getUniqRelatedUsersIds(
-            ...$allRelatedUsers->all()
+            $allRelatedUsers
         );
+
         $experiment = $this->getExperiment(
             $owner,
             $experimentId
         );
         $uniqUsers = $this->getFinalUniqUsers($uniqUsersIds, $uniqRelatedUsersIds);
-        //using too much memory here
-        $jointUsers = $this->getJointUsersFromEventsAndExperiment($experiment, $uniqUsers);
-        $totalUsers = [];
 
+        //using too much memory here
+
+//        die('t');
+
+        $jointUsers = $this->getJointUsersFromEventsAndExperiment(
+            $experiment,
+            $uniqUsers,
+            $dateFrom,
+            $dateTo
+        );
+        $totalUsers = [];
         foreach ($jointUsers as $branchName => $userSignatures) {
             $totalUsers = array_merge($totalUsers, $userSignatures);
         }
