@@ -58,7 +58,7 @@ class ExperimentBranchStatsService extends SimpleStatsService
         $displayEventsWithTypeIncrementalUnique = $this->getDisplayEventsWithTypeIncrementalUnique($allDisplayEvents);
         $displayEventsWithTypeIncremental = $this->getDisplayEventsWithTypeIncremental($allDisplayEvents);
         $uniqUsersIds = $this->getUniqUsersIds($allUserEvents);
-        $uniqRelatedUsersIds = $this->getUniqRelatedUsersIds(...$allRelatedUsers->all());
+        $uniqRelatedUsersIds = $this->getUniqRelatedUsersIds($allRelatedUsers);
         $uniqUsers = $this->getFinalUniqUsers($uniqUsersIds, $uniqRelatedUsersIds);
         $jointUsers = $this->getJointUsersFromEventsAndExperimentBranch(
             $statsQueryDTO->getExperimentBranchId(),

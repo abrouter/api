@@ -19,14 +19,17 @@ class ExperimentBranchUserRepository extends BaseRepository
             ->get();
     }
 
-    public function getUsersIdByExperimentId(int $experimentId): Collection
+    public function getUsersIdByExperimentId(int $experimentId, string $dateFrom, string $dateTo): Collection
     {
         /**
          * @var Collection $collection
          */
-        return $this->query()
+        $query = $this->query()
             ->where('experiment_id', $experimentId)
-            ->get();
+            ->whereBetween('created_at', [$dateFrom, $dateTo]);
+
+        $collection = $query->get();
+        return $collection;
     }
 
     public function getExperimentBranchUserByExperimentIdAndExperimentUserId(int $experimentId, int $experimentUserId)
