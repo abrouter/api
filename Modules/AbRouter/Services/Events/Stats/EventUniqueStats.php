@@ -127,6 +127,8 @@ class EventUniqueStats implements Stats
             }
 
             $eventPercentage[$displayEvent['event_name']] = $uniqUsersCount > 0 ? intval(($counters / $uniqUsersCount) * 100) : 0;
+            $eventPercentage[$displayEvent['event_name']] = $eventPercentage[$displayEvent['event_name']] > 100 ? 100
+                : $eventPercentage[$displayEvent['event_name']]; //todo ABR-1301
         }
 
         return $eventPercentage;
