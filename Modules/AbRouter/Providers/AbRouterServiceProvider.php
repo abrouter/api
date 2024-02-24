@@ -5,7 +5,10 @@ namespace Modules\AbRouter\Providers;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
+use Modules\AbRouter\Console\CreateDatabase;
+use Modules\AbRouter\Console\DropDatabase;
 use Modules\AbRouter\Console\FillOwnerIdExperimentUserBranches;
+use Modules\AbRouter\Console\MigrateTemporaryUser;
 
 class AbRouterServiceProvider extends ServiceProvider
 {
@@ -21,9 +24,9 @@ class AbRouterServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->registerFactories();
-        $this->commands([\Modules\AbRouter\Console\CreateDatabase::class]);
-        $this->commands([\Modules\AbRouter\Console\DropDatabase::class]);
-        $this->commands([\Modules\AbRouter\Console\MigrateTemporaryUser::class]);
+        $this->commands([CreateDatabase::class]);
+        $this->commands([DropDatabase::class]);
+        $this->commands([MigrateTemporaryUser::class]);
         $this->commands([FillOwnerIdExperimentUserBranches::class]);
 
         $this->loadMigrationsFrom(module_path('AbRouter', 'Database/Migrations'));
@@ -37,6 +40,7 @@ class AbRouterServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->register(RouteServiceProvider::class);
+        $this->app->register(KernelProvider::class);
     }
 
     /**

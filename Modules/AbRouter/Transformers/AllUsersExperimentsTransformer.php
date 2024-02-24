@@ -23,7 +23,7 @@ class AllUsersExperimentsTransformer
         return $allUsersExperiments;
     }
 
-    public function getExperiments(Collection $experimentUsers): array
+    private function getExperiments(Collection $experimentUsers): array
     {
         $experiments = [];
 
