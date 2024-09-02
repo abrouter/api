@@ -17,9 +17,14 @@ class Authenticator
      */
     private $userRepository;
 
-    public function __construct(UserRepository $userRepository)
-    {
+    private JwtGetterByUserService $jwtGetterByUserService;
+
+    public function __construct(
+        UserRepository $userRepository,
+        JwtGetterByUserService $jwtGetterByUserService
+    ) {
         $this->userRepository = $userRepository;
+        $this->jwtGetterByUserService = $jwtGetterByUserService;
     }
 
     /**
@@ -37,7 +42,7 @@ class Authenticator
 
         return new UserWithAccessToken(
             $user,
-            new AccessToken($user->createToken('default')),
+            $this->jwtGetterByUserService->getByUser($user),
             false
         );
     }

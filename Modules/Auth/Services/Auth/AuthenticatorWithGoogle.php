@@ -24,10 +24,16 @@ class AuthenticatorWithGoogle
      */
     private $password;
 
-    public function __construct(UserRepository $userRepository, CreateRandomPassword $password)
-    {
+    private JwtGetterByUserService $jwtGetterByUserService;
+
+    public function __construct(
+        UserRepository $userRepository,
+        CreateRandomPassword $password,
+        JwtGetterByUserService $jwtGetterByUserService
+    ) {
         $this->userRepository = $userRepository;
         $this->password = $password;
+        $this->jwtGetterByUserService = $jwtGetterByUserService;
     }
 
     /**
@@ -56,7 +62,7 @@ class AuthenticatorWithGoogle
 
         return new UserWithAccessToken(
             $user,
-            new AccessToken($user->createToken('default')),
+            $this->jwtGetterByUserService->getByUser($user),
             $isNew
         );
     }

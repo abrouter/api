@@ -15,10 +15,15 @@ class ShortTokenAuthorizer
      * @var TokenRepository
      */
     private $tokenRepository;
-    
-    public function __construct(TokenRepository $repository)
-    {
+
+    private JwtGetterByUserService $jwtGetterByUserService;
+
+    public function __construct(
+        TokenRepository $repository,
+        JwtGetterByUserService $jwtGetterByUserService
+    ) {
         $this->tokenRepository = $repository;
+        $this->jwtGetterByUserService = $jwtGetterByUserService;
     }
     
     public function authorize(?string $token): ?UserWithAccessToken
@@ -50,7 +55,7 @@ class ShortTokenAuthorizer
         
         $bearer = new UserWithAccessToken(
             $user,
-            new AccessToken($user->createToken('default')),
+            $this->jwtGetterByUserService->getByUser($user, $token),
             false
         );
         return $bearer;
