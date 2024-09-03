@@ -14,18 +14,41 @@ class AccessToken
      */
     private $accessToken;
 
-    public function __construct(PersonalAccessTokenResult $accessToken)
-    {
+    private ?string $tokenString = null;
+
+    private ?string $expiresAt = null;
+
+    private ?string $entityId = null;
+
+    public function __construct(
+        ?PersonalAccessTokenResult $accessToken,
+        ?string $token = null,
+        ?string $expiresAt = null,
+        ?string $entityId = null
+    ) {
         $this->accessToken = $accessToken;
+        if ($token) {
+            $this->tokenString = $token;
+        }
+        if ($expiresAt) {
+            $this->expiresAt = $expiresAt;
+        }
+        if ($entityId) {
+            $this->entityId = $entityId;
+        }
     }
 
     public function getToken(): string
     {
-        return $this->accessToken->accessToken;
+        return $this->tokenString ?? $this->accessToken->accessToken;
     }
 
     public function expiresAt(): string
     {
+        if ($this->expiresAt) {
+            return $this->expiresAt;
+        }
+
         /**
          * @var Carbon $expiresAt
          */
@@ -35,6 +58,10 @@ class AccessToken
 
     public function getEntityId(): string
     {
+        if ($this->entityId) {
+            return $this->entityId;
+        }
+
         return $this->accessToken->token->getAttribute('id');
     }
 
